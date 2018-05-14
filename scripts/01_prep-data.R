@@ -35,7 +35,6 @@ epi_nutr$tn_calculated <- epi_nutr$tkn + epi_nutr$no2no3
 epi_nutr$tn_combined <- epi_nutr$tn
 epi_nutr$tn_combined[which(is.na(epi_nutr$tn_combined) == TRUE)] = epi_nutr$tn_calculated[which(is.na(epi_nutr$tn_combined) == TRUE)]
 
-
 # subset by sample date and year cutoffs specified above
 epi_nutr_subset <- epi_nutr[epi_nutr$monthday >= first_day & epi_nutr$monthday <= last_day,]
 epi_nutr_subset <- subset(epi_nutr_subset, sampleyear >= first_year & sampleyear <= last_year)
@@ -62,7 +61,6 @@ epi_nutr_subset_medians <- epi_nutr_d %>%
   group_by(lagoslakeid, sampleyear) %>%
   summarise(TP=median(tp), chla=median(chla), color=median(colort), TN=median(tn_combined))
 
-
 # get number of samples for non-Secchi variables
 # TP_counts <- aggregate(epi_nutr_subset$tp, by=list(epi_nutr_subset$lagoslakeid, epi_nutr_subset$sampleyear),
 #                        FUN='length')
@@ -77,6 +75,39 @@ epi_nutr_subset_medians <- epi_nutr_d %>%
 # chla_counts <- aggregate(epi_nutr_subset$chla, by=list(epi_nutr_subset$lagoslakeid, epi_nutr_subset$sampleyear),
 #                          FUN='length')
 # colnames(chla_counts) <- c('lagoslakeid', 'sampleyear', 'nSamples_chla')
+
+# calculate median of the medians
+secchi_subset_full_record_medians <- secchi_subset_medians %>%
+  group_by(lagoslakeid) %>%
+  summarise(nYears_secchi = n(), secchi=median(secchi))
+
+epi_nutr_subset_full_record_medians <- epi_nutr_subset_medians %>%
+  group_by(lagoslakeid) %>%
+  summarise(TP=median(TP), chla=median(chla), color=median(color), TN=median(TN))
+
+# get number of years of data for non-Secchi variables
+TP_years <- aggregate(epi_nutr_subset_medians$TP, by=list(epi_nutr_subset_medians$lagoslakeid),
+                        FUN='length')
+colnames(TP_years) <- c('lagoslakeid', 'nYears_TP')
+
+TN_years <- aggregate(epi_nutr_subset_medians$TN, by=list(epi_nutr_subset_medians$lagoslakeid),
+                       FUN='length')
+colnames(TN_years) <- c('lagoslakeid', 'nYears_TN')
+
+color_years <- aggregate(epi_nutr_subset_medians$color, by=list(epi_nutr_subset_medians$lagoslakeid),
+                          FUN='length')
+colnames(color_years) <- c('lagoslakeid', 'nYears_color')
+
+chla_years <- aggregate(epi_nutr_subset_medians$chla, by=list(epi_nutr_subset_medians$lagoslakeid),
+                         FUN='length')
+colnames(chla_years) <- c('lagoslakeid', 'nYears_chla')
+
+
+## create final table of limno data
+limno_data_table <- Reduce(inner_join, list(secchi_subset_full_record_medians, epi_nutr_subset_full_record_medians,
+                                            TP_years, TN_years, color_years, chla_years))
+
+limno_data_table <- limno_data_table[,c(1,3:7,2,8:11)] #rearrange column by number
 
 # ----pull_geo_predictors (for all lakes)----
 # max depth
