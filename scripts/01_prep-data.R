@@ -1,5 +1,5 @@
 # Prepare data for predicting water quality
-
+#test
 # ----load_packages ----
 library(dplyr)
 library(ggplot2)
@@ -42,26 +42,26 @@ secchi_subset <- subset(secchi_subset, sampleyear >= first_year & sampleyear <= 
 
 # ----calculate_medians ----
 
-secchi_subset_medians <- secchi_subset %>% 
+secchi_subset_medians <- secchi_subset %>%
   group_by(lagoslakeid, sampleyear) %>%
   summarise(nSamples_secchi = n(), secchi=median(secchi))
 
-epi_nutr_subset_medians <- epi_nutr_subset %>% 
+epi_nutr_subset_medians <- epi_nutr_subset %>%
   group_by(lagoslakeid, sampleyear) %>%
   summarise(TP=median(tp), chla=median(chla), color=median(colort), TN=median(tn))
 
 # get number of samples for non-Secchi variables
-TP_counts <- aggregate(epi_nutr_subset$tp, by=list(epi_nutr_subset$lagoslakeid, epi_nutr_subset$sampleyear), 
+TP_counts <- aggregate(epi_nutr_subset$tp, by=list(epi_nutr_subset$lagoslakeid, epi_nutr_subset$sampleyear),
                        FUN='length')
 colnames(TP_counts) <- c('lagoslakeid', 'sampleyear', 'nSamples_TP')
 
-TN_counts <- aggregate(epi_nutr_subset$tn, by=list(epi_nutr_subset$lagoslakeid, epi_nutr_subset$sampleyear), 
+TN_counts <- aggregate(epi_nutr_subset$tn, by=list(epi_nutr_subset$lagoslakeid, epi_nutr_subset$sampleyear),
                        FUN='length')
 colnames(TN_counts) <- c('lagoslakeid', 'sampleyear', 'nSamples_TN')
-color_counts <- aggregate(epi_nutr_subset$colort, by=list(epi_nutr_subset$lagoslakeid, epi_nutr_subset$sampleyear), 
+color_counts <- aggregate(epi_nutr_subset$colort, by=list(epi_nutr_subset$lagoslakeid, epi_nutr_subset$sampleyear),
                           FUN='length')
 colnames(color_counts) <- c('lagoslakeid', 'sampleyear', 'nSamples_color')
-chla_counts <- aggregate(epi_nutr_subset$chla, by=list(epi_nutr_subset$lagoslakeid, epi_nutr_subset$sampleyear), 
+chla_counts <- aggregate(epi_nutr_subset$chla, by=list(epi_nutr_subset$lagoslakeid, epi_nutr_subset$sampleyear),
                          FUN='length')
 colnames(chla_counts) <- c('lagoslakeid', 'sampleyear', 'nSamples_chla')
 
