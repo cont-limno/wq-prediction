@@ -9,6 +9,9 @@ library(LAGOSNE)
 
 lg <- lagosne_load("1.087.1")
 
+# set working directory (comment out others' and insert your own)
+working_directory <- setwd("C:/Users/FWL/Documents/wq-prediction")
+
 # ----select_epi_nutr_variables ----
 # variables: TP, TN, chlorophyll, color(true), Secchi
 epi_nutr <- lg$epi_nutr
@@ -111,8 +114,146 @@ limno_data_table <- limno_data_table[,c(1,3:7,2,8:11)] #rearrange column by numb
 
 # ----pull_geo_predictors (for all lakes)----
 # max depth
-# lulc
-# hydrology
+max_depth <- data.frame(lagoslakeid=lg$lakes_limno$lagoslakeid, maxdepth_m=lg$lakes_limno$maxdepth)
+
+# lulc (2001 NLCD)
+#11=openwater
+#21=developed open space
+#22=developed low intensity
+#23=developed medium intensity
+#24=developed high intensity
+#31=bare rock
+#41=deciduous
+#42=evergreen
+#43=mixed forest
+#52=scrub/shrub
+#71=grasslands/herbaceous
+#81=pasture/hay
+#82=row crops
+# Watershed: IWS
+IWS_LULC <- lg$iws.lulc
+IWS_LULC <- data.frame(lagoslakeid=IWS_LULC$lagoslakeid, 
+                       openwater2001_pct=IWS_LULC$iws_nlcd2001_pct_11,
+                       developed_open2001_pct=IWS_LULC$iws_nlcd2001_pct_21,
+                       developed_low2001_pct=IWS_LULC$iws_nlcd2001_pct_22,
+                       developed_med2001_pct=IWS_LULC$iws_nlcd2001_pct_23,
+                       developed_high2001_pct=IWS_LULC$iws_nlcd2001_pct_24,
+                       barerock2001_pct=IWS_LULC$iws_nlcd2001_pct_31,
+                       deciduous2001_pct=IWS_LULC$iws_nlcd2001_pct_41,
+                       evergreen2001_pct=IWS_LULC$iws_nlcd2001_pct_42,
+                       mixedforest2001_pct=IWS_LULC$iws_nlcd2001_pct_43,
+                       scrubshrub2001_pct=IWS_LULC$iws_nlcd2001_pct_52,
+                       grasslands_herbaceous2001_pct=IWS_LULC$iws_nlcd2001_pct_71,
+                       pasture_hay2001_pct=IWS_LULC$iws_nlcd2001_pct_81,
+                       rowcrops2001_pct=IWS_LULC$iws_nlcd2001_pct_82,
+                       topo_rough_index_mean=IWS_LULC$iws_tri_mean,
+                       topo_rough_index_max=IWS_LULC$iws_tri_max,
+                       roaddensity_mperha=IWS_LULC$iws_roaddensity_density_mperha)
+
+# Local buffer around lakes (100 m)
+Buff100_LULC <- lg$buffer100m.lulc
+Buff100_LULC <- data.frame(lagoslakeid=Buff100_LULC$lagoslakeid, 
+                           openwater2001_pct=Buff100_LULC$buffer100m_nlcd2001_pct_11,
+                           developed_open2001_pct=Buff100_LULC$buffer100m_nlcd2001_pct_21,
+                           developed_low2001_pct=Buff100_LULC$buffer100m_nlcd2001_pct_22,
+                           developed_med2001_pct=Buff100_LULC$buffer100m_nlcd2001_pct_23,
+                           developed_high2001_pct=Buff100_LULC$buffer100m_nlcd2001_pct_24,
+                           barerock2001_pct=Buff100_LULC$buffer100m_nlcd2001_pct_31,
+                           deciduous2001_pct=Buff100_LULC$buffer100m_nlcd2001_pct_41,
+                           evergreen2001_pct=Buff100_LULC$buffer100m_nlcd2001_pct_42,
+                           mixedforest2001_pct=Buff100_LULC$buffer100m_nlcd2001_pct_43,
+                           scrubshrub2001_pct=Buff100_LULC$buffer100m_nlcd2001_pct_52,
+                           grasslands_herbaceous2001_pct=Buff100_LULC$buffer100m_nlcd2001_pct_71,
+                           pasture_hay2001_pct=Buff100_LULC$buffer100m_nlcd2001_pct_81,
+                           rowcrops2001_pct=Buff100_LULC$buffer100m_nlcd2001_pct_82,
+                           topo_rough_index_mean=Buff100_LULC$buffer100m_tri_mean,
+                           topo_rough_index_max=Buff100_LULC$buffer100m_tri_max,
+                           roaddensity_mperha=Buff100_LULC$buffer100m_roaddensity_density_mperha)
+
+# Regional watershed (HU4)
+# get table of HU4 and lagoslakeid
+hu4_lagoslakeid_table <- data.frame(lagoslakeid=lg$lakes.geo$lagoslakeid, hu4_zoneid=lg$lakes.geo$hu4_zoneid)
+
+HU4_LULC <- lg$hu4.lulc
+HU4_LULC <- data.frame(hu4_zoneid=HU4_LULC$hu4_zoneid, 
+                       openwater2001_pct=HU4_LULC$hu4_nlcd2001_pct_11,
+                       developed_open2001_pct=HU4_LULC$hu4_nlcd2001_pct_21,
+                       developed_low2001_pct=HU4_LULC$hu4_nlcd2001_pct_22,
+                       developed_med2001_pct=HU4_LULC$hu4_nlcd2001_pct_23,
+                       developed_high2001_pct=HU4_LULC$hu4_nlcd2001_pct_24,
+                       barerock2001_pct=HU4_LULC$hu4_nlcd2001_pct_31,
+                       deciduous2001_pct=HU4_LULC$hu4_nlcd2001_pct_41,
+                       evergreen2001_pct=HU4_LULC$hu4_nlcd2001_pct_42,
+                       mixedforest2001_pct=HU4_LULC$hu4_nlcd2001_pct_43,
+                       scrubshrub2001_pct=HU4_LULC$hu4_nlcd2001_pct_52,
+                       grasslands_herbaceous2001_pct=HU4_LULC$hu4_nlcd2001_pct_71,
+                       pasture_hay2001_pct=HU4_LULC$hu4_nlcd2001_pct_81,
+                       rowcrops2001_pct=HU4_LULC$hu4_nlcd2001_pct_82,
+                       topo_rough_index_mean=HU4_LULC$hu4_tri_mean,
+                       topo_rough_index_max=HU4_LULC$hu4_tri_max,
+                       roaddensity_mperha=HU4_LULC$hu4_roaddensity_density_mperha)
+
+# hydrology and deposition (at HU 12)
+# get table of hu12 and lagoslakeid
+hu12_lagoslakeid_table <- data.frame(lagoslakeid=lg$lakes.geo$lagoslakeid, hu12_zoneid=lg$lakes.geo$hu12_zoneid)
+
+HU12_hydro_dep <- lg$hu12.chag
+HU12_hydro_dep <- data.frame(hu12_zoneid=HU12_hydro_dep$hu12_zoneid,
+                             baseflow_mean=HU12_hydro_dep$hu12_baseflowindex_mean,
+                             runoff_mean=HU12_hydro_dep$hu12_runoff_mean,
+                             groundwater_recharge=HU12_hydro_dep$hu12_groundwaterrecharge_mean,
+                             so4dep_1990_mean=HU12_hydro_dep$hu12_dep_so4_1990_mean,
+                             so4dep_2010_mean=HU12_hydro_dep$hu12_dep_so4_2010_mean,
+                             totalNdep_1990_mean=HU12_hydro_dep$hu12_dep_totaln_1990_mean,
+                             totalNdep_2010_mean=HU12_hydro_dep$hu12_dep_totaln_2010_mean,
+                             no3dep_1990_mean=HU12_hydro_dep$hu12_dep_no3_1990_mean,
+                             no3dep_2010_mean=HU12_hydro_dep$hu12_dep_no3_2010_mean,
+                             prism_ppt_mean=HU12_hydro_dep$hu12_prism_ppt_30yr_normal_800mm2_annual_mean,
+                             prism_tmean_mean=HU12_hydro_dep$hu12_prism_tmean_30yr_normal_800mm2_annual_mean,
+                             prism_tmax_mean=HU12_hydro_dep$hu12_prism_tmax_30yr_normal_800mm2_annual_mean,
+                             prism_tmin_mean=HU12_hydro_dep$hu12_prism_tmin_30yr_normal_800mm2_annual_mean,
+                             alluvial_pct=HU12_hydro_dep$hu12_surficialgeology_alluv_pct,
+                             colluvial_pct=HU12_hydro_dep$hu12_surficialgeology_colluv_pct,
+                             glaciofluvial_pct=HU12_hydro_dep$hu12_surficialgeology_gf_out_pct,
+                             till_loam_pct=HU12_hydro_dep$hu12_surficialgeology_till_loam_pct,
+                             till_sand_pct=HU12_hydro_dep$hu12_surficialgeology_till_sand_pct,
+                             till_clay_pct=HU12_hydro_dep$hu12_surficialgeology_till_clay_pct)
+                             
+# calculate deposition differences 1990-2010                           
+HU12_hydro_dep$so4dep_19902010_diff <- HU12_hydro_dep$so4dep_1990_mean-HU12_hydro_dep$so4dep_2010_mean
+HU12_hydro_dep$totalNdep_19902010_diff <- HU12_hydro_dep$totalNdep_1990_mean-HU12_hydro_dep$totalNdep_2010_mean
+HU12_hydro_dep$no3dep_19902010_diff <- HU12_hydro_dep$no3dep_1990_mean-HU12_hydro_dep$no3dep_2010_mean
+
+# bring in pre-calculated PRISM normals for other climate variables not in LAGOS
+PRISM_normals <- read.csv(paste0(getwd(), "/data/lagoslakeid_PRISM_Normals_1981_2010.csv"))
+PRISM_normals_t <- as.data.frame(t(PRISM_normals)) #transpose (to make columns climate variables)
+colnames(PRISM_normals_t) <- PRISM_normals$Var #rename columns by climate variables
+temp_lagoslakeids <- names(PRISM_normals)[3:ncol(PRISM_normals)] #get string of lagoslakeids
+temp_lagoslakeids <- sub("X*", "", temp_lagoslakeids) #remove "X" from string (put in by Excel)
+PRISM_normals_t <- PRISM_normals_t[-c(1,2),] #delete first two rows
+PRISM_normals_t$lagoslakeid <- temp_lagoslakeids #create lagoslakeid column
+
+hu12_prism_normals <- merge(hu12_lagoslakeid_table, PRISM_normals_t, by='lagoslakeid',all.x=F)
+
+HU12_hydro_dep_climate <- merge(HU12_hydro_dep, hu12_prism_normals, by='hu12_zoneid',all.x=F)
+vars_keep <- c(names(HU12_hydro_dep), 'winter_ppt', 'winter_tmax', 'winter_tmin',
+                    'summer_ppt', 'summer_tmax', 'summer_tmin', 'spring_ppt', 'spring_tmax', 'spring_tmin')
+
+HU12_hydro_dep_climate <- HU12_hydro_dep_climate[,vars_keep]
+
 # watershed/lake morphometry
+lake_morphometry <- data.frame(lagoslakeid=lg$iws$lagoslakeid, lakearea_ha=lg$iws$iws_lakeareaha,
+                               iwsarea_ha=lg$iws$iws_ha)
+lake_morphometry$IWS_ratio <- lake_morphometry$iwsarea_ha/lake_morphometry$lakearea_ha
+
 # connectivity
+IWS_conn <- lg$iws.conn
+IWS_conn <- data.frame(lagoslakeid=IWS_conn$lagoslakeid, streamdensity_mperha=IWS_conn$iws_streamdensity_streams_density_mperha,
+                       lakes_overlapping_area_pct=IWS_conn$iws_lakes_overlapping_area_pct,
+                       wetlands_overlapping_area_pct=IWS_conn$iws_wl_allwetlandsdissolved_overlapping_area_pct)
+
+HU4_conn <- lg$hu4.conn
+HU4_conn <- data.frame(hu4_zoneid=HU4_conn$hu4_zoneid, streamdensity_mperha=HU4_conn$hu4_streamdensity_streams_density_mperha,
+                       lakes_overlapping_area_pct=HU4_conn$hu4_lakes_overlapping_area_pct,
+                       wetlands_overlapping_area_pct=HU4_conn$hu4_wl_allwetlandsdissolved_overlapping_area_pct)
 
