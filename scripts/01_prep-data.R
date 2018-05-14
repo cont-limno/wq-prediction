@@ -1,6 +1,5 @@
 # Prepare data for predicting water quality
-#test
-# FULL stream ahead -Katelyn
+
 # ----load_packages ----
 library(dplyr)
 library(ggplot2)
@@ -30,6 +29,13 @@ secchi$sampledate <- as.Date(secchi$sampledate, format="%m/%d/%Y")
 epi_nutr$monthday <- format(epi_nutr$sampledate, format="%m%d")
 secchi$monthday <- format(secchi$sampledate, format="%m%d")
 
+# ----calculate_tn----
+# from componenent variables and join with tn into a new column called "tn_combined"
+epi_nutr$tn_calculated <- epi_nutr$tkn + epi_nutr$no2no3
+epi_nutr$tn_combined <- epi_nutr$tn
+epi_nutr$tn_combined[which(is.na(epi_nutr$tn_combined) == TRUE)] = epi_nutr$tn_calculated[which(is.na(epi_nutr$tn_combined) == TRUE)]
+
+
 # subset by sample date and year cutoffs specified above
 epi_nutr_subset <- epi_nutr[epi_nutr$monthday >= first_day & epi_nutr$monthday <= last_day,]
 epi_nutr_subset <- subset(epi_nutr_subset, sampleyear >= first_year & sampleyear <= last_year)
@@ -37,34 +43,40 @@ epi_nutr_subset <- subset(epi_nutr_subset, sampleyear >= first_year & sampleyear
 secchi_subset <- secchi[secchi$monthday >= first_day & secchi$monthday <= last_day,]
 secchi_subset <- subset(secchi_subset, sampleyear >= first_year & sampleyear <= last_year)
 
-# ----calculate_tn----
-# from componenent variables
 
+# get rid of duplicate values
+epi_nutr_dTN<- epi_nutr_subset[!duplicated(paste(epi_nutr_subset$lagoslakeid, epi_nutr_subset$sampledate, epi_nutr_subset$tn_combined)),]
+epi_nutr_dTP<- epi_nutr_dTN[!duplicated(paste(epi_nutr_dTN$lagoslakeid, epi_nutr_dTN$sampledate, epi_nutr_dTN$tp)),]
+epi_nutr_dchl<- epi_nutr_dTP[!duplicated(paste(epi_nutr_dTP$lagoslakeid, epi_nutr_dTP$sampledate, epi_nutr_dTP$chla)),]
+epi_nutr_d<- epi_nutr_dchl[!duplicated(paste(epi_nutr_dchl$lagoslakeid, epi_nutr_dchl$sampledate, epi_nutr_dchl$colort)),]
+
+secchi_subset_d<- secchi_subset[!duplicated(paste(secchi_subset$lagoslakeid, secchi_subset$sampledate, secchi_subset$secchi)),]
 
 # ----calculate_medians ----
 
-secchi_subset_medians <- secchi_subset %>%
+secchi_subset_medians <- secchi_subset_d %>%
   group_by(lagoslakeid, sampleyear) %>%
   summarise(nSamples_secchi = n(), secchi=median(secchi))
 
-epi_nutr_subset_medians <- epi_nutr_subset %>%
+epi_nutr_subset_medians <- epi_nutr_d %>%
   group_by(lagoslakeid, sampleyear) %>%
-  summarise(TP=median(tp), chla=median(chla), color=median(colort), TN=median(tn))
+  summarise(TP=median(tp), chla=median(chla), color=median(colort), TN=median(tn_combined))
+
 
 # get number of samples for non-Secchi variables
-TP_counts <- aggregate(epi_nutr_subset$tp, by=list(epi_nutr_subset$lagoslakeid, epi_nutr_subset$sampleyear),
-                       FUN='length')
-colnames(TP_counts) <- c('lagoslakeid', 'sampleyear', 'nSamples_TP')
-
-TN_counts <- aggregate(epi_nutr_subset$tn, by=list(epi_nutr_subset$lagoslakeid, epi_nutr_subset$sampleyear),
-                       FUN='length')
-colnames(TN_counts) <- c('lagoslakeid', 'sampleyear', 'nSamples_TN')
-color_counts <- aggregate(epi_nutr_subset$colort, by=list(epi_nutr_subset$lagoslakeid, epi_nutr_subset$sampleyear),
-                          FUN='length')
-colnames(color_counts) <- c('lagoslakeid', 'sampleyear', 'nSamples_color')
-chla_counts <- aggregate(epi_nutr_subset$chla, by=list(epi_nutr_subset$lagoslakeid, epi_nutr_subset$sampleyear),
-                         FUN='length')
-colnames(chla_counts) <- c('lagoslakeid', 'sampleyear', 'nSamples_chla')
+# TP_counts <- aggregate(epi_nutr_subset$tp, by=list(epi_nutr_subset$lagoslakeid, epi_nutr_subset$sampleyear),
+#                        FUN='length')
+# colnames(TP_counts) <- c('lagoslakeid', 'sampleyear', 'nSamples_TP')
+#
+# TN_counts <- aggregate(epi_nutr_subset$tn, by=list(epi_nutr_subset$lagoslakeid, epi_nutr_subset$sampleyear),
+#                        FUN='length')
+# colnames(TN_counts) <- c('lagoslakeid', 'sampleyear', 'nSamples_TN')
+# color_counts <- aggregate(epi_nutr_subset$colort, by=list(epi_nutr_subset$lagoslakeid, epi_nutr_subset$sampleyear),
+#                           FUN='length')
+# colnames(color_counts) <- c('lagoslakeid', 'sampleyear', 'nSamples_color')
+# chla_counts <- aggregate(epi_nutr_subset$chla, by=list(epi_nutr_subset$lagoslakeid, epi_nutr_subset$sampleyear),
+#                          FUN='length')
+# colnames(chla_counts) <- c('lagoslakeid', 'sampleyear', 'nSamples_chla')
 
 # ----pull_geo_predictors (for all lakes)----
 # max depth
