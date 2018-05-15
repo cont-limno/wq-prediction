@@ -194,7 +194,7 @@ HU4_LULC <- data.frame(hu4_zoneid=HU4_LULC$hu4_zoneid,
                        roaddensity_mperha=HU4_LULC$hu4_roaddensity_density_mperha)
 
 # hydrology and deposition (at HU 12)
-# get table of hu12 and lagoslakeid
+# get table of hu12 and lagoslakeid (seems to have more than just lakes > 4ha; OK)
 hu12_lagoslakeid_table <- data.frame(lagoslakeid=lg$lakes.geo$lagoslakeid, hu12_zoneid=lg$lakes.geo$hu12_zoneid)
 
 HU12_hydro_dep <- lg$hu12.chag
@@ -224,6 +224,9 @@ HU12_hydro_dep$so4dep_19902010_diff <- HU12_hydro_dep$so4dep_1990_mean-HU12_hydr
 HU12_hydro_dep$totalNdep_19902010_diff <- HU12_hydro_dep$totalNdep_1990_mean-HU12_hydro_dep$totalNdep_2010_mean
 HU12_hydro_dep$no3dep_19902010_diff <- HU12_hydro_dep$no3dep_1990_mean-HU12_hydro_dep$no3dep_2010_mean
 
+# merge in lagoslakeid
+HU12_hydro_dep <- merge(HU12_hydro_dep, hu12_lagoslakeid_table, by='hu12_zoneid', all.x=F)
+
 # bring in pre-calculated PRISM normals for other climate variables not in LAGOS
 PRISM_normals <- read.csv(paste0(getwd(), "/data/lagoslakeid_PRISM_Normals_1981_2010.csv"))
 PRISM_normals_t <- as.data.frame(t(PRISM_normals)) #transpose (to make columns climate variables)
@@ -236,10 +239,57 @@ PRISM_normals_t$lagoslakeid <- temp_lagoslakeids #create lagoslakeid column
 hu12_prism_normals <- merge(hu12_lagoslakeid_table, PRISM_normals_t, by='lagoslakeid',all.x=F)
 
 HU12_hydro_dep_climate <- merge(HU12_hydro_dep, hu12_prism_normals, by='hu12_zoneid',all.x=F)
-vars_keep <- c(names(HU12_hydro_dep), 'winter_ppt', 'winter_tmax', 'winter_tmin',
+HU12_hydro_dep_climate <- HU12_hydro_dep_climate[!duplicated(HU12_hydro_dep_climate$hu12_zoneid),]
+vars_keep <- c(names(HU12_hydro_dep), 'lagoslakeid','winter_ppt', 'winter_tmax', 'winter_tmin',
                     'summer_ppt', 'summer_tmax', 'summer_tmin', 'spring_ppt', 'spring_tmax', 'spring_tmin')
 
-HU12_hydro_dep_climate <- HU12_hydro_dep_climate[,vars_keep]
+HU12_hydro_dep_climate <- HU12_hydro_dep_climate[,vars_keep] #eliminate some climate variables
+colnames(HU12_hydro_dep_climate) <- c(names(HU12_hydro_dep_climate)[1:24], 'prism_winter_ppt_mean',
+                                      'prism_winter_tmax_mean','prism_winter_tmin_mean',
+                                      'prism_summer_ppt_mean','prism_summer_tmax_mean',
+                                      'prism_summer_tmin_mean','prism_spring_ppt_mean',
+                                      'prism_spring_tmax_mean','prism_spring_tmin_mean')
+
+# rearrange columns
+HU12_hydro_dep_climate <- HU12_hydro_dep_climate[,c(24,1:23,25:33)]
+
+# get extra climate for IWS (based on lagoslakeid in PRISM_normals_t)
+IWS_extra_climate <- PRISM_normals_t[,c('lagoslakeid','winter_ppt', 'winter_tmax', 'winter_tmin',
+                    'summer_ppt', 'summer_tmax', 'summer_tmin', 'spring_ppt', 'spring_tmax', 'spring_tmin')]
+colnames(IWS_extra_climate) <- c('lagoslakeid', 'prism_winter_ppt_mean',
+                           'prism_winter_tmax_mean','prism_winter_tmin_mean',
+                           'prism_summer_ppt_mean','prism_summer_tmax_mean',
+                           'prism_summer_tmin_mean','prism_spring_ppt_mean',
+                           'prism_spring_tmax_mean','prism_spring_tmin_mean')
+IWS_extra_climate$lagoslakeid <- as.integer(IWS_extra_climate$lagoslakeid) #convert to integer for merging later
+
+# HU4 climate, hydrology, deposition, geology
+HU4_hydro_dep <- lg$hu4.chag
+HU4_hydro_dep <- data.frame(hu4_zoneid=HU4_hydro_dep$hu4_zoneid,
+                            baseflow_mean=HU4_hydro_dep$hu4_baseflowindex_mean,
+                            runoff_mean=HU4_hydro_dep$hu4_runoff_mean,
+                            groundwater_recharge=HU4_hydro_dep$hu4_groundwaterrecharge_mean,
+                            so4dep_1990_mean=HU4_hydro_dep$hu4_dep_so4_1990_mean,
+                            so4dep_2010_mean=HU4_hydro_dep$hu4_dep_so4_2010_mean,
+                            totalNdep_1990_mean=HU4_hydro_dep$hu4_dep_totaln_1990_mean,
+                            totalNdep_2010_mean=HU4_hydro_dep$hu4_dep_totaln_2010_mean,
+                            no3dep_1990_mean=HU4_hydro_dep$hu4_dep_no3_1990_mean,
+                            no3dep_2010_mean=HU4_hydro_dep$hu4_dep_no3_2010_mean,
+                            prism_ppt_mean=HU4_hydro_dep$hu4_prism_ppt_30yr_normal_800mm2_annual_mean,
+                            prism_tmean_mean=HU4_hydro_dep$hu4_prism_tmean_30yr_normal_800mm2_annual_mean,
+                            prism_tmax_mean=HU4_hydro_dep$hu4_prism_tmax_30yr_normal_800mm2_annual_mean,
+                            prism_tmin_mean=HU4_hydro_dep$hu4_prism_tmin_30yr_normal_800mm2_annual_mean,
+                            alluvial_pct=HU4_hydro_dep$hu4_surficialgeology_alluv_pct,
+                            colluvial_pct=HU4_hydro_dep$hu4_surficialgeology_colluv_pct,
+                            glaciofluvial_pct=HU4_hydro_dep$hu4_surficialgeology_gf_out_pct,
+                            till_loam_pct=HU4_hydro_dep$hu4_surficialgeology_till_loam_pct,
+                            till_sand_pct=HU4_hydro_dep$hu4_surficialgeology_till_sand_pct,
+                            till_clay_pct=HU4_hydro_dep$hu4_surficialgeology_till_clay_pct)
+
+# calculate deposition differences 1990-2010                           
+HU4_hydro_dep$so4dep_19902010_diff <- HU4_hydro_dep$so4dep_1990_mean-HU4_hydro_dep$so4dep_2010_mean
+HU4_hydro_dep$totalNdep_19902010_diff <- HU4_hydro_dep$totalNdep_1990_mean-HU4_hydro_dep$totalNdep_2010_mean
+HU4_hydro_dep$no3dep_19902010_diff <- HU4_hydro_dep$no3dep_1990_mean-HU4_hydro_dep$no3dep_2010_mean
 
 # watershed/lake morphometry
 lake_morphometry <- data.frame(lagoslakeid=lg$iws$lagoslakeid, lakearea_ha=lg$iws$iws_lakeareaha,
@@ -257,3 +307,23 @@ HU4_conn <- data.frame(hu4_zoneid=HU4_conn$hu4_zoneid, streamdensity_mperha=HU4_
                        lakes_overlapping_area_pct=HU4_conn$hu4_lakes_overlapping_area_pct,
                        wetlands_overlapping_area_pct=HU4_conn$hu4_wl_allwetlandsdissolved_overlapping_area_pct)
 
+# add hu12 and hu4 zoneid to limno data table
+limno_data_table_final <- Reduce(inner_join, list(limno_data_table, hu12_lagoslakeid_table, hu4_lagoslakeid_table))
+
+
+
+#### Save final output tables ####
+# limno data
+write.csv(limno_data_table_final, file=paste0(getwd(), '/data/limno_data.csv'))
+
+# IWS (note: climate, geology, deposition and hydrology at HU12)
+IWS_final_table <- Reduce(inner_join, list(IWS_LULC, IWS_conn, lake_morphometry, IWS_extra_climate, HU12_hydro_dep))
+write.csv(IWS_final_table, file=paste0(getwd(), '/data/IWS_data.csv'))
+
+# HU4 (note: does not contain extra climate variables that were calculated at hu12)
+HU4_final_table <- Reduce(inner_join, list(HU4_LULC, HU4_conn, HU4_hydro_dep))
+write.csv(HU4_final_table, file=paste0(getwd(), '/data/HU4_data.csv'))
+
+# 100m lake buffer
+Buffer100_final_table <- Reduce(inner_join, list(Buff100_LULC, lake_morphometry[1:2], max_depth)) #excluding IWS area and IWS_ratio
+write.csv(Buffer100_final_table, file=paste0(getwd(), '/data/Buffer100m_data.csv'))
