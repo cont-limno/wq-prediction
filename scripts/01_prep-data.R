@@ -13,15 +13,15 @@ lg <- lagosne_load("1.087.1")
 working_directory <- setwd("C:/Users/FWL/Documents/wq-prediction")
 
 # ----select_epi_nutr_variables ----
-# variables: TP, TN, chlorophyll, color(true), Secchi
+# variables: TP, TN, chlorophyll, Secchi
 epi_nutr <- lg$epi_nutr
 secchi <- lg$secchi
 
 # ----filter_to_common_time_period----
-# time period: 1980 - 2011, using samples collected between Jun 15 and Sep 15 (stratification period)
+# time period: 1990 - 2011, using samples collected between Jun 15 and Sep 15 (stratification period)
 # define time parameters
-first_year <- 1980
-last_year <- 2010
+first_year <- 1990
+last_year <- 2011
 first_day <- '0615' #i.e., '0615' for Jun 15
 last_day <- '0915'
 
@@ -50,11 +50,31 @@ secchi_subset <- subset(secchi_subset, sampleyear >= first_year & sampleyear <= 
 epi_nutr_dTN<- epi_nutr_subset[!duplicated(paste(epi_nutr_subset$lagoslakeid, epi_nutr_subset$sampledate, epi_nutr_subset$tn_combined)),]
 epi_nutr_dTP<- epi_nutr_dTN[!duplicated(paste(epi_nutr_dTN$lagoslakeid, epi_nutr_dTN$sampledate, epi_nutr_dTN$tp)),]
 epi_nutr_dchl<- epi_nutr_dTP[!duplicated(paste(epi_nutr_dTP$lagoslakeid, epi_nutr_dTP$sampledate, epi_nutr_dTP$chla)),]
-epi_nutr_d<- epi_nutr_dchl[!duplicated(paste(epi_nutr_dchl$lagoslakeid, epi_nutr_dchl$sampledate, epi_nutr_dchl$colort)),]
 
 secchi_subset_d<- secchi_subset[!duplicated(paste(secchi_subset$lagoslakeid, secchi_subset$sampledate, secchi_subset$secchi)),]
 
-# ----calculate_medians ----
+#select only useful columns for analysis (this is a final dataset for WQ1, all observations for temporal study)
+epi_nutr_tptnchl<-select(epi_nutr_dchl, lagoslakeid, tp, tn_combined, chla, sampledate, sampleyear, samplemonth, monthday, eventida1087, programname)
+sec<-select(secchi_subset_d, lagoslakeid, sampledate, secchi)
+
+#merge tp,tn,chla to the secchi table
+limno_data_WQ1 <- left_join(epi_nutr_tptnchl, sec, by=c("lagoslakeid","sampledate" ))
+
+#add a column that counts up the number of variables present
+limno_data_WQ1$var_num<- apply(limno_data_WQ1, 1, function(x) {
+  sum(!is.na(x['tp']), !is.na(x['tn_combined']), !is.na(x['chla']), !is.na(x['secchi']) )
+  }
+    )
+
+#save observations with at least 1 variable
+limno_vars_WQ1<-filter(limno_data_WQ1, var_num >= 1)
+
+#----subset of data to get one date per lake with the most variables for WQ2 -----
+#give preference to the observation that has the most variables
+
+
+
+# ----calculate_medians ---- Note: decision was made not to do this -----
 
 secchi_subset_medians <- secchi_subset_d %>%
   group_by(lagoslakeid, sampleyear) %>%
@@ -132,7 +152,7 @@ max_depth <- data.frame(lagoslakeid=lg$lakes_limno$lagoslakeid, maxdepth_m=lg$la
 #82=row crops
 # Watershed: IWS
 IWS_LULC <- lg$iws.lulc
-IWS_LULC <- data.frame(lagoslakeid=IWS_LULC$lagoslakeid, 
+IWS_LULC <- data.frame(lagoslakeid=IWS_LULC$lagoslakeid,
                        openwater2001_pct=IWS_LULC$iws_nlcd2001_pct_11,
                        developed_open2001_pct=IWS_LULC$iws_nlcd2001_pct_21,
                        developed_low2001_pct=IWS_LULC$iws_nlcd2001_pct_22,
@@ -152,7 +172,7 @@ IWS_LULC <- data.frame(lagoslakeid=IWS_LULC$lagoslakeid,
 
 # Local buffer around lakes (100 m)
 Buff100_LULC <- lg$buffer100m.lulc
-Buff100_LULC <- data.frame(lagoslakeid=Buff100_LULC$lagoslakeid, 
+Buff100_LULC <- data.frame(lagoslakeid=Buff100_LULC$lagoslakeid,
                            openwater2001_pct=Buff100_LULC$buffer100m_nlcd2001_pct_11,
                            developed_open2001_pct=Buff100_LULC$buffer100m_nlcd2001_pct_21,
                            developed_low2001_pct=Buff100_LULC$buffer100m_nlcd2001_pct_22,
@@ -175,7 +195,7 @@ Buff100_LULC <- data.frame(lagoslakeid=Buff100_LULC$lagoslakeid,
 hu4_lagoslakeid_table <- data.frame(lagoslakeid=lg$lakes.geo$lagoslakeid, hu4_zoneid=lg$lakes.geo$hu4_zoneid)
 
 HU4_LULC <- lg$hu4.lulc
-HU4_LULC <- data.frame(hu4_zoneid=HU4_LULC$hu4_zoneid, 
+HU4_LULC <- data.frame(hu4_zoneid=HU4_LULC$hu4_zoneid,
                        openwater2001_pct=HU4_LULC$hu4_nlcd2001_pct_11,
                        developed_open2001_pct=HU4_LULC$hu4_nlcd2001_pct_21,
                        developed_low2001_pct=HU4_LULC$hu4_nlcd2001_pct_22,
@@ -218,8 +238,8 @@ HU12_hydro_dep <- data.frame(hu12_zoneid=HU12_hydro_dep$hu12_zoneid,
                              till_loam_pct=HU12_hydro_dep$hu12_surficialgeology_till_loam_pct,
                              till_sand_pct=HU12_hydro_dep$hu12_surficialgeology_till_sand_pct,
                              till_clay_pct=HU12_hydro_dep$hu12_surficialgeology_till_clay_pct)
-                             
-# calculate deposition differences 1990-2010                           
+
+# calculate deposition differences 1990-2010
 HU12_hydro_dep$so4dep_19902010_diff <- HU12_hydro_dep$so4dep_1990_mean-HU12_hydro_dep$so4dep_2010_mean
 HU12_hydro_dep$totalNdep_19902010_diff <- HU12_hydro_dep$totalNdep_1990_mean-HU12_hydro_dep$totalNdep_2010_mean
 HU12_hydro_dep$no3dep_19902010_diff <- HU12_hydro_dep$no3dep_1990_mean-HU12_hydro_dep$no3dep_2010_mean
@@ -286,7 +306,7 @@ HU4_hydro_dep <- data.frame(hu4_zoneid=HU4_hydro_dep$hu4_zoneid,
                             till_sand_pct=HU4_hydro_dep$hu4_surficialgeology_till_sand_pct,
                             till_clay_pct=HU4_hydro_dep$hu4_surficialgeology_till_clay_pct)
 
-# calculate deposition differences 1990-2010                           
+# calculate deposition differences 1990-2010
 HU4_hydro_dep$so4dep_19902010_diff <- HU4_hydro_dep$so4dep_1990_mean-HU4_hydro_dep$so4dep_2010_mean
 HU4_hydro_dep$totalNdep_19902010_diff <- HU4_hydro_dep$totalNdep_1990_mean-HU4_hydro_dep$totalNdep_2010_mean
 HU4_hydro_dep$no3dep_19902010_diff <- HU4_hydro_dep$no3dep_1990_mean-HU4_hydro_dep$no3dep_2010_mean
