@@ -13,24 +13,25 @@ The quant teams will each build a model - one stats model and one machine-learni
 #### Model structure
 Based on the models that we have built for LAGOS-NE for understanding the controls of lake water quality, we will build models with the factors that we know are important: joint distributions of responses, local covariates, regional covariates, and region-specific covariates. 
 
+#### Response variables
+> TP, TN, chl, and Secchi
+
 #### Model details 
 Model endpoint: Point estimate of nutrients for every lake in hold-out dataset [uncertainty later, all 50k lakes later]
 Model endpoint: Mean squared predictive error on natural log scale
 Note: Add 0.1 to the zero values
 
 #### Models and numbers of predictor variables
-We recommend starting to fit models with a reduced number of predictors (the list of 16 listed below). If 16 is too many, you can use 9 predictors (#'s 1-6; and 10-12 in the list below). However, eventually (and perhaps for the machine learning models), there is the full list of almost 100 predictor variables that should be used.
+We have comppiled a list of about 100 predictor variables (about half at the local (lake) scale and about half at the regional scale, which lakes are nested within (there are about 65 regions). However, we recommend starting to fit models with a reduced number of predictors (the list of 16 predictors listed below). If 16 is too many, you can use 9 predictors (#'s 1-6; and 10-12 in the list below). However, eventually (and perhaps for the machine learning models), there is the full list of 100 predictor variables that should be used.
 
-#### Response variables and response datasets
-> TP, TN, chl, and Secchi
-
+#### Response variable datasets 
 > FOR THE WORKSHOP, WE WILL USE the wq2_single.csv dataset below!
-
-LATER: [data/wq1_temporal.csv](data/wq1_temporal.csv) - All SUMMER observations are retained (mid-june to mid-sept) through time per lake. the multiple temporal variables to model the variation rather than modeling temporal pattern in the data….treated as repeated measure.
 
 WORKSHOP: [data/wq2_single.csv](data/wq2_single.csv) - A single SUMMER observation is selected that has the most water quality data from the above filtered dataset.
 
-#### Holdouts
+LATER: [data/wq1_temporal.csv](data/wq1_temporal.csv) - All SUMMER observations are retained (mid-june to mid-sept) through time per lake. The multiple samples per lake would be treated as 'repeated measures'. BUT, we likely won't have time to do this for the workshop. 
+
+#### Holdout datasets (listed as 'variables' in the response variable dataset)
 
 |        Metric        |                             Description                             |
 |:--------------------:|:-------------------------------------------------------------------:|
@@ -49,6 +50,7 @@ WORKSHOP: [data/wq2_single.csv](data/wq2_single.csv) - A single SUMMER observati
 
 > [data/regional_predictors.csv](data/regional_predictors.csv)
 
+## Shortened predictor list
 #### Local or lake-scale
 1) Maxdepth
 2) Iws_lk_ratio [derived]
