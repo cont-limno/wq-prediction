@@ -1,5 +1,7 @@
 ## Lake Prediction-Extrapolation Project (LPEP)
 
+See this [Google Doc](https://docs.google.com/document/d/1SupPLm-Tww5CyHHUf4k3YYq-UqnGKzyErm4Bz9yBOZg/edit?usp=sharing) for more info.
+
 ### Goal
 To identify the factors that influence our ability to predict lake water quality in unsampled lakes at subcontinental scales. In other words, under what conditions do we will have trouble predicting lake water quality in unsampled lakes? 
 
@@ -16,7 +18,7 @@ D.  The land use
 
 ### Approach
 #### RESPONSE variables
-TP, TN, color-true, color-apparent, chl
+TP, TN, chl, Secchi
 
 #### Model structure
 Based on the models that we have built for LAGOS-NE for understanding the controls of lake water quality, we will build models with the factors that we know are important: joint distributions, region-specific covariates, local covariates, regional covariates. We will do this in a machine learning environment and a statistical environment
