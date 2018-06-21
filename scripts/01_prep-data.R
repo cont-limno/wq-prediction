@@ -327,6 +327,8 @@ write.csv(res, "data/local_predictors.csv", row.names = TRUE)
 # get table of HU4 and lagoslakeid
 hu4_lagoslakeid_table <- data.frame(lagoslakeid=lg$lakes.geo$lagoslakeid,
                                     hu4_zoneid=lg$lakes.geo$hu4_zoneid)
+hu4_lagoslakeid_table <- dplyr::filter(hu4_lagoslakeid_table,
+                                       hu4_zoneid %in% limno_data_WQ1_final$hu4_zoneid)
 
 HU4_LULC <- lg$hu4.lulc
 HU4_LULC <- data.frame(hu4_zoneid=HU4_LULC$hu4_zoneid,
@@ -417,38 +419,3 @@ HU4_predictors <- left_join(HU4_hydro_LULC, HU4_conn, by='hu4_zoneid')
 
 write.csv(HU4_predictors, "data/regional_predictors.csv", row.names = FALSE)
 
-### bring in pre-calculated PRISM normals for other climate variables not in LAGOS from Ian's paper
-#PRISM_normals <- read.csv(paste0(getwd(), "/data/lagoslakeid_PRISM_Normals_1981_2010.csv"))
-#PRISM_normals_t <- as.data.frame(t(PRISM_normals)) #transpose (to make columns climate variables)
-#colnames(PRISM_normals_t) <- PRISM_normals$Var #rename columns by climate variables
-#temp_lagoslakeids <- names(PRISM_normals)[3:ncol(PRISM_normals)] #get string of lagoslakeids
-#temp_lagoslakeids <- sub("X*", "", temp_lagoslakeids) #remove "X" from string (put in by Excel)
-#PRISM_normals_t <- PRISM_normals_t[-c(1,2),] #delete first two rows
-#PRISM_normals_t$lagoslakeid <- temp_lagoslakeids #create lagoslakeid column
-
-#hu12_prism_normals <- merge(hu12_lagoslakeid_table, PRISM_normals_t, by='lagoslakeid',all.x=F)
-
-#HU12_hydro_dep_climate <- merge(HU12_hydro_dep, hu12_prism_normals, by='hu12_zoneid',all.x=F)
-#HU12_hydro_dep_climate <- HU12_hydro_dep_climate[!duplicated(HU12_hydro_dep_climate$hu12_zoneid),]
-#vars_keep <- c(names(HU12_hydro_dep), 'lagoslakeid','winter_ppt', 'winter_tmax', 'winter_tmin',
-                    # 'summer_ppt', 'summer_tmax', 'summer_tmin', 'spring_ppt', 'spring_tmax', 'spring_tmin')
-
-#HU12_hydro_dep_climate <- HU12_hydro_dep_climate[,vars_keep] #eliminate some climate variables
-#colnames(HU12_hydro_dep_climate) <- c(names(HU12_hydro_dep_climate)[1:24], 'prism_winter_ppt_mean',
-                                      # 'prism_winter_tmax_mean','prism_winter_tmin_mean',
-                                      # 'prism_summer_ppt_mean','prism_summer_tmax_mean',
-                                      # 'prism_summer_tmin_mean','prism_spring_ppt_mean',
-                                      # 'prism_spring_tmax_mean','prism_spring_tmin_mean')
-
-# rearrange columns
-#HU12_hydro_dep_climate <- HU12_hydro_dep_climate[,c(24,1:23,25:33)]
-
-# get extra climate for IWS (based on lagoslakeid in PRISM_normals_t)
-#IWS_extra_climate <- PRISM_normals_t[,c('lagoslakeid','winter_ppt', 'winter_tmax', 'winter_tmin',
-                    # 'summer_ppt', 'summer_tmax', 'summer_tmin', 'spring_ppt', 'spring_tmax', 'spring_tmin')]
-#colnames(IWS_extra_climate) <- c('lagoslakeid', 'prism_winter_ppt_mean',
-                           # 'prism_winter_tmax_mean','prism_winter_tmin_mean',
-                           # 'prism_summer_ppt_mean','prism_summer_tmax_mean',
-                           # 'prism_summer_tmin_mean','prism_spring_ppt_mean',
-                           # 'prism_spring_tmax_mean','prism_spring_tmin_mean')
-#IWS_extra_climate$lagoslakeid <- as.integer(IWS_extra_climate$lagoslakeid) #convert to integer for merging later
