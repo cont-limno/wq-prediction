@@ -20,6 +20,14 @@ To identify the importance of different degrees of ‘sampling bias’ in influe
 
 2. [data/wq2_single.csv](data/wq2_single.csv) - A single SUMMER observation is selected that has the most water quality data from the above filtered dataset.
 
+|        Metric        |                             Description                             |
+|:--------------------:|:-------------------------------------------------------------------:|
+|   random25_holdout   |           Hold out 25% of the dataset, randomly selected            |
+|   random75_holdout   |           Hold out 75% of the dataset, randomly selected.           |
+|   hu4_ag50_holdout   | Sort the HU4 % total ag and select lakes in the top 50% as holdouts |
+| hu4_strat75_holdout  |        Randomly select 75% of lakes in each HU4 as holdouts         |
+| hu4_random50_holdout |    Randomly select 50% of HU4s and holdout all lakes in each HU4    |
+
 #### Predictor variables
 
 1. [data/local_predictors.csv](data/local_predictors.csv)
