@@ -221,20 +221,35 @@ state_zoneid
 Noah created these and will provide the link to the code for the clusters. 
 #### Local natural lake ecological cluster variables used to create the clusters
 LAKESLOCUS101:	elevation_m
+
 LAKESLOCUS101:	Lake_area_ha
+
 LAKESLOCUS101:	Lake_perim_meters {included here only to calculated SDF}
+
 CALCULATED:		  lake_sdf
+
 IWS_105:		    Iws_ha
+
 IWS_PERIM: 		  Iws_perimkm {included here only to calculated IWS_SDF}
+
 CALCULATED:		  Iws_sdf
+
 CALCULATED: 		iws_lk_ratio
+
 IWS_CONN105:		IWS_streamdensity_streams_density_mperha
+
 LAKESGEO105:		 Latewisconsinglaciation_glacial (this is from the lagosne$lakes.geo table)
+
 LAKESGEO105: 	  Lakeconnection_v2 (join ISO/HW into one category, then DRSTREAM, DRSTREAMLK as own category)
+
 LAKESGEO105: 	  Upstream_lakes_4ha_area_ha
+
 LAKESGEO105: 	  upstream_lakes_4ha_count
+
 LAKESGEO105: 	  wlconnections_allwetlands_shoreline_km {Included here to calculated % perim}
+
 LAKESGEO105:  	wlconnections_allwetlands_shoreline_%perim (CALCULATE: shoreline_km/lake_perim)
+
 IWS_CONN105:		Iws_wl_allwetlandsundissolved_overlapping_area_pct
 
 
