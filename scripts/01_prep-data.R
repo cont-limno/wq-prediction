@@ -28,7 +28,8 @@ secchi$sampledate   <- as.Date(secchi$sampledate, format="%m/%d/%Y")
 epi_nutr$monthday   <- format(epi_nutr$sampledate, format="%m%d")
 secchi$monthday     <- format(secchi$sampledate, format="%m%d")
 
-# ----Fix N data from WISCONSIN dataset Noah Lottig's code 2018-04-25----
+# ---- fix_N_data ----
+# from WISCONSIN dataset Noah Lottig's code 2018-04-25
 
 #Fix TKN
 epi_nutr$tkn[which(epi_nutr$programname=="WI_LKLS")] <-
@@ -44,7 +45,8 @@ epi_nutr$no2no3[which(epi_nutr$programname=="WI_LKLS")] <-
 #   select(lagoslakeid,sampledate,tkn,no2no3) %>%
 #   summary()
 
-# ----calculate_tn from Sam Oliver----
+# ----calculate_tn ----
+# from Sam Oliver
 # from componenent variables and join with tn into a new column called "tn_combined"
 epi_nutr$tn_calculated <- epi_nutr$tkn + epi_nutr$no2no3
 epi_nutr$tn_combined   <- epi_nutr$tn
@@ -114,7 +116,7 @@ limno_data_WQ2_final <- left_join (limno_vars_WQ2, hu4_lagoslakeid_table,
 
 write.csv(limno_data_WQ2_final, "data/wq2_single.csv", row.names = FALSE)
 
-# ----pull_geo_predictors (for all lakes)----
+# ----pull_local_predictors (for all lakes)----
 
 # lulc (2001 NLCD) #updated all to 2006
 #11=openwater
@@ -203,8 +205,7 @@ Buff100_LULC$buff_nlcd2006_agr<-Buff100_LULC$buff_pasture_hay2006_pct +
 Buff100_LULC$buff_nlcd2006_wet<-Buff100_LULC$buff_wetland_woody2006_pct +
   Buff100_LULC$buff_wetland_emergent2006_pct
 
-#### watershed/lake morphometry and connectivity ####
-
+# watershed/lake morphometry and connectivity
 # max and mean depth
 depth <- data.frame(lagoslakeid=lg$lakes_limno$lagoslakeid,
                     maxdepth_m=lg$lakes_limno$maxdepth,
@@ -281,7 +282,7 @@ local_predictors<-left_join(conn_morph_LULC, IWS_conn, by="lagoslakeid")
 
 write.csv(local_predictors, "data/local_predictors.csv", row.names = TRUE)
 
-#------------------------------- REGIONAL --------------------
+# ---- pull_regional_predictors ----
 # Regional watershed (HU4)
 # get table of HU4 and lagoslakeid
 hu4_lagoslakeid_table <- data.frame(lagoslakeid=lg$lakes.geo$lagoslakeid, hu4_zoneid=lg$lakes.geo$hu4_zoneid)
