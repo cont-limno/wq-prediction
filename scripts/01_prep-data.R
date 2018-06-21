@@ -251,11 +251,26 @@ local_morphometry$IWS_lk_ratio <- local_morphometry$iwsarea_ha /
   local_morphometry$lakearea_ha
 
 # connectivity
-lake_conn<-lg$lakes.geo
-lake_conn<-data.frame(lagoslakeid=lake_conn$lagoslakeid,
+lake_conn <- lg$lakes.geo
+lake_conn <- data.frame(lagoslakeid=lake_conn$lagoslakeid,
       glaciation=lake_conn$latewisconsinglaciation_glacial,
       conn_class=lake_conn$lakeconnection,
       wlconnections_shoreline_km=lake_conn$wlconnections_allwetlands_shoreline_km)
+
+# calculate percent wetland shoreline
+
+pct_wetland_shoreline <- dplyr::left_join(
+  dplyr::select(lake_conn, lagoslakeid),
+  dplyr::select(lg$lakes.geo, lagoslakeid, wlconnections_allwetlands_shoreline_km))
+
+pct_wetland_shoreline <- dplyr::left_join(
+  pct_wetland_shoreline,
+  dplyr::select(lg$locus, lagoslakeid, lake_perim_meters))
+
+pct_wetland_shoreline <- dplyr::mutate(pct_wetland_shoreline,
+                              pct_wetland_shoreline = (wlconnections_allwetlands_shoreline_km /
+                                (lake_perim_meters * 0.001)) * 100)
+
 lake_conn$lakeconn_v2<-sapply(lake_conn$conn_class, function(x) {
     if(x == 'DR_LakeStream') {'DR_LakeStream'}
     else {
