@@ -285,7 +285,8 @@ write.csv(local_predictors, "data/local_predictors.csv", row.names = TRUE)
 # ---- pull_regional_predictors ----
 # Regional watershed (HU4)
 # get table of HU4 and lagoslakeid
-hu4_lagoslakeid_table <- data.frame(lagoslakeid=lg$lakes.geo$lagoslakeid, hu4_zoneid=lg$lakes.geo$hu4_zoneid)
+hu4_lagoslakeid_table <- data.frame(lagoslakeid=lg$lakes.geo$lagoslakeid,
+                                    hu4_zoneid=lg$lakes.geo$hu4_zoneid)
 
 HU4_LULC <- lg$hu4.lulc
 HU4_LULC <- data.frame(hu4_zoneid=HU4_LULC$hu4_zoneid,
@@ -308,58 +309,73 @@ HU4_LULC <- data.frame(hu4_zoneid=HU4_LULC$hu4_zoneid,
                        wetland_woody2006_pct=HU4_LULC$hu4_nlcd2006_pct_90,
                        wetland_emergent2006_pct=HU4_LULC$hu4_nlcd2006_pct_95)
 
-HU4_LULC$hu4_nlcd2006_urb<-HU4_LULC$developed_open2006_pct + HU4_LULC$developed_low2006_pct + HU4_LULC$developed_med2006_pct + HU4_LULC$developed_high2006_pct
-HU4_LULC$hu4_nlcd2006_for<-HU4_LULC$deciduous2006_pct + HU4_LULC$evergreen2006_pct + HU4_LULC$mixedforest2006_pct
-HU4_LULC$hu4_nlcd2006_agr<-HU4_LULC$pasture_hay2006_pct + HU4_LULC$rowcrops2006_pct
-HU4_LULC$hu4_nlcd2006_wet<-HU4_LULC$wetland_woody2006_pct + HU4_LULC$wetland_emergent2006_pct
+HU4_LULC$hu4_nlcd2006_urb <- HU4_LULC$developed_open2006_pct +
+  HU4_LULC$developed_low2006_pct + HU4_LULC$developed_med2006_pct +
+  HU4_LULC$developed_high2006_pct
 
+HU4_LULC$hu4_nlcd2006_for <- HU4_LULC$deciduous2006_pct +
+  HU4_LULC$evergreen2006_pct + HU4_LULC$mixedforest2006_pct
+
+HU4_LULC$hu4_nlcd2006_agr <- HU4_LULC$pasture_hay2006_pct +
+  HU4_LULC$rowcrops2006_pct
+
+HU4_LULC$hu4_nlcd2006_wet <- HU4_LULC$wetland_woody2006_pct +
+  HU4_LULC$wetland_emergent2006_pct
 
 # hydrology and deposition (at HU 4)
 HU4_hydro_dep <- lg$hu4.chag
 HU4_hydro_dep <- data.frame(hu4_zoneid=HU4_hydro_dep$hu4_zoneid,
-                             baseflow_mean=HU4_hydro_dep$hu4_baseflowindex_mean,
-                             runoff_mean=HU4_hydro_dep$hu4_runoff_mean,
-                             groundwater_recharge=HU4_hydro_dep$hu4_groundwaterrecharge_mean,
-                             so4dep_1990_mean=HU4_hydro_dep$hu4_dep_so4_1990_mean,
-                             so4dep_2010_mean=HU4_hydro_dep$hu4_dep_so4_2010_mean,
-                             totalNdep_1990_mean=HU4_hydro_dep$hu4_dep_totaln_1990_mean,
-                             totalNdep_2010_mean=HU4_hydro_dep$hu4_dep_totaln_2010_mean,
-                             no3dep_1990_mean=HU4_hydro_dep$hu4_dep_no3_1990_mean,
-                             no3dep_2010_mean=HU4_hydro_dep$hu4_dep_no3_2010_mean,
-                             prism_ppt_mean=HU4_hydro_dep$hu4_prism_ppt_30yr_normal_800mm2_annual_mean,
-                             prism_tmean_mean=HU4_hydro_dep$hu4_prism_tmean_30yr_normal_800mm2_annual_mean,
-                             prism_tmax_mean=HU4_hydro_dep$hu4_prism_tmax_30yr_normal_800mm2_annual_mean,
-                             prism_tmin_mean=HU4_hydro_dep$hu4_prism_tmin_30yr_normal_800mm2_annual_mean,
-                             alluvial_pct=HU4_hydro_dep$hu4_surficialgeology_alluv_pct,
-                             colluvial_pct=HU4_hydro_dep$hu4_surficialgeology_colluv_pct,
-                             glaciofluvial_pct=HU4_hydro_dep$hu4_surficialgeology_gf_out_pct,
-                             till_loam_pct=HU4_hydro_dep$hu4_surficialgeology_till_loam_pct,
-                             till_sand_pct=HU4_hydro_dep$hu4_surficialgeology_till_sand_pct,
-                             till_clay_pct=HU4_hydro_dep$hu4_surficialgeology_till_clay_pct,
-                            till_oth_pct=HU4_hydro_dep$hu4_surficialgeology_till_oth_pct)
+                  baseflow_mean=HU4_hydro_dep$hu4_baseflowindex_mean,
+                  runoff_mean=HU4_hydro_dep$hu4_runoff_mean,
+                  groundwater_recharge=HU4_hydro_dep$hu4_groundwaterrecharge_mean,
+                  so4dep_1990_mean=HU4_hydro_dep$hu4_dep_so4_1990_mean,
+                  so4dep_2010_mean=HU4_hydro_dep$hu4_dep_so4_2010_mean,
+                  totalNdep_1990_mean=HU4_hydro_dep$hu4_dep_totaln_1990_mean,
+                  totalNdep_2010_mean=HU4_hydro_dep$hu4_dep_totaln_2010_mean,
+                  no3dep_1990_mean=HU4_hydro_dep$hu4_dep_no3_1990_mean,
+    no3dep_2010_mean=HU4_hydro_dep$hu4_dep_no3_2010_mean,
+    prism_ppt_mean=HU4_hydro_dep$hu4_prism_ppt_30yr_normal_800mm2_annual_mean,
+    prism_tmean_mean=HU4_hydro_dep$hu4_prism_tmean_30yr_normal_800mm2_annual_mean,
+    prism_tmax_mean=HU4_hydro_dep$hu4_prism_tmax_30yr_normal_800mm2_annual_mean,
+    prism_tmin_mean=HU4_hydro_dep$hu4_prism_tmin_30yr_normal_800mm2_annual_mean,
+    alluvial_pct=HU4_hydro_dep$hu4_surficialgeology_alluv_pct,
+    colluvial_pct=HU4_hydro_dep$hu4_surficialgeology_colluv_pct,
+    glaciofluvial_pct=HU4_hydro_dep$hu4_surficialgeology_gf_out_pct,
+    till_loam_pct=HU4_hydro_dep$hu4_surficialgeology_till_loam_pct,
+    till_sand_pct=HU4_hydro_dep$hu4_surficialgeology_till_sand_pct,
+    till_clay_pct=HU4_hydro_dep$hu4_surficialgeology_till_clay_pct,
+    till_oth_pct=HU4_hydro_dep$hu4_surficialgeology_till_oth_pct)
 
 # calculate deposition differences 1990-2010
-HU4_hydro_dep$so4dep_19902010_diff <- HU4_hydro_dep$so4dep_1990_mean-HU4_hydro_dep$so4dep_2010_mean
-HU4_hydro_dep$totalNdep_19902010_diff <- HU4_hydro_dep$totalNdep_1990_mean-HU4_hydro_dep$totalNdep_2010_mean
-HU4_hydro_dep$no3dep_19902010_diff <- HU4_hydro_dep$no3dep_1990_mean-HU4_hydro_dep$no3dep_2010_mean
+HU4_hydro_dep$so4dep_19902010_diff <- HU4_hydro_dep$so4dep_1990_mean -
+  HU4_hydro_dep$so4dep_2010_mean
+
+HU4_hydro_dep$totalNdep_19902010_diff <- HU4_hydro_dep$totalNdep_1990_mean -
+  HU4_hydro_dep$totalNdep_2010_mean
+
+HU4_hydro_dep$no3dep_19902010_diff <- HU4_hydro_dep$no3dep_1990_mean -
+  HU4_hydro_dep$no3dep_2010_mean
 
 # HU4 connectivity
 HU4_conn <- lg$hu4.conn
-HU4_conn <- data.frame(hu4_zoneid=HU4_conn$hu4_zoneid, streamdensity_mperha=HU4_conn$hu4_streamdensity_streams_density_mperha,
-                       lakes_overlapping_area_pct=HU4_conn$hu4_lakes_overlapping_area_pct,
-                       wetlands_overlapping_area_pct=HU4_conn$hu4_wl_allwetlandsdissolved_overlapping_area_pct,
-                       hu4_lakes_drstream_overlapping_area_pct=HU4_conn$hu4_lakes_drstream_overlapping_area_pct,
-                       hu4_lakes_drlakestream_overlapping_area_pct=HU4_conn$hu4_lakes_drlakestream_overlapping_area_pct,
-                       hu4_lakes_headwater_overlapping_area_pct=HU4_conn$hu4_lakes_headwater_overlapping_area_pct,
-                       hu4_lakes_isolated_overlapping_area_pct=HU4_conn$hu4_lakes_isolated_overlapping_area_pct)
-HU4_conn$hu4_lakes_HWisolated_overlapping_area_pct<-HU4_conn$hu4_lakes_isolated_overlapping_area_pct + HU4_conn$hu4_lakes_headwater_overlapping_area_pct
+HU4_conn <- data.frame(hu4_zoneid=HU4_conn$hu4_zoneid,
+  streamdensity_mperha=HU4_conn$hu4_streamdensity_streams_density_mperha,
+  lakes_overlapping_area_pct=HU4_conn$hu4_lakes_overlapping_area_pct,
+  wetlands_overlapping_area_pct=HU4_conn$hu4_wl_allwetlandsdissolved_overlapping_area_pct,
+  hu4_lakes_drstream_overlapping_area_pct=HU4_conn$hu4_lakes_drstream_overlapping_area_pct,
+  hu4_lakes_drlakestream_overlapping_area_pct=HU4_conn$hu4_lakes_drlakestream_overlapping_area_pct,
+  hu4_lakes_headwater_overlapping_area_pct=HU4_conn$hu4_lakes_headwater_overlapping_area_pct,
+  hu4_lakes_isolated_overlapping_area_pct=HU4_conn$hu4_lakes_isolated_overlapping_area_pct)
+
+HU4_conn$hu4_lakes_HWisolated_overlapping_area_pct <- HU4_conn$hu4_lakes_isolated_overlapping_area_pct +
+  HU4_conn$hu4_lakes_headwater_overlapping_area_pct
 
 # merge all HU4 data sets and lagoslakeid
-HU4_hydro_dep <- merge(HU4_hydro_dep, hu4_lagoslakeid_table, by='hu4_zoneid', all.x=F)
-HU4_hydro_LULC<-left_join(HU4_hydro_dep, HU4_LULC, by='hu4_zoneid')
-HU4_predictors<-left_join(HU4_hydro_LULC, HU4_conn, by='hu4_zoneid')
+HU4_hydro_dep  <- merge(HU4_hydro_dep, hu4_lagoslakeid_table, by='hu4_zoneid', all.x=FALSE)
+HU4_hydro_LULC <- left_join(HU4_hydro_dep, HU4_LULC, by='hu4_zoneid')
+HU4_predictors <- left_join(HU4_hydro_LULC, HU4_conn, by='hu4_zoneid')
 
-##
+write.csv(HU4_predictors, "data/regional_predictors.csv", row.names = FALSE)
 
 ### bring in pre-calculated PRISM normals for other climate variables not in LAGOS from Ian's paper
 #PRISM_normals <- read.csv(paste0(getwd(), "/data/lagoslakeid_PRISM_Normals_1981_2010.csv"))
@@ -375,46 +391,24 @@ HU4_predictors<-left_join(HU4_hydro_LULC, HU4_conn, by='hu4_zoneid')
 #HU12_hydro_dep_climate <- merge(HU12_hydro_dep, hu12_prism_normals, by='hu12_zoneid',all.x=F)
 #HU12_hydro_dep_climate <- HU12_hydro_dep_climate[!duplicated(HU12_hydro_dep_climate$hu12_zoneid),]
 #vars_keep <- c(names(HU12_hydro_dep), 'lagoslakeid','winter_ppt', 'winter_tmax', 'winter_tmin',
-                    'summer_ppt', 'summer_tmax', 'summer_tmin', 'spring_ppt', 'spring_tmax', 'spring_tmin')
+                    # 'summer_ppt', 'summer_tmax', 'summer_tmin', 'spring_ppt', 'spring_tmax', 'spring_tmin')
 
 #HU12_hydro_dep_climate <- HU12_hydro_dep_climate[,vars_keep] #eliminate some climate variables
 #colnames(HU12_hydro_dep_climate) <- c(names(HU12_hydro_dep_climate)[1:24], 'prism_winter_ppt_mean',
-                                      'prism_winter_tmax_mean','prism_winter_tmin_mean',
-                                      'prism_summer_ppt_mean','prism_summer_tmax_mean',
-                                      'prism_summer_tmin_mean','prism_spring_ppt_mean',
-                                      'prism_spring_tmax_mean','prism_spring_tmin_mean')
+                                      # 'prism_winter_tmax_mean','prism_winter_tmin_mean',
+                                      # 'prism_summer_ppt_mean','prism_summer_tmax_mean',
+                                      # 'prism_summer_tmin_mean','prism_spring_ppt_mean',
+                                      # 'prism_spring_tmax_mean','prism_spring_tmin_mean')
 
 # rearrange columns
 #HU12_hydro_dep_climate <- HU12_hydro_dep_climate[,c(24,1:23,25:33)]
 
 # get extra climate for IWS (based on lagoslakeid in PRISM_normals_t)
 #IWS_extra_climate <- PRISM_normals_t[,c('lagoslakeid','winter_ppt', 'winter_tmax', 'winter_tmin',
-                    'summer_ppt', 'summer_tmax', 'summer_tmin', 'spring_ppt', 'spring_tmax', 'spring_tmin')]
+                    # 'summer_ppt', 'summer_tmax', 'summer_tmin', 'spring_ppt', 'spring_tmax', 'spring_tmin')]
 #colnames(IWS_extra_climate) <- c('lagoslakeid', 'prism_winter_ppt_mean',
-                           'prism_winter_tmax_mean','prism_winter_tmin_mean',
-                           'prism_summer_ppt_mean','prism_summer_tmax_mean',
-                           'prism_summer_tmin_mean','prism_spring_ppt_mean',
-                           'prism_spring_tmax_mean','prism_spring_tmin_mean')
+                           # 'prism_winter_tmax_mean','prism_winter_tmin_mean',
+                           # 'prism_summer_ppt_mean','prism_summer_tmax_mean',
+                           # 'prism_summer_tmin_mean','prism_spring_ppt_mean',
+                           # 'prism_spring_tmax_mean','prism_spring_tmin_mean')
 #IWS_extra_climate$lagoslakeid <- as.integer(IWS_extra_climate$lagoslakeid) #convert to integer for merging later
-
-
-# add hu4 zoneid to limno data table
-limno_data_table_final <- Reduce(inner_join, list(limno_data_table, hu12_lagoslakeid_table, hu4_lagoslakeid_table))
-
-
-
-#### Save final output tables ####
-# limno data
-write.csv(limno_data_table_final, file=paste0(getwd(), '/data/limno_data.csv'))
-
-# IWS (note: climate, geology, deposition and hydrology at HU12)
-IWS_final_table <- Reduce(inner_join, list(IWS_LULC, IWS_conn, lake_morphometry, IWS_extra_climate, HU12_hydro_dep))
-write.csv(IWS_final_table, file=paste0(getwd(), '/data/IWS_data.csv'))
-
-# HU4 (note: does not contain extra climate variables that were calculated at hu12)
-HU4_final_table <- Reduce(inner_join, list(HU4_LULC, HU4_conn, HU4_hydro_dep))
-write.csv(HU4_final_table, file=paste0(getwd(), '/data/HU4_data.csv'))
-
-# 100m lake buffer
-Buffer100_final_table <- Reduce(inner_join, list(Buff100_LULC, lake_morphometry[1:2], max_depth)) #excluding IWS area and IWS_ratio
-write.csv(Buffer100_final_table, file=paste0(getwd(), '/data/Buffer100m_data.csv'))
