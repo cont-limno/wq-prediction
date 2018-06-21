@@ -1,10 +1,9 @@
 ## Lake Prediction-Extrapolation Project (LPEP)
-
-See this [Google Doc](https://docs.google.com/document/d/1SupPLm-Tww5CyHHUf4k3YYq-UqnGKzyErm4Bz9yBOZg/edit?usp=sharing) for description of the overall analysis plan
+The overall goal of this effort is to identify the factors that influence our ability to predict lake water quality in unsampled lakes at subcontinental scales. In other words, under what conditions do we will have trouble predicting lake water quality in unsampled lakes? 
 
 ### Objective
 
-To identify the importance of different degrees of ‘sampling bias’ in influencing the predictive error of models of lake TP, TN, water color and chlorophyll. The sampling bias in the model-building dataset that we will examine include:
+Specifically, we will try to identify the importance of different degrees of ‘sampling bias’ in influencing the predictive error of models of lake TP, TN, Secchi, and chlorophyll. The sampling bias in the model-building dataset that we will examine include:
 
 > Sample size, ecological context characteristics, regions, land use
 
@@ -35,3 +34,7 @@ See this [Google Doc](https://docs.google.com/document/d/1SupPLm-Tww5CyHHUf4k3YY
 1. [data/local_predictors.csv](data/local_predictors.csv)
 
 2. [data/regional_predictors.csv](data/regional_predictors.csv)
+
+
+
+See this [Google Doc](https://docs.google.com/document/d/1SupPLm-Tww5CyHHUf4k3YYq-UqnGKzyErm4Bz9yBOZg/edit?usp=sharing) for description of the overall analysis plan
