@@ -341,7 +341,7 @@ state_zoneid
 
 
 ## Creating natural lake ecological clusters
-Noah created these and will provide the link to the code for the clusters. 
+Noah will create these and will provide the link to the code for the clusters. 
 
 #### Local natural lake ecological cluster variables used to create the clusters
 LAKESLOCUS101:	elevation_m
