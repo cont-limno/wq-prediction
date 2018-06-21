@@ -102,6 +102,8 @@ limno_vars_WQ1       <- filter(limno_data_WQ1, var_num >= 1)
 limno_data_WQ1_final <- left_join (limno_vars_WQ1, hu4_lagoslakeid_table,
                                    by = "lagoslakeid")
 
+write.csv(limno_data_WQ1_final, "data/wq1_temporal.csv", row.names = FALSE)
+
 #subset of data to get one date per lake with the most variables for WQ2
 
 #give preference to the sample date that has the most variables, if there is more than one date, it chooses the first. #10,561 observations
@@ -110,7 +112,7 @@ limno_vars_WQ2       <- limno_vars_WQ1 %>%
 limno_data_WQ2_final <- left_join (limno_vars_WQ2, hu4_lagoslakeid_table,
                                    by = "lagoslakeid")
 
-
+write.csv(limno_data_WQ2_final, "data/wq2_single.csv", row.names = FALSE)
 
 # ----pull_geo_predictors (for all lakes)----
 
@@ -152,55 +154,83 @@ IWS_LULC <- data.frame(lagoslakeid=IWS_LULC$lagoslakeid,
                        wetland_woody2006_pct=IWS_LULC$iws_nlcd2006_pct_90,
                        wetland_emergent2006_pct=IWS_LULC$iws_nlcd2006_pct_95)
 
-IWS_LULC$iws_nlcd2006_urb<-IWS_LULC$developed_open2006_pct + IWS_LULC$developed_low2006_pct + IWS_LULC$developed_med2006_pct + IWS_LULC$developed_high2006_pct
-IWS_LULC$iws_nlcd2006_for<-IWS_LULC$deciduous2006_pct + IWS_LULC$evergreen2006_pct + IWS_LULC$mixedforest2006_pct
-IWS_LULC$iws_nlcd2006_agr<-IWS_LULC$pasture_hay2006_pct + IWS_LULC$rowcrops2006_pct
-IWS_LULC$iws_nlcd2006_wet<-IWS_LULC$wetland_woody2006_pct + IWS_LULC$wetland_emergent2006_pct
+IWS_LULC$iws_nlcd2006_urb <- IWS_LULC$developed_open2006_pct +
+  IWS_LULC$developed_low2006_pct + IWS_LULC$developed_med2006_pct +
+  IWS_LULC$developed_high2006_pct
+
+IWS_LULC$iws_nlcd2006_for <- IWS_LULC$deciduous2006_pct +
+  IWS_LULC$evergreen2006_pct + IWS_LULC$mixedforest2006_pct
+
+IWS_LULC$iws_nlcd2006_agr <- IWS_LULC$pasture_hay2006_pct +
+  IWS_LULC$rowcrops2006_pct
+
+IWS_LULC$iws_nlcd2006_wet <- IWS_LULC$wetland_woody2006_pct +
+  IWS_LULC$wetland_emergent2006_pct
 
 # Local buffer around lakes (100 m)
 Buff100_LULC <- lg$buffer100m.lulc
 Buff100_LULC <- data.frame(lagoslakeid=Buff100_LULC$lagoslakeid,
-                           buff_openwater2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_11,
-                           buff_developed_open2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_21,
-                           buff_developed_low2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_22,
-                           buff_developed_med2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_23,
-                           buff_developed_high2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_24,
-                           buff_barerock2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_31,
-                           buff_deciduous2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_41,
-                           buff_evergreen2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_42,
-                           buff_mixedforest2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_43,
-                           buff_scrubshrub2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_52,
-                           buff_grasslands_herbaceous2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_71,
-                           buff_pasture_hay2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_81,
-                           buff_rowcrops2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_82,
-                           buff_topo_rough_index_mean=Buff100_LULC$buffer100m_tri_mean,
-                           buff_topo_rough_index_max=Buff100_LULC$buffer100m_tri_max,
-                           buff_roaddensity_mperha=Buff100_LULC$buffer100m_roaddensity_density_mperha,
-                           buff_wetland_woody2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_90,
-                           buff_wetland_emergent2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_95)
+              buff_openwater2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_11,
+              buff_developed_open2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_21,
+              buff_developed_low2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_22,
+              buff_developed_med2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_23,
+              buff_developed_high2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_24,
+              buff_barerock2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_31,
+              buff_deciduous2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_41,
+              buff_evergreen2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_42,
+              buff_mixedforest2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_43,
+              buff_scrubshrub2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_52,
+       buff_grasslands_herbaceous2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_71,        buff_pasture_hay2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_81,
+       buff_rowcrops2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_82,
+       buff_topo_rough_index_mean=Buff100_LULC$buffer100m_tri_mean,
+       buff_topo_rough_index_max=Buff100_LULC$buffer100m_tri_max,
+       buff_roaddensity_mperha=Buff100_LULC$buffer100m_roaddensity_density_mperha,
+       buff_wetland_woody2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_90,
+       buff_wetland_emergent2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_95)
 
-Buff100_LULC$buff_nlcd2006_urb<-Buff100_LULC$buff_developed_open2006_pct + Buff100_LULC$buff_developed_low2006_pct + Buff100_LULC$buff_developed_med2006_pct + Buff100_LULC$buff_developed_high2006_pct
-Buff100_LULC$buff_nlcd2006_for<-Buff100_LULC$buff_deciduous2006_pct + Buff100_LULC$buff_evergreen2006_pct + Buff100_LULC$buff_mixedforest2006_pct
-Buff100_LULC$buff_nlcd2006_agr<-Buff100_LULC$buff_pasture_hay2006_pct + Buff100_LULC$buff_rowcrops2006_pct
-Buff100_LULC$buff_nlcd2006_wet<-Buff100_LULC$buff_wetland_woody2006_pct + Buff100_LULC$buff_wetland_emergent2006_pct
+Buff100_LULC$buff_nlcd2006_urb <- Buff100_LULC$buff_developed_open2006_pct +
+  Buff100_LULC$buff_developed_low2006_pct +
+  Buff100_LULC$buff_developed_med2006_pct +
+  Buff100_LULC$buff_developed_high2006_pct
+
+Buff100_LULC$buff_nlcd2006_for <- Buff100_LULC$buff_deciduous2006_pct +
+  Buff100_LULC$buff_evergreen2006_pct + Buff100_LULC$buff_mixedforest2006_pct
+
+Buff100_LULC$buff_nlcd2006_agr<-Buff100_LULC$buff_pasture_hay2006_pct +
+  Buff100_LULC$buff_rowcrops2006_pct
+
+Buff100_LULC$buff_nlcd2006_wet<-Buff100_LULC$buff_wetland_woody2006_pct +
+  Buff100_LULC$buff_wetland_emergent2006_pct
 
 #### watershed/lake morphometry and connectivity ####
 
 # max and mean depth
-depth <- data.frame(lagoslakeid=lg$lakes_limno$lagoslakeid, maxdepth_m=lg$lakes_limno$maxdepth, meandepth_m=lg$lakes_limno$meandepth)
+depth <- data.frame(lagoslakeid=lg$lakes_limno$lagoslakeid,
+                    maxdepth_m=lg$lakes_limno$maxdepth,
+                    meandepth_m=lg$lakes_limno$meandepth)
 
 #lake area, perim, sdf, lat, long, elevation, and all ids
-lake_morphometry<-data.frame(lagoslakeid=lg$locus$lagoslakeid, nhd_lat=lg$locus$nhd_lat, nhd_long=lg$locus$nhd_long,
-                             lakearea_ha=lg$locus$lake_area_ha, lakeperim_m=lg$locus$lake_perim_meters, elevation_m=lg$locus$ elevation_m,
-                             iws_zoneid=lg$locus$iws_zoneid, hu4_zoneid=lg$locus$hu4_zoneid, hu6_zoneid=lg$locus$hu6_zoneid,
-                             hu8_zoneid=lg$locus$hu8_zoneid, hu12_zoneid=lg$locus$hu12_zoneid, edu_zoneid=lg$locus$edu_zoneid,
-                             county_zoneid=lg$locus$county_zoneid, state_zoneid=lg$locus$state_zoneid)
+lake_morphometry <- data.frame(lagoslakeid=lg$locus$lagoslakeid,
+                               nhd_lat=lg$locus$nhd_lat,
+                               nhd_long=lg$locus$nhd_long,
+                               lakearea_ha=lg$locus$lake_area_ha,
+                               lakeperim_m=lg$locus$lake_perim_meters,
+                               elevation_m=lg$locus$ elevation_m,
+                               iws_zoneid=lg$locus$iws_zoneid,
+                               hu4_zoneid=lg$locus$hu4_zoneid,
+                               hu6_zoneid=lg$locus$hu6_zoneid,
+                               hu8_zoneid=lg$locus$hu8_zoneid,
+                               hu12_zoneid=lg$locus$hu12_zoneid,
+                               edu_zoneid=lg$locus$edu_zoneid,
+                               county_zoneid=lg$locus$county_zoneid,
+                               state_zoneid=lg$locus$state_zoneid)
 
 #calculate shoreline development: convert lake area to km2; convert lake perim to km
 #lake_sdf = lake_perim_km / 2 * (pi * lake_area_km2)^1/2
-lake_morphometry$lakearea_km2<-lake_morphometry$lakearea_ha / 100
-lake_morphometry$lakeperim_km<-lake_morphometry$lakeperim_m / 1000
-lake_morphometry$lake_sdf<-(lake_morphometry$lakeperim_km/2) * ((3.14*lake_morphometry$lakearea_km2)^.5)
+lake_morphometry$lakearea_km2 <- lake_morphometry$lakearea_ha / 100
+lake_morphometry$lakeperim_km <- lake_morphometry$lakeperim_m / 1000
+lake_morphometry$lake_sdf     <- (lake_morphometry$lakeperim_km/2) *
+  ((3.14*lake_morphometry$lakearea_km2)^.5)
 
 # iws area, perim, sdf
 iws_morphometry <- data.frame(lagoslakeid=lg$iws$lagoslakeid, iwsarea_ha=lg$iws$iws_ha, iwsperim_km=lg$iws$iws_perimkm)
@@ -315,6 +345,8 @@ HU4_conn$hu4_lakes_HWisolated_overlapping_area_pct<-HU4_conn$hu4_lakes_isolated_
 HU4_hydro_dep <- merge(HU4_hydro_dep, hu4_lagoslakeid_table, by='hu4_zoneid', all.x=F)
 HU4_hydro_LULC<-left_join(HU4_hydro_dep, HU4_LULC, by='hu4_zoneid')
 HU4_predictors<-left_join(HU4_hydro_LULC, HU4_conn, by='hu4_zoneid')
+
+##
 
 ### bring in pre-calculated PRISM normals for other climate variables not in LAGOS from Ian's paper
 #PRISM_normals <- read.csv(paste0(getwd(), "/data/lagoslakeid_PRISM_Normals_1981_2010.csv"))
