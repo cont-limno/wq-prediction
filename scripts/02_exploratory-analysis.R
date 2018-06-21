@@ -110,7 +110,7 @@ wq2 <- coordinatize(wq2)
 
 ggplot() + geom_sf(data = wq2)
 
-# do_all_hu4s_have_response_var_lakes?
+# ---- do_all_hu4s_have_response_var_lakes? ----
 
 lg$hu4$hu4_zoneid[which(!(lg$hu4$hu4_zoneid %in% wq2$hu4_zoneid))]
 
@@ -120,3 +120,21 @@ hu4         <- st_cast(hu4, "MULTIPOLYGON")
 hu4$no_data <- !(as.character(hu4$ZoneID) %in% wq2$hu4_zoneid)
 
 ggplot() + geom_sf(data = hu4, aes(color = no_data))
+
+# ---- map_holdout_datasets ----
+
+ggplot() + geom_sf(data = wq2, aes(color = random25_holdout), alpha = 0.4)
+ggplot() + geom_sf(data = wq2, aes(color = random75_holdout), alpha = 0.4)
+
+cowplot::plot_grid(
+ggplot() +
+  geom_sf(data = wq2, aes(color = hu4_ag50_holdout), alpha = 0.4, size = 0.2) +
+  ggtitle("HU4 Ag Holdout") +
+  theme(legend.position = "none"),
+ggplot() +
+  geom_sf(data = wq2, aes(color = hu4_random50_holdout), alpha = 0.4, size = 0.2) +
+  ggtitle("HU4 Random Holdout") +
+  theme(legend.position = "none")
+)
+
+ggplot() + geom_sf(data = wq2, aes(color = hu4_strat75_holdout), alpha = 0.4, size = 0.2)
