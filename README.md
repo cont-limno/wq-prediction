@@ -20,11 +20,12 @@ Note: Add 0.1 to the zero values
 
 #### Response variables and response datasets
 > TP, TN, chl, and Secchi
-> FOR THE WORKSHOP, WE WILL USE wq2_single.xsv dataset below!
 
-1. [data/wq1_temporal.csv](data/wq1_temporal.csv) - All SUMMER observations are retained (mid-june to mid-sept) through time per lake. the multiple temporal variables to model the variation rather than modeling temporal pattern in the data….treated as repeated measure.
+> FOR THE WORKSHOP, WE WILL USE the wq2_single.csv dataset below!
 
-2. [data/wq2_single.csv](data/wq2_single.csv) - A single SUMMER observation is selected that has the most water quality data from the above filtered dataset.
+1. LATER: [data/wq1_temporal.csv](data/wq1_temporal.csv) - All SUMMER observations are retained (mid-june to mid-sept) through time per lake. the multiple temporal variables to model the variation rather than modeling temporal pattern in the data….treated as repeated measure.
+
+2. WORKSHOP: [data/wq2_single.csv](data/wq2_single.csv) - A single SUMMER observation is selected that has the most water quality data from the above filtered dataset.
 
 #### Holdouts
 
