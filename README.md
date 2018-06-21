@@ -32,10 +32,12 @@ Note: Add 0.1 to the zero values
 |        Metric        |                             Description                             |
 |:--------------------:|:-------------------------------------------------------------------:|
 |   random25_holdout   |           Hold out 25% of the dataset, randomly selected            |
-|   random75_holdout   |           Hold out 75% of the dataset, randomly selected.           |
+|   random75_holdout   |           Hold out 75% of the dataset, randomly selected           |
 |   hu4_ag50_holdout   | Sort the HU4 % total ag and select lakes in the top 50% as holdouts |
 | hu4_strat75_holdout  |        Randomly select 75% of lakes in each HU4 as holdouts         |
 | hu4_random50_holdout |    Randomly select 50% of HU4s and holdout all lakes in each HU4    |
+|** not available yet ** cluster_strat75_holdout|  Hold out 75% of the dataset, stratified by the lake clusters     | 
+| ** not available yet ** cluster_random50_holdout| Hold out 50% of the clusters (as a whole), randomly selected.    |
 
 #### Predictor variables
 
