@@ -231,16 +231,16 @@ lake_morphometry <- data.frame(lagoslakeid=lg$locus$lagoslakeid,
 #lake_sdf = lake_perim_km / 2 * (pi * lake_area_km2)^1/2
 lake_morphometry$lakearea_km2 <- lake_morphometry$lakearea_ha / 100
 lake_morphometry$lakeperim_km <- lake_morphometry$lakeperim_m / 1000
-lake_morphometry$lake_sdf     <- (lake_morphometry$lakeperim_km/2) *
-  ((3.14*lake_morphometry$lakearea_km2)^.5)
+lake_morphometry$lake_sdf     <- lake_morphometry$lakeperim_km/(2 *
+  (pi*lake_morphometry$lakearea_km2)^0.5)
 
 # iws area, perim, sdf
 iws_morphometry <- data.frame(lagoslakeid=lg$iws$lagoslakeid,
                               iwsarea_ha=lg$iws$iws_ha,
                               iwsperim_km=lg$iws$iws_perimkm)
-iws_morphometry$iwsarea_km2<-iws_morphometry$iwsarea_ha / 100
-iws_morphometry$iws_sdf<-(iws_morphometry$iwsperim_km/2) *
-  ((3.14*iws_morphometry$iwsarea_km2)^.5)
+iws_morphometry$iwsarea_km2 <- iws_morphometry$iwsarea_ha / 100
+iws_morphometry$iws_sdf <- iws_morphometry$iwsperim_km/(2 *
+  (pi * iws_morphometry$iwsarea_km2)^0.5)
 
 #merge data tables
 local_morphometry <- left_join(iws_morphometry, lake_morphometry,
