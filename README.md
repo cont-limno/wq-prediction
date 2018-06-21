@@ -17,13 +17,33 @@ C.  The distribution of regions
 D.  The land use
 
 ### Approach
-#### RESPONSE variables
+
+#### Response variables
+
 TP, TN, chl, Secchi
 
+Two response variable datasets:
+
+1. [data/wq1_temporal.csv](data/wq1_temporal.csv) - All SUMMER observations are retained (mid-june to mid-sept) through time per lake. the multiple temporal variables to model the variation rather than modeling temporal pattern in the data….treated as repeated measure.
+
+2. [data/wq2_single.csv](data/wq2_single.csv) - A single SUMMER observation is selected that has the most water quality data from the above filtered dataset.
+
+#### Predictor variables
+
+1. [data/local_iws.csv](data/local_iws.csv)
+
+2. [data/local_buff100.csv](data/local_buff100.csv)
+
+3. [data/local_lake_watershed.csv](data/local_lake_watershed.csv)
+
+4. [data/regional_hu4.csv](data/regional_hu4.csv)
+
 #### Model structure
+
 Based on the models that we have built for LAGOS-NE for understanding the controls of lake water quality, we will build models with the factors that we know are important: joint distributions, region-specific covariates, local covariates, regional covariates. We will do this in a machine learning environment and a statistical environment
 
 #### Hold-out datasets
+
 We will fit the above models to 7 different datasets that have different kinds of ‘hold-out’ datasets to examine the effects of sampling bias on model predictive performance. We will base these hold-out datasets on ecological understanding related to the following. 
 
 _FINAL DECISIONS (June )_
