@@ -6,45 +6,50 @@ library(ggplot2)
 
 # ----load_lagos ----
 library(LAGOSNE)
-
 lg <- lagosne_load("1.087.1")
-
-# set working directory (comment out others' and insert your own)
-working_directory <- setwd("C:/Users/FWL/Documents/wq-prediction")
 
 # ----select_epi_nutr_variables ----
 # variables: TP, TN, chlorophyll, Secchi
 epi_nutr <- lg$epi_nutr
-secchi <- lg$secchi
+secchi   <- lg$secchi
 
 # ----filter_to_common_time_period----
 # time period: 1990 - 2011, using samples collected between Jun 15 and Sep 15 (stratification period)
 # define time parameters
 first_year <- 1990
-last_year <- 2011
-first_day <- '0615' #i.e., '0615' for Jun 15
-last_day <- '0915'
+last_year  <- 2011
+first_day  <- '0615' #i.e., '0615' for Jun 15
+last_day   <- '0915'
 
 # convert sampledate to date format and create "monthday" column to filter by day
 epi_nutr$sampledate <- as.Date(epi_nutr$sampledate, format="%m/%d/%Y")
-secchi$sampledate <- as.Date(secchi$sampledate, format="%m/%d/%Y")
+secchi$sampledate   <- as.Date(secchi$sampledate, format="%m/%d/%Y")
 
-epi_nutr$monthday <- format(epi_nutr$sampledate, format="%m%d")
-secchi$monthday <- format(secchi$sampledate, format="%m%d")
+epi_nutr$monthday   <- format(epi_nutr$sampledate, format="%m%d")
+secchi$monthday     <- format(secchi$sampledate, format="%m%d")
 
 # ----Fix N data from WISCONSIN dataset Noah Lottig's code 2018-04-25----
+
 #Fix TKN
-epi_nutr$tkn[which(epi_nutr$programname=="WI_LKLS")] = epi_nutr$tkn[which(epi_nutr$programname=="WI_LKLS")]*1000
+epi_nutr$tkn[which(epi_nutr$programname=="WI_LKLS")] <-
+  epi_nutr$tkn[which(epi_nutr$programname=="WI_LKLS")]*1000
+
 #Fix NO2NO3
-epi_nutr$no2no3[which(epi_nutr$programname=="WI_LKLS")] = epi_nutr$no2no3[which(epi_nutr$programname=="WI_LKLS")]*1000
+epi_nutr$no2no3[which(epi_nutr$programname=="WI_LKLS")] <-
+  epi_nutr$no2no3[which(epi_nutr$programname=="WI_LKLS")]*1000
+
 #Look at summary of data to ensure we appropriately fixed the issue
-epi_nutr %>% filter(programname=="WI_LKLS") %>% select(lagoslakeid,sampledate,tkn,no2no3) %>% summary()
+# epi_nutr %>%
+#   filter(programname=="WI_LKLS") %>%
+#   select(lagoslakeid,sampledate,tkn,no2no3) %>%
+#   summary()
 
 # ----calculate_tn from Sam Oliver----
 # from componenent variables and join with tn into a new column called "tn_combined"
 epi_nutr$tn_calculated <- epi_nutr$tkn + epi_nutr$no2no3
-epi_nutr$tn_combined <- epi_nutr$tn
-epi_nutr$tn_combined[which(is.na(epi_nutr$tn_combined) == TRUE)] = epi_nutr$tn_calculated[which(is.na(epi_nutr$tn_combined) == TRUE)]
+epi_nutr$tn_combined   <- epi_nutr$tn
+epi_nutr$tn_combined[which(is.na(epi_nutr$tn_combined) == TRUE)] <-
+  epi_nutr$tn_calculated[which(is.na(epi_nutr$tn_combined) == TRUE)]
 
 # subset by sample date and year cutoffs specified above
 epi_nutr_subset <- epi_nutr[epi_nutr$monthday >= first_day & epi_nutr$monthday <= last_day,]
@@ -54,93 +59,58 @@ secchi_subset <- secchi[secchi$monthday >= first_day & secchi$monthday <= last_d
 secchi_subset <- subset(secchi_subset, sampleyear >= first_year & sampleyear <= last_year)
 
 # get rid of duplicate values from MPCA
-epi_nutr_dTN<- epi_nutr_subset[!duplicated(paste(epi_nutr_subset$lagoslakeid, epi_nutr_subset$sampledate, epi_nutr_subset$tn_combined)),]
-epi_nutr_dTP<- epi_nutr_dTN[!duplicated(paste(epi_nutr_dTN$lagoslakeid, epi_nutr_dTN$sampledate, epi_nutr_dTN$tp)),]
-epi_nutr_dchl<- epi_nutr_dTP[!duplicated(paste(epi_nutr_dTP$lagoslakeid, epi_nutr_dTP$sampledate, epi_nutr_dTP$chla)),]
-
-secchi_subset_d<- secchi_subset[!duplicated(paste(secchi_subset$lagoslakeid, secchi_subset$sampledate, secchi_subset$secchi)),]
-
+epi_nutr_dTN <- epi_nutr_subset[
+  !duplicated(paste(epi_nutr_subset$lagoslakeid,
+                    epi_nutr_subset$sampledate,
+                    epi_nutr_subset$tn_combined)),]
+epi_nutr_dTP <- epi_nutr_dTN[
+  !duplicated(paste(epi_nutr_dTN$lagoslakeid,
+                    epi_nutr_dTN$sampledate,
+                    epi_nutr_dTN$tp)),]
+epi_nutr_dchl <- epi_nutr_dTP[
+  !duplicated(paste(epi_nutr_dTP$lagoslakeid,
+                    epi_nutr_dTP$sampledate,
+                    epi_nutr_dTP$chla)),]
+secchi_subset_d <- secchi_subset[
+  !duplicated(paste(secchi_subset$lagoslakeid,
+                    secchi_subset$sampledate,
+                    secchi_subset$secchi)),]
 
 #select only useful columns for analysis (this is a final dataset for WQ1, all observations retained for temporal study)
-epi_nutr_tptnchl<-select(epi_nutr_dchl, lagoslakeid, tp, tn_combined, chla, sampledate, sampleyear, samplemonth, monthday, eventida1087, programname)
-sec<-select(secchi_subset_d, lagoslakeid, sampledate, secchi)
+epi_nutr_tptnchl <- select(epi_nutr_dchl,
+                           lagoslakeid, tp, tn_combined, chla, sampledate,
+                           sampleyear, samplemonth, monthday, eventida1087,
+                           programname)
+sec              <- select(secchi_subset_d,
+                           lagoslakeid, sampledate, secchi)
 
 #merge tp,tn,chla to the secchi table
-limno_data_WQ1 <- full_join(epi_nutr_tptnchl, sec, by=c("lagoslakeid","sampledate" ))
+limno_data_WQ1   <- full_join(epi_nutr_tptnchl, sec,
+                              by = c("lagoslakeid","sampledate" ))
 
 #add a column that counts up the number of variables present
-limno_data_WQ1$var_num<- apply(limno_data_WQ1, 1, function(x) {
-  sum(!is.na(x['tp']), !is.na(x['tn_combined']), !is.na(x['chla']), !is.na(x['secchi']) )
-  }
-    )
+limno_data_WQ1$var_num <- apply(limno_data_WQ1, 1, function(x) {
+  sum(!is.na(x['tp']), !is.na(x['tn_combined']),
+      !is.na(x['chla']), !is.na(x['secchi']))
+  })
+
+hu4_lagoslakeid_table <- data.frame(lagoslakeid = lg$lakes.geo$lagoslakeid,
+                                    hu4_zoneid  = lg$lakes.geo$hu4_zoneid)
 
 #save observations with at least 1 variable #416,168 observations
-limno_vars_WQ1<-filter(limno_data_WQ1, var_num >= 1)
-limno_data_WQ1_final <- left_join (limno_vars_WQ1, hu4_lagoslakeid_table, by="lagoslakeid")
+limno_vars_WQ1       <- filter(limno_data_WQ1, var_num >= 1)
+limno_data_WQ1_final <- left_join (limno_vars_WQ1, hu4_lagoslakeid_table,
+                                   by = "lagoslakeid")
 
 #subset of data to get one date per lake with the most variables for WQ2
 
 #give preference to the sample date that has the most variables, if there is more than one date, it chooses the first. #10,561 observations
-limno_vars_WQ2<-limno_vars_WQ1 %>% group_by(lagoslakeid) %>% slice(which.max(var_num))
-limno_data_WQ2_final <- left_join (limno_vars_WQ2, hu4_lagoslakeid_table, by="lagoslakeid")
-
-# ----calculate_medians ---- Note: decision was made not to use this -----
-
-#secchi_subset_medians <- secchi_subset_d %>%
-#  group_by(lagoslakeid, sampleyear) %>%
-#  summarise(nSamples_secchi = n(), secchi=median(secchi))
-
-#epi_nutr_subset_medians <- epi_nutr_d %>%
-#  group_by(lagoslakeid, sampleyear) %>%
-#  summarise(TP=median(tp), chla=median(chla), color=median(colort), TN=median(tn_combined))
-
-# get number of samples for non-Secchi variables
-# TP_counts <- aggregate(epi_nutr_subset$tp, by=list(epi_nutr_subset$lagoslakeid, epi_nutr_subset$sampleyear),
-#                        FUN='length')
-# colnames(TP_counts) <- c('lagoslakeid', 'sampleyear', 'nSamples_TP')
-#
-# TN_counts <- aggregate(epi_nutr_subset$tn, by=list(epi_nutr_subset$lagoslakeid, epi_nutr_subset$sampleyear),
-#                        FUN='length')
-# colnames(TN_counts) <- c('lagoslakeid', 'sampleyear', 'nSamples_TN')
-# color_counts <- aggregate(epi_nutr_subset$colort, by=list(epi_nutr_subset$lagoslakeid, epi_nutr_subset$sampleyear),
-#                           FUN='length')
-# colnames(color_counts) <- c('lagoslakeid', 'sampleyear', 'nSamples_color')
-# chla_counts <- aggregate(epi_nutr_subset$chla, by=list(epi_nutr_subset$lagoslakeid, epi_nutr_subset$sampleyear),
-#                          FUN='length')
-# colnames(chla_counts) <- c('lagoslakeid', 'sampleyear', 'nSamples_chla')
-
-# calculate median of the medians
-#secchi_subset_full_record_medians <- secchi_subset_medians %>%
-#  group_by(lagoslakeid) %>%
-#  summarise(nYears_secchi = n(), secchi=median(secchi))
-
-#epi_nutr_subset_full_record_medians <- epi_nutr_subset_medians %>%
-#  group_by(lagoslakeid) %>%
-#  summarise(TP=median(TP), chla=median(chla), color=median(color), TN=median(TN))
-
-# get number of years of data for non-Secchi variables
-#TP_years <- aggregate(epi_nutr_subset_medians$TP, by=list(epi_nutr_subset_medians$lagoslakeid),
-#                        FUN='length')
-#colnames(TP_years) <- c('lagoslakeid', 'nYears_TP')
-
-#TN_years <- aggregate(epi_nutr_subset_medians$TN, by=list(epi_nutr_subset_medians$lagoslakeid),
-#                       FUN='length')
-#colnames(TN_years) <- c('lagoslakeid', 'nYears_TN')
-
-#color_years <- aggregate(epi_nutr_subset_medians$color, by=list(epi_nutr_subset_medians$lagoslakeid),
-#                          FUN='length')
-#colnames(color_years) <- c('lagoslakeid', 'nYears_color')
-
-#chla_years <- aggregate(epi_nutr_subset_medians$chla, by=list(epi_nutr_subset_medians$lagoslakeid),
-#                         FUN='length')
-#colnames(chla_years) <- c('lagoslakeid', 'nYears_chla')
+limno_vars_WQ2       <- limno_vars_WQ1 %>%
+  group_by(lagoslakeid) %>% slice(which.max(var_num))
+limno_data_WQ2_final <- left_join (limno_vars_WQ2, hu4_lagoslakeid_table,
+                                   by = "lagoslakeid")
 
 
-## create final table of limno data
-#limno_data_table <- Reduce(inner_join, list(secchi_subset_full_record_medians, epi_nutr_subset_full_record_medians,
-#                                            TP_years, TN_years, color_years, chla_years))
-
-#limno_data_table <- limno_data_table[,c(1,3:7,2,8:11)] #rearrange column by number
 
 # ----pull_geo_predictors (for all lakes)----
 
