@@ -262,8 +262,11 @@ iws_morphometry$iwsarea_km2 <- iws_morphometry$iwsarea_ha / 100
 iws_morphometry$iws_sdf     <- iws_morphometry$iwsperim_km/(2 *
   (pi * iws_morphometry$iwsarea_km2)^0.5)
 
+# lakes with no iws data
+# unique(limno_data_WQ1_final[!(limno_data_WQ1_final$lagoslakeid %in% iws_morphometry$lagoslakeid), "lagoslakeid"])
+
 #merge data tables
-local_morphometry <- left_join(iws_morphometry, lake_morphometry,
+local_morphometry <- left_join(lake_morphometry, iws_morphometry,
                                by="lagoslakeid")
 
 #calculate iws/lake ratio
@@ -307,13 +310,11 @@ IWS_conn <- data.frame(lagoslakeid=IWS_conn$lagoslakeid,
   lakes_overlapping_area_pct=IWS_conn$iws_lakes_overlapping_area_pct,
   wetlands_overlapping_area_pct=IWS_conn$iws_wl_allwetlandsdissolved_overlapping_area_pct)
 
-# limit lakes to >= 4 ha
-depth <- filter(depth, lagoslakeid %in% greater_than_4ha$lagoslakeid)
-
 #merge all local tables #51,065 observations
 #includes all zone ids
 
-res <- left_join(depth, local_morphometry, by = "lagoslakeid") %>%
+res <- left_join(local_morphometry, depth, by = "lagoslakeid") %>%
+  filter(lagoslakeid %in% study_lakes) %>%
   left_join(Buff100_LULC, by = "lagoslakeid") %>%
   left_join(IWS_LULC, by = "lagoslakeid") %>%
   left_join(lake_conn, by = "lagoslakeid") %>%
