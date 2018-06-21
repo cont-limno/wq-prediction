@@ -123,8 +123,6 @@ limno_vars_WQ2       <- limno_vars_WQ1 %>%
 limno_data_WQ2_final <- left_join (limno_vars_WQ2, hu4_lagoslakeid_table,
                                    by = "lagoslakeid")
 
-write.csv(limno_data_WQ2_final, "data/wq2_single.csv", row.names = FALSE)
-
 # ----pull_local_predictors (for all lakes)----
 
 # lulc (2001 NLCD) #updated all to 2006
@@ -419,3 +417,60 @@ HU4_predictors <- left_join(HU4_hydro_LULC, HU4_conn, by='hu4_zoneid')
 
 write.csv(HU4_predictors, "data/regional_predictors.csv", row.names = FALSE)
 
+# ---- add_holdout_ids ----
+
+set.seed(364)
+
+# randomly holdout 25% of the data
+lagoslakeid_keep <-
+  data.frame(dplyr::select(limno_data_WQ2_final, lagoslakeid)) %>%
+  sample_frac(0.25) %>%
+  .$lagoslakeid
+
+limno_data_WQ2_final <- mutate(limno_data_WQ2_final,
+                               random25_holdout = lagoslakeid %in% lagoslakeid_keep)
+
+# sum(limno_data_WQ2_final$random25_holdout) / nrow(limno_data_WQ2_final)
+
+# randomly holdout 75% of the data
+lagoslakeid_keep <-
+  data.frame(dplyr::select(limno_data_WQ2_final, lagoslakeid)) %>%
+  sample_frac(0.75) %>%
+  .$lagoslakeid
+
+limno_data_WQ2_final <- mutate(limno_data_WQ2_final,
+                               random75_holdout = lagoslakeid %in% lagoslakeid_keep)
+
+# sum(limno_data_WQ2_final$random75_holdout) / nrow(limno_data_WQ2_final)
+
+# holdout lakes that are within a HU4 in the top 50% of ag landuse cover
+lower_50_ag <- HU4_predictors %>%
+  dplyr::filter(!duplicated(hu4_zoneid)) %>%
+  arrange(desc(hu4_nlcd2006_agr)) %>%
+  slice(-1:-round(nrow(.) * 0.5)) %>%
+  .$hu4_zoneid
+
+limno_data_WQ2_final <- mutate(limno_data_WQ2_final,
+                               hu4_ag50_holdout = !(hu4_zoneid %in% lower_50_ag))
+
+# holdout lakes that are located in 50% of randomly chosen hucs
+hu4_keep <- HU4_predictors %>%
+  dplyr::filter(!duplicated(hu4_zoneid)) %>%
+  sample_frac(0.50) %>%
+  .$hu4_zoneid
+
+limno_data_WQ2_final <- mutate(limno_data_WQ2_final,
+                               hu4_random50_holdout = hu4_zoneid %in% hu4_keep)
+
+# holdout 75% of lakes in each huc
+lagoslakeid_strat_keep <- limno_data_WQ2_final %>%
+  group_by(hu4_zoneid) %>%
+  sample_frac(0.75) %>%
+  .$lagoslakeid
+
+# length(lagoslakeid_strat_keep) / nrow(limno_data_WQ2_final)
+
+limno_data_WQ2_final <- mutate(limno_data_WQ2_final,
+                               hu4_strat75_holdout = lagoslakeid %in% lagoslakeid_strat_keep)
+
+write.csv(limno_data_WQ2_final, "data/wq2_single.csv", row.names = FALSE)
