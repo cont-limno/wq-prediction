@@ -42,9 +42,14 @@ We recommend starting to fit models with a reduced number of predictors (the lis
 |** not available yet ** cluster_strat75_holdout|  Hold out 75% of the dataset, stratified by the lake clusters     | 
 | ** not available yet ** cluster_random50_holdout| Hold out 50% of the clusters (as a whole), randomly selected.    |
 
-#### Predictor variables
-1. Reduced list of preditors:
-## Local or lake-scale
+## Predictor variables
+
+## Data files with predictors
+> [data/local_predictors.csv](data/local_predictors.csv)
+
+> [data/regional_predictors.csv](data/regional_predictors.csv)
+
+#### Local or lake-scale
 1) Maxdepth
 2) Iws_lk_ratio [derived]
 3) Iws_nlcd2006_for [derived]
@@ -54,7 +59,7 @@ We recommend starting to fit models with a reduced number of predictors (the lis
 7) elevation_m
 8) wlconnections_allwetlands_shoreline_%perim (CALCULATE AS: wlconnections_allwetlands_shoreline_km / lake_perim)
 9) Iws_roaddensity_density_mperha
-## Regional scale
+#### Regional scale
 10) Hu4_baseflow
 11) Hu4_runoff
 12) Hu4_Change in total N depos from 1990-2010 
@@ -63,15 +68,156 @@ We recommend starting to fit models with a reduced number of predictors (the lis
 15) Hu4_prism_ppt_30yr_normal_800mm2_annual_mean
 16) hu4_prism_tmean_30yr_normal_800mm2_annual_mean
 
+## List of local predictors
+#### LOCAL: Watershed land use/cover, topography, road density
+iws_nlcd2006_pct_11
+iws_nlcd2006_pct_21
+iws_nlcd2006_pct_22
+iws_nlcd2006_pct_23
+Iws_nlcd2006_pct_24
+iws_nlcd2006_urb
+iws_nlcd2006_pct_31
+iws_nlcd2006_pct_41
+iws_nlcd2006_pct_42
+Iws_nlcd2006_pct_43
+iws_nlcd2006_for
+iws_nlcd2006_pct_52
+iws_nlcd2006_pct_71
+iws_nlcd2006_pct_81
+Iws_nlcd2006_pct_82
+iws_nlcd2006_agr
+Iws_nlcd2006_pct_90
+Iws_nlcd2006_pct_95
+iws_nlcd2006_wet
+iws_tri_mean
+iws_tri_max
+Iws_roaddensity_density_mperha
 
-1. [data/local_predictors.csv](data/local_predictors.csv)
+#### LOCAL: 100m buffer land use, topography, road density
+Buff100_nlcd2006_pct_11
+Buff100_nlcd2006_pct_21
+Buff100_nlcd2006_pct_22
+Buff100_nlcd2006_pct_23
+Buff100_nlcd2006_pct_24
+buff100_nlcd2006_urb
+Buff100_nlcd2006_pct_31
+Buff100_nlcd2006_pct_41
+Buff100_nlcd2006_pct_42
+Buff100_nlcd2006_pct_43
+buff100_nlcd2006_for
+Buff100_nlcd2006_pct_52
+Buff100_nlcd2006_pct_71
+Buff100_nlcd2006_pct_81
+Buff100_nlcd2006_pct_82
+Buff100_nlcd2006_agr
+buff100_nlcd2006_pct_90
+buff100_nlcd2006_pct_95
+buff100_nlcd2006_wet
+Buff100_tri_mean
+Buff100_tri_max
+Buff100_roaddensity_density_mperha
 
-2. [data/regional_predictors.csv](data/regional_predictors.csv)
+#### LOCAL: Lake and watershed morphometry and connectivity
+Maxdepth
+Meandepth
+elevation_m
+Lake_area_ha
+Lake_perim_meters
+lake_sdf
+Iws_ha
+Iws_perimkm
+Iws_sdf
+iws_lk_ratio
+wlconnections_allwetlands_shoreline_%perim (CALCULATED AS: 
+wlconnections_allwetlands_shoreline_km / lake_perim)
+IWS_streamdensity_streams_density_mperha
+Latewisconsinglaciation_glacial (this is from the lagosne$lakes.geo table)
+lakeconnection_v2
+
+## List of regional predictors
+#### REGIONAL (HU4): land use/cover, topography, road density
+hu4_nlcd2006_pct_11
+hu4_nlcd2006_pct_21
+hu4_nlcd2006_pct_22
+hu4_nlcd2006_pct_23
+Hu4_nlcd2006_pct_24
+hu4_nlcd2006_urb
+hu4_nlcd2006_pct_31
+hu4_nlcd2006_pct_41
+hu4_nlcd2006_pct_42
+Hu4_nlcd2006_pct_43
+hu4_nlcd2006_for
+hu4_nlcd2006_pct_52
+hu4_nlcd2006_pct_71
+hu4_nlcd2006_pct_81
+Hu4_nlcd2006_pct_82
+hu4_nlcd2006_agr
+hu4_nlcd2006_pct_90
+hu4_nlcd2006_pct_95
+hu4_nlcd2006_wet
+hu4_tri_mean
+hu4_tri_max
+hu4_roaddensity_density_mperha
+
+#### REGIONAL (HU4): HYDROLOGY and CONNECTIVITY
+hu4_baseflowindex_mean
+hu4_runoff_mean
+Hu4_groundwaterrecharge_mean
+hu4_streamdensity_streams_density_mperha
+hu4_lakes_overlapping_area_pct 
+Hu4_HWisolated_pct
+hu4_lakes_drstream_overlapping_area_pct
+hu4_lakes_drlakestream_overlapping_area_pct
+
+#### REGIONAL (HU4): Deposition
+hu4_dep_so4_1990_mean
+hu4_dep_so4_2010_mean
+So4dep_19902010_diff
+hu4_dep_totaln_1990_mean
+hu4_dep_totaln_2010_mean
+totalNdep_19902010_diff
+hu4_dep_no3_1990_mean
+Hu4_dep_no3_2010_mean
+No3dep_19902010_diff
+
+#### REGIONAL (HU4): geology
+hu4_surficialgeology_alluv_pct
+Hu4_surficialgeology_colluv_pct
+hu4_surficialgeology_gf_out_pct
+hu4_surficialgeology_till_loam_pct
+Hu4_surficialgeology_till_sand_pct
+Hu4_surficialgeology_till_clay_pct
+hu4_surficialgeology_till_oth_pct
+
+#### REGIONAL (HU4): Climate
+hu4_prism_ppt_30yr_normal_800mm2_annual_mean
+hu4_prism_tmean_30yr_normal_800mm2_annual_mean
+hu4_prism_min_30yr_normal_800mm2_annual_mean
+hu4_prism_max_30yr_normal_800mm2_annual_mean
+
+#### ADDITIONAL VARIABLES TO INCLUDE IN THE DATASET 
+Lagoslakeid
+eventida1087
+Nhd_lat
+nhd_lon
+programname
+programtype
+sampledate
+Gnis_name
+lake_perm_meters
+iws_zoneid
+hu4_zoneid
+hu6_zoneid
+hu8_zoneid
+hu12_zoneid
+edu_zoneid
+county_zoneid
+state_zoneid
 
 
-#### Creating natural lake ecological clusters
+## Creating natural lake ecological clusters
 Noah created these and will provide the link to the code for the clusters. 
-### Local natural lake ecological cluster variables used to create the clusters
+#### Local natural lake ecological cluster variables used to create the clusters
 LAKESLOCUS101:	elevation_m
 LAKESLOCUS101:	Lake_area_ha
 LAKESLOCUS101:	Lake_perim_meters {included here only to calculated SDF}
