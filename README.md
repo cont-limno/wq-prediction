@@ -5,13 +5,22 @@ The overall goal of this effort is to identify the factors that influence our ab
 
 Specifically, we will try to identify the importance of different degrees of ‘sampling bias’ in influencing the predictive error of models of lake TP, TN, Secchi, and chlorophyll. The sampling bias in the model-building dataset that we will examine include:
 
-> Sample size, ecological context characteristics, regions, land use
+> Sample size, lake-ecological context characteristics, regions, and regional land use
 
 ### Approach
+The quant teams will each build a model - one stats model and one machine-learning model, which will be fit using 7 different hold-out datasets (see below). We will compare the model endpoints (see below) for the two models for each hold-out dataset.
 
-#### Response variables
+#### Model structure
+Based on the models that we have built for LAGOS-NE for understanding the controls of lake water quality, we will build models with the factors that we know are important: joint distributions of responses, local covariates, regional covariates, and region-specific covariates. 
 
-> TP, TN, chl, Secchi
+#### Model details 
+Model endpoint: Point estimate of nutrients for every lake in hold-out dataset [uncertainty later, all 50k lakes later]
+Model endpoint: Mean squared predictive error on natural log scale
+Note: Add 0.1 to the zero values
+
+#### Response variables and response datasets
+> TP, TN, chl, and Secchi
+> FOR THE WORKSHOP, WE WILL USE wq2_single.xsv dataset below!
 
 1. [data/wq1_temporal.csv](data/wq1_temporal.csv) - All SUMMER observations are retained (mid-june to mid-sept) through time per lake. the multiple temporal variables to model the variation rather than modeling temporal pattern in the data….treated as repeated measure.
 
