@@ -24,13 +24,9 @@ To identify the importance of different degrees of ‘sampling bias’ in influe
 
 #### Predictor variables
 
-1. [data/local_iws.csv](data/local_iws.csv)
+1. [data/local_predictors.csv](data/local_predictors.csv)
 
-2. [data/local_buff100.csv](data/local_buff100.csv)
-
-3. [data/local_lake_watershed.csv](data/local_lake_watershed.csv)
-
-4. [data/regional_hu4.csv](data/regional_hu4.csv)
+2. [data/regional_predictors.csv](data/regional_predictors.csv)
 
 #### Model structure
 

@@ -133,6 +133,7 @@ write.csv(limno_data_WQ2_final, "data/wq2_single.csv", row.names = FALSE)
 #90=woody wetlands
 #95=emergent herbaceous wetlands
 # Watershed: IWS
+
 IWS_LULC <- lg$iws.lulc
 IWS_LULC <- data.frame(lagoslakeid=IWS_LULC$lagoslakeid,
                        openwater2006_pct=IWS_LULC$iws_nlcd2006_pct_11,
@@ -166,8 +167,6 @@ IWS_LULC$iws_nlcd2006_agr <- IWS_LULC$pasture_hay2006_pct +
 
 IWS_LULC$iws_nlcd2006_wet <- IWS_LULC$wetland_woody2006_pct +
   IWS_LULC$wetland_emergent2006_pct
-
-write.csv(IWS_LULC, "data/local_iws.csv", row.names = FALSE)
 
 # Local buffer around lakes (100 m)
 Buff100_LULC <- lg$buffer100m.lulc
@@ -235,20 +234,27 @@ lake_morphometry$lake_sdf     <- (lake_morphometry$lakeperim_km/2) *
   ((3.14*lake_morphometry$lakearea_km2)^.5)
 
 # iws area, perim, sdf
-iws_morphometry <- data.frame(lagoslakeid=lg$iws$lagoslakeid, iwsarea_ha=lg$iws$iws_ha, iwsperim_km=lg$iws$iws_perimkm)
+iws_morphometry <- data.frame(lagoslakeid=lg$iws$lagoslakeid,
+                              iwsarea_ha=lg$iws$iws_ha,
+                              iwsperim_km=lg$iws$iws_perimkm)
 iws_morphometry$iwsarea_km2<-iws_morphometry$iwsarea_ha / 100
-iws_morphometry$iws_sdf<-(iws_morphometry$iwsperim_km/2) * ((3.14*iws_morphometry$iwsarea_km2)^.5)
+iws_morphometry$iws_sdf<-(iws_morphometry$iwsperim_km/2) *
+  ((3.14*iws_morphometry$iwsarea_km2)^.5)
 
 #merge data tables
-local_morphometry<-left_join(iws_morphometry, lake_morphometry, by="lagoslakeid")
+local_morphometry <- left_join(iws_morphometry, lake_morphometry,
+                               by="lagoslakeid")
 
 #calculate iws/lake ratio
-local_morphometry$IWS_lk_ratio <- local_morphometry$iwsarea_ha/local_morphometry$lakearea_ha
+local_morphometry$IWS_lk_ratio <- local_morphometry$iwsarea_ha /
+  local_morphometry$lakearea_ha
 
 # connectivity
 lake_conn<-lg$lakes.geo
-lake_conn<-data.frame(lagoslakeid=lake_conn$lagoslakeid, glaciation=lake_conn$latewisconsinglaciation_glacial,
-                      conn_class=lake_conn$lakeconnection, wlconnections_shoreline_km=lake_conn$wlconnections_allwetlands_shoreline_km)
+lake_conn<-data.frame(lagoslakeid=lake_conn$lagoslakeid,
+      glaciation=lake_conn$latewisconsinglaciation_glacial,
+      conn_class=lake_conn$lakeconnection,
+      wlconnections_shoreline_km=lake_conn$wlconnections_allwetlands_shoreline_km)
 lake_conn$lakeconn_v2<-sapply(lake_conn$conn_class, function(x) {
     if(x == 'DR_LakeStream') {'DR_LakeStream'}
     else {
@@ -260,16 +266,20 @@ lake_conn$lakeconn_v2<-sapply(lake_conn$conn_class, function(x) {
              }}}})
 
 IWS_conn <- lg$iws.conn
-IWS_conn <- data.frame(lagoslakeid=IWS_conn$lagoslakeid, streamdensity_mperha=IWS_conn$iws_streamdensity_streams_density_mperha,
-                       lakes_overlapping_area_pct=IWS_conn$iws_lakes_overlapping_area_pct,
-                       wetlands_overlapping_area_pct=IWS_conn$iws_wl_allwetlandsdissolved_overlapping_area_pct)
+IWS_conn <- data.frame(lagoslakeid=IWS_conn$lagoslakeid,
+  streamdensity_mperha=IWS_conn$iws_streamdensity_streams_density_mperha,
+  lakes_overlapping_area_pct=IWS_conn$iws_lakes_overlapping_area_pct,
+  wetlands_overlapping_area_pct=IWS_conn$iws_wl_allwetlandsdissolved_overlapping_area_pct)
 
 #merge all local tables #51,065 observations
-LULC_predictors<-left_join(Buff100_LULC, IWS_LULC, by = "lagoslakeid")
-morph_LULC<-left_join(LULC_predictors, local_morphometry, by = "lagoslakeid")
-morph_LULC2<-left_join(morph_LULC, depth, by = "lagoslakeid")
-conn_morph_LULC<-left_join(morph_LULC2, lake_conn, by = "lagoslakeid")
-local_predictors<-left_join(conn_morph_LULC, IWS_conn, by="lagoslakeid")  #includes all zone ids
+#includes all zone ids
+LULC_predictors <-left_join(Buff100_LULC, IWS_LULC, by = "lagoslakeid")
+morph_LULC      <-left_join(LULC_predictors, local_morphometry, by = "lagoslakeid")
+morph_LULC2     <-left_join(morph_LULC, depth, by = "lagoslakeid")
+conn_morph_LULC <-left_join(morph_LULC2, lake_conn, by = "lagoslakeid")
+local_predictors<-left_join(conn_morph_LULC, IWS_conn, by="lagoslakeid")
+
+write.csv(local_predictors, "data/local_predictors.csv", row.names = TRUE)
 
 #------------------------------- REGIONAL --------------------
 # Regional watershed (HU4)
