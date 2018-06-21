@@ -8,13 +8,7 @@ To identify the factors that influence our ability to predict lake water quality
 ### Objective
 To identify the importance of different degrees of ‘sampling bias’ in influencing the predictive error of models of lake TP, TN, water color and chlorophyll. The sampling bias in the model-building dataset that we will examine include:
 
-A.  Sample size 
-
-B.  The distribution of ecological context characteristics 
-
-C.  The distribution of regions 
-
-D.  The land use
+> Sample size, ecological context characteristics, regions, land use
 
 ### Approach
 
