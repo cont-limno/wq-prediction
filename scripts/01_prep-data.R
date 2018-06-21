@@ -167,6 +167,8 @@ IWS_LULC$iws_nlcd2006_agr <- IWS_LULC$pasture_hay2006_pct +
 IWS_LULC$iws_nlcd2006_wet <- IWS_LULC$wetland_woody2006_pct +
   IWS_LULC$wetland_emergent2006_pct
 
+write.csv(IWS_LULC, "data/local_iws.csv", row.names = FALSE)
+
 # Local buffer around lakes (100 m)
 Buff100_LULC <- lg$buffer100m.lulc
 Buff100_LULC <- data.frame(lagoslakeid=Buff100_LULC$lagoslakeid,
