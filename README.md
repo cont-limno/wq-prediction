@@ -1,11 +1,13 @@
 ## Lake Prediction-Extrapolation Project (LPEP)
 
-See this [Google Doc](https://docs.google.com/document/d/1SupPLm-Tww5CyHHUf4k3YYq-UqnGKzyErm4Bz9yBOZg/edit?usp=sharing) for more info.
+See this [Google Doc](https://docs.google.com/document/d/1SupPLm-Tww5CyHHUf4k3YYq-UqnGKzyErm4Bz9yBOZg/edit?usp=sharing) for more info
 
 ### Goal
+
 To identify the factors that influence our ability to predict lake water quality in unsampled lakes at subcontinental scales. In other words, under what conditions do we will have trouble predicting lake water quality in unsampled lakes? 
 
 ### Objective
+
 To identify the importance of different degrees of ‘sampling bias’ in influencing the predictive error of models of lake TP, TN, water color and chlorophyll. The sampling bias in the model-building dataset that we will examine include:
 
 > Sample size, ecological context characteristics, regions, land use
@@ -14,9 +16,7 @@ To identify the importance of different degrees of ‘sampling bias’ in influe
 
 #### Response variables
 
-TP, TN, chl, Secchi
-
-Two response variable datasets:
+> TP, TN, chl, Secchi
 
 1. [data/wq1_temporal.csv](data/wq1_temporal.csv) - All SUMMER observations are retained (mid-june to mid-sept) through time per lake. the multiple temporal variables to model the variation rather than modeling temporal pattern in the data….treated as repeated measure.
 
