@@ -20,6 +20,8 @@ To identify the importance of different degrees of ‘sampling bias’ in influe
 
 2. [data/wq2_single.csv](data/wq2_single.csv) - A single SUMMER observation is selected that has the most water quality data from the above filtered dataset.
 
+#### Holdouts
+
 |        Metric        |                             Description                             |
 |:--------------------:|:-------------------------------------------------------------------:|
 |   random25_holdout   |           Hold out 25% of the dataset, randomly selected            |
