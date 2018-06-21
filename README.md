@@ -1,7 +1,5 @@
 ## Lake Prediction-Extrapolation Project (LPEP)
 
-See this [Google Doc](https://docs.google.com/document/d/1SupPLm-Tww5CyHHUf4k3YYq-UqnGKzyErm4Bz9yBOZg/edit?usp=sharing) for a listing of predictor variables
-
 See this [Google Doc](https://docs.google.com/document/d/1SupPLm-Tww5CyHHUf4k3YYq-UqnGKzyErm4Bz9yBOZg/edit?usp=sharing) for description of the overall analysis plan
 
 ### Objective
@@ -31,6 +29,8 @@ To identify the importance of different degrees of ‘sampling bias’ in influe
 | hu4_random50_holdout |    Randomly select 50% of HU4s and holdout all lakes in each HU4    |
 
 #### Predictor variables
+
+See this [Google Doc](https://docs.google.com/document/d/1SupPLm-Tww5CyHHUf4k3YYq-UqnGKzyErm4Bz9yBOZg/edit?usp=sharing) for a listing of predictor variables
 
 1. [data/local_predictors.csv](data/local_predictors.csv)
 
