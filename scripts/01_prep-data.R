@@ -211,6 +211,16 @@ depth <- data.frame(lagoslakeid=lg$lakes_limno$lagoslakeid,
                     maxdepth_m=lg$lakes_limno$maxdepth,
                     meandepth_m=lg$lakes_limno$meandepth)
 
+# bring in expanded depth dataset
+expanded_depth <- read.csv("data/lakesnodepth_6.15.18 - lakesnodepth_27Jun17-EDIT.csv",
+                           stringsAsFactors = FALSE)
+expanded_depth <- select(expanded_depth, lagoslakeid, ex_maxdepth_m = NEW.maxdepth..meters.)
+
+depth <- dplyr::left_join(depth, expanded_depth, by = "lagoslakeid")
+depth$maxdepth_m[is.na(depth$maxdepth_m) & !is.na(depth$ex_maxdepth_m)] <-
+  depth$ex_maxdepth_m[is.na(depth$maxdepth_m) & !is.na(depth$ex_maxdepth_m)]
+depth <- dplyr::select(depth, -ex_maxdepth_m)
+
 #lake area, perim, sdf, lat, long, elevation, and all ids
 lake_morphometry <- data.frame(lagoslakeid=lg$locus$lagoslakeid,
                                nhd_lat=lg$locus$nhd_lat,
