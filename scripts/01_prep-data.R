@@ -99,16 +99,25 @@ limno_data_WQ1$var_num <- apply(limno_data_WQ1, 1, function(x) {
 hu4_lagoslakeid_table <- data.frame(lagoslakeid = lg$lakes.geo$lagoslakeid,
                                     hu4_zoneid  = lg$lakes.geo$hu4_zoneid)
 
-#save observations with at least 1 variable #416,168 observations
-limno_vars_WQ1       <- filter(limno_data_WQ1, var_num >= 1)
-limno_data_WQ1_final <- left_join (limno_vars_WQ1, hu4_lagoslakeid_table,
+# save only observations with at least 1 variable
+limno_vars_WQ1 <- filter(limno_data_WQ1, var_num >= 1)
+
+# limit lakes to those >= 4ha
+greater_than_4ha <- lg$locus %>%
+  filter(lake_area_ha >= 4) %>%
+   select(lagoslakeid)
+limno_vars_WQ1   <- filter(limno_data_WQ1, lagoslakeid %in% greater_than_4ha$lagoslakeid)
+
+study_lakes <- limno_data_WQ1$lagoslakeid
+
+limno_data_WQ1_final <- left_join(limno_vars_WQ1, hu4_lagoslakeid_table,
                                    by = "lagoslakeid")
 
 write.csv(limno_data_WQ1_final, "data/wq1_temporal.csv", row.names = FALSE)
 
-#subset of data to get one date per lake with the most variables for WQ2
-
-#give preference to the sample date that has the most variables, if there is more than one date, it chooses the first. #10,561 observations
+# subset of data to get one date per lake with the most variables for WQ2
+# give preference to the sample date that has the most variables, if there is more than one date,
+# it chooses the first. #10,561 observations
 limno_vars_WQ2       <- limno_vars_WQ1 %>%
   group_by(lagoslakeid) %>% slice(which.max(var_num))
 limno_data_WQ2_final <- left_join (limno_vars_WQ2, hu4_lagoslakeid_table,
@@ -171,12 +180,6 @@ IWS_LULC$iws_nlcd2006_wet <- IWS_LULC$wetland_woody2006_pct +
   IWS_LULC$wetland_emergent2006_pct
 
 # Local buffer around lakes (100 m)
-
-sum(!(lg$locus$lagoslakeid %in% lg$buffer100m.lulc$lagoslakeid))
-
-# sum(!(limno_data_WQ1_final$lagoslakeid %in% lg$locus$lagoslakeid))
-
-# limno_data_WQ2_final
 
 Buff100_LULC <- lg$buffer100m.lulc
 Buff100_LULC <- data.frame(lagoslakeid=Buff100_LULC$lagoslakeid,
@@ -303,6 +306,9 @@ IWS_conn <- data.frame(lagoslakeid=IWS_conn$lagoslakeid,
   streamdensity_mperha=IWS_conn$iws_streamdensity_streams_density_mperha,
   lakes_overlapping_area_pct=IWS_conn$iws_lakes_overlapping_area_pct,
   wetlands_overlapping_area_pct=IWS_conn$iws_wl_allwetlandsdissolved_overlapping_area_pct)
+
+# limit lakes to >= 4 ha
+depth <- filter(depth, lagoslakeid %in% greater_than_4ha$lagoslakeid)
 
 #merge all local tables #51,065 observations
 #includes all zone ids
