@@ -171,6 +171,13 @@ IWS_LULC$iws_nlcd2006_wet <- IWS_LULC$wetland_woody2006_pct +
   IWS_LULC$wetland_emergent2006_pct
 
 # Local buffer around lakes (100 m)
+
+sum(!(lg$locus$lagoslakeid %in% lg$buffer100m.lulc$lagoslakeid))
+
+# sum(!(limno_data_WQ1_final$lagoslakeid %in% lg$locus$lagoslakeid))
+
+# limno_data_WQ2_final
+
 Buff100_LULC <- lg$buffer100m.lulc
 Buff100_LULC <- data.frame(lagoslakeid=Buff100_LULC$lagoslakeid,
               buff_openwater2006_pct=Buff100_LULC$buffer100m_nlcd2006_pct_11,
@@ -245,11 +252,11 @@ lake_morphometry$lake_sdf     <- lake_morphometry$lakeperim_km/(2 *
   (pi*lake_morphometry$lakearea_km2)^0.5)
 
 # iws area, perim, sdf
-iws_morphometry <- data.frame(lagoslakeid=lg$iws$lagoslakeid,
-                              iwsarea_ha=lg$iws$iws_ha,
-                              iwsperim_km=lg$iws$iws_perimkm)
+iws_morphometry             <- data.frame(lagoslakeid=lg$iws$lagoslakeid,
+                                          iwsarea_ha=lg$iws$iws_ha,
+                                          iwsperim_km=lg$iws$iws_perimkm)
 iws_morphometry$iwsarea_km2 <- iws_morphometry$iwsarea_ha / 100
-iws_morphometry$iws_sdf <- iws_morphometry$iwsperim_km/(2 *
+iws_morphometry$iws_sdf     <- iws_morphometry$iwsperim_km/(2 *
   (pi * iws_morphometry$iwsarea_km2)^0.5)
 
 #merge data tables
@@ -299,13 +306,14 @@ IWS_conn <- data.frame(lagoslakeid=IWS_conn$lagoslakeid,
 
 #merge all local tables #51,065 observations
 #includes all zone ids
-LULC_predictors <-left_join(Buff100_LULC, IWS_LULC, by = "lagoslakeid")
-morph_LULC      <-left_join(LULC_predictors, local_morphometry, by = "lagoslakeid")
-morph_LULC2     <-left_join(morph_LULC, depth, by = "lagoslakeid")
-conn_morph_LULC <-left_join(morph_LULC2, lake_conn, by = "lagoslakeid")
-local_predictors<-left_join(conn_morph_LULC, IWS_conn, by="lagoslakeid")
 
-write.csv(local_predictors, "data/local_predictors.csv", row.names = TRUE)
+res <- left_join(depth, local_morphometry, by = "lagoslakeid") %>%
+  left_join(Buff100_LULC, by = "lagoslakeid") %>%
+  left_join(IWS_LULC, by = "lagoslakeid") %>%
+  left_join(lake_conn, by = "lagoslakeid") %>%
+  left_join(IWS_conn, by = "lagoslakeid")
+
+write.csv(res, "data/local_predictors.csv", row.names = TRUE)
 
 # ---- pull_regional_predictors ----
 # Regional watershed (HU4)
