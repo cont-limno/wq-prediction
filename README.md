@@ -34,9 +34,7 @@ Based on the models that we have built for LAGOS-NE for understanding the contro
 
 #### Hold-out datasets
 
-We will fit the above models to 7 different datasets that have different kinds of ‘hold-out’ datasets to examine the effects of sampling bias on model predictive performance. We will base these hold-out datasets on ecological understanding related to the following. 
-
-_FINAL DECISIONS (June )_
+We will fit the above models to 7 different datasets that have different kinds of ‘hold-out’ datasets to examine the effects of sampling bias on model predictive performance. We will base these hold-out datasets on ecological understanding related to the following. By comparing across hold-out datasets, we will learn which type of dataset performs best and which types of bias most limit our ability to extrapolate predictive models to unsampled lakes.
 
 1. Random-25 -- Hold out 25% of the dataset, randomly selected. This is a common approach in general and may help serve as a ‘baseline’ for comparison
 
@@ -51,5 +49,3 @@ _FINAL DECISIONS (June )_
 6. Geographic-HUC4 -hold out 20 random HUC4
 
 7. Land use-HUC4 - hold out the top 25% of HUC4 with high ag
-
-Thus, by comparing across hold-out datasets, we will learn which type of dataset performs best and which types of bias most limit our ability to extrapolate predictive models to unsampled lakes.
