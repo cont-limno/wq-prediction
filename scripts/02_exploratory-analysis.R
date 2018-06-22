@@ -1,6 +1,7 @@
+# ---- explore_color_data ----
 # Explore LAGOSNE color data considering its spatial distribution
 
-# ---- load_color_data ----
+# load_color_data
 
 library(LAGOSNE)
 library(tibble)
@@ -18,7 +19,7 @@ epi <- dplyr::filter(epi, samplemonth >= 6 & samplemonth <= 9)
 epi <- dplyr::select(epi, lagoslakeid, sampledate,
                      chla, tp, tn, colora, colort)
 
-# ---- how_many_lakes_have_color ----
+# how_many_lakes_have_color?
 
 have_color <- epi %>%
   group_by(lagoslakeid) %>%
@@ -29,7 +30,7 @@ paste(sum(have_color$has_color), "lakes or",
   round(sum(have_color$has_color) / nrow(have_color) , 2) * 100, # 22
   "percent of lakes have some color data")
 
-# ---- do_color_lakes_have_other_response_variables ----
+# do_color_lakes_have_other_response_variables?
 
 epi <- dplyr::filter(epi, lagoslakeid %in%
                        dplyr::filter(have_color, has_color)$lagoslakeid)
@@ -65,7 +66,7 @@ epi <- left_join(epi,
 
 knitr::kable(t(table(epi$state)))
 
-# ---- mapping ----
+# mapping
 
 epi <- left_join(epi,
                  dplyr::select(lg$locus, lagoslakeid, nhd_long, nhd_lat))
@@ -91,3 +92,49 @@ tm_shape(us) + tm_polygons() +
   tm_layout(legend.outside = FALSE,
              frame = FALSE,
             legend.position = c(0.65, 0.55))
+
+# ---- map wq2 single dataset ----
+
+library(LAGOSNE)
+library(sf)
+library(ggplot2)
+library(magrittr)
+
+lg <- lagosne_load("1.087.1")
+wq1 <- read.csv("data/wq1_temporal.csv", stringsAsFactors = FALSE)
+wq2 <- read.csv("data/wq2_single.csv", stringsAsFactors = FALSE)
+lp <- read.csv("data/local_predictors.csv", stringsAsFactors = FALSE)
+
+wq2 <- dplyr::left_join(wq2, dplyr::select(lp, lagoslakeid, nhd_long, nhd_lat))
+wq2 <- coordinatize(wq2)
+
+ggplot() + geom_sf(data = wq2)
+
+# ---- do_all_hu4s_have_response_var_lakes? ----
+
+lg$hu4$hu4_zoneid[which(!(lg$hu4$hu4_zoneid %in% wq2$hu4_zoneid))]
+
+gdb_path <- path.expand("~/.local/share/LAGOS-GIS/lagos-ne_gis.gpkg")
+hu4         <- st_read(gdb_path, "HU4")
+hu4         <- st_cast(hu4, "MULTIPOLYGON")
+hu4$no_data <- !(as.character(hu4$ZoneID) %in% wq2$hu4_zoneid)
+
+ggplot() + geom_sf(data = hu4, aes(color = no_data))
+
+# ---- map_holdout_datasets ----
+
+ggplot() + geom_sf(data = wq2, aes(color = random25_holdout), alpha = 0.4)
+ggplot() + geom_sf(data = wq2, aes(color = random75_holdout), alpha = 0.4)
+
+cowplot::plot_grid(
+ggplot() +
+  geom_sf(data = wq2, aes(color = hu4_ag50_holdout), alpha = 0.4, size = 0.2) +
+  ggtitle("HU4 Ag Holdout") +
+  theme(legend.position = "none"),
+ggplot() +
+  geom_sf(data = wq2, aes(color = hu4_random50_holdout), alpha = 0.4, size = 0.2) +
+  ggtitle("HU4 Random Holdout") +
+  theme(legend.position = "none")
+)
+
+ggplot() + geom_sf(data = wq2, aes(color = hu4_strat75_holdout), alpha = 0.4, size = 0.2)
