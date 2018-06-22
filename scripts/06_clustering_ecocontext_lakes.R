@@ -11,14 +11,6 @@ dat_iws_lulc <-dat_full$iws %>% select(lagoslakeid,iws_ha,iws_perimkm) %>%
     mutate(iws_km2 = iws_ha*0.01) %>% 
     mutate(iws_sdf = iws_perimkm/(2*(pi*iws_km2)^1/2)) %>% 
     select(-iws_perimkm-iws_ha)
-
-
-
-
-
-
-
-
 dat <- dat_locus %>% select(lagoslakeid,lake_area_ha,lake_perim_meters,iws_zoneid,elevation_m) %>% 
     filter(lake_area_ha>=4) %>% 
     mutate(lake_area_km2 = lake_area_ha*0.01) %>% 
@@ -34,3 +26,7 @@ dat <- dat %>%
     select(-lake_perim_km,wlconnections_allwetlands_shoreline_km)
 
 write_csv(dat,"data/cluster_localcontext.csv")
+
+dat.clust <- dat %>% select(-lagoslakeid,-iws_zoneid,-latewisconsinglaciation_glacial,-lakeconnection) 
+
+  
