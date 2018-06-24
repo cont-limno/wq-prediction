@@ -18,8 +18,11 @@ Based on the models that we have built for LAGOS-NE for understanding the contro
 
 #### Model details 
 Model endpoint: Point estimate of nutrients for every lake in hold-out dataset [uncertainty later, all 50k lakes later]
+
 Model endpoint: Mean squared predictive error on natural log scale
+
 Note: Add 0.1 to the zero values
+
 
 #### Models and numbers of predictor variables
 We have comppiled a list of about 100 predictor variables (about half at the local (lake) scale and about half at the regional scale, which lakes are nested within (there are about 65 regions). However, we recommend starting to fit models with a reduced number of predictors (the list of 16 predictors listed below). If 16 is too many, you can use 9 predictors (#'s 1-6; and 10-12 in the list below). However, eventually (and perhaps for the machine learning models), there is the full list of 100 predictor variables that should be used.
