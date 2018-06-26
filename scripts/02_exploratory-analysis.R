@@ -123,8 +123,13 @@ ggplot() + geom_sf(data = hu4, aes(color = no_data))
 
 # ---- map_holdout_datasets ----
 
-ggplot() + geom_sf(data = wq2, aes(color = random25_holdout), alpha = 0.4)
-ggplot() + geom_sf(data = wq2, aes(color = random75_holdout), alpha = 0.4)
+cowplot::plot_grid(
+ggplot() + geom_sf(data = wq2, aes(color = random25_holdout), alpha = 0.4, size = 0.2) +
+  ggtitle("Random 25 Holdout") +
+  theme(legend.position = "none"),
+ggplot() + geom_sf(data = wq2, aes(color = random75_holdout), alpha = 0.4, size = 0.2) +
+  ggtitle("Random 75 Holdout") +
+  theme(legend.position = "none"))
 
 cowplot::plot_grid(
 ggplot() +
@@ -137,4 +142,6 @@ ggplot() +
   theme(legend.position = "none")
 )
 
-ggplot() + geom_sf(data = wq2, aes(color = hu4_strat75_holdout), alpha = 0.4, size = 0.2)
+ggplot() + geom_sf(data = wq2, aes(color = hu4_strat75_holdout), alpha = 0.4, size = 0.2) +
+  ggtitle("HU4 Strat. Holdout") +
+  theme(legend.position = "none")

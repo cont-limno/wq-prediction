@@ -21,7 +21,7 @@ Model endpoint: Point estimate of nutrients for every lake in hold-out dataset [
 
 Model endpoint: Mean squared predictive error on natural log scale
 
-Note: Add 0.1 to the zero values
+Note: To account for zeros, add 0.1 to response variables
 
 
 #### Models and numbers of predictor variables
@@ -36,7 +36,7 @@ LATER: [data/wq1_temporal.csv](data/wq1_temporal.csv) - All SUMMER observations 
 
 #### Holdout datasets (listed as 'variables' in the response variable dataset)
 
-|        Metric        |                             Description                             |
+|        Metric        |                             Description (TRUE are holdouts/testing data)      |
 |:--------------------:|:-------------------------------------------------------------------:|
 |   random25_holdout   |           Hold out 25% of the dataset, randomly selected            |
 |   random75_holdout   |           Hold out 75% of the dataset, randomly selected           |
@@ -347,7 +347,7 @@ state_zoneid
 Noah will create these and will provide the link to the code for the clusters. 
 
 #### Local natural lake ecological cluster variables used to create the clusters
-LAKESLOCUS101:	elevation_m
+LAKESLOCUS101:	elevation_mn 
 
 LAKESLOCUS101:	Lake_area_ha
 

@@ -472,5 +472,7 @@ lagoslakeid_strat_keep <- limno_data_WQ2_final %>%
 
 limno_data_WQ2_final <- mutate(limno_data_WQ2_final,
                                hu4_strat75_holdout = lagoslakeid %in% lagoslakeid_strat_keep)
+limno_data_WQ2_final <- dplyr::filter(limno_data_WQ2_final,
+                                      hu4_zoneid != "OUT_OF_HU4")
 
 write.csv(limno_data_WQ2_final, "data/wq2_single.csv", row.names = FALSE)
