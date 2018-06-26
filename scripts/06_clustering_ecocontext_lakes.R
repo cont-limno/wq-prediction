@@ -66,7 +66,7 @@ hc <- hclust.vector(dat.s,method = "ward")
 
 plot(hc)
 rect.hclust(hc, k=10, border="red")
-groups <- cutree(hc, k=10)
+groups <- cutree(hc, k=4)
 barplot(table(groups),xlab="Cluster",ylab="Number of Lakes")
 
 {pdf("cluster_sizes.pdf",width=8,height=10.5,onefile = TRUE)
@@ -161,11 +161,11 @@ p20 <- ggplot() +
           aes(color = cluster), alpha = 0.4,show.legend=F)
 
 
-clusterplot <- plot_grid(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,labels=seq(1,10,1))
+clusterplot <- plot_grid(p1,p2,p3,p4,labels=seq(1,4,1))
 save_plot(filename = "lake_clusters_10.png",
           plot = clusterplot,
-          ncol=4,
-          nrow=3,
+          ncol=2,
+          nrow=2,
           base_aspect_ratio = 1.3)
 
 clusterplot <- plot_grid(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,labels=seq(1,20,1))
@@ -201,5 +201,5 @@ for(i in unq.groups){
   count <- count+1
 }
 
-eco_context <- plot_grid(plotlist=myplots,labels=seq(1,10,1))
-save_plot("eco_context.png",eco_context,ncol=4,nrow=3,base_aspect_ratio = 1)
+eco_context <- plot_grid(plotlist=myplots,labels=seq(1,4,1))
+save_plot("eco_context_4.png",eco_context,ncol=2,nrow=2,base_aspect_ratio = 1)
