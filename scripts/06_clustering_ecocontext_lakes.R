@@ -50,22 +50,16 @@ dat.clust <- dat %>%
 
 summary(dat.clust)
 
-plot(density(sqrt(dat.clust$wlconnections_allwetlands_shoreline_pctperim)))
+plot(density(log10(dat.clust$upstream_lakes_4ha_count+1)))
 
 
 dat.s <- apply(as.matrix(dat.clust[,2:9]),2,scale,center=TRUE,scale=TRUE)
 colnames(dat.s) <- colnames(dat.clust[,2:9])
 
-avgsil <- seq(from = 1,to = 50,by=1)
-for(i in 2:50) {
-clara.res <- clara(x = dat.s,k = 19,metric = "manhattan",samples = 100,sampsize = 3000,pamLike = TRUE,correct.d=TRUE)
-avgsil[i] <-clara.res$silinfo$avg.width
-}
-
 hc <- hclust.vector(dat.s,method = "ward")
 
 plot(hc)
-rect.hclust(hc, k=10, border="red")
+rect.hclust(hc, k=4, border=c("black","red","green","blue"))
 groups <- cutree(hc, k=4)
 barplot(table(groups),xlab="Cluster",ylab="Number of Lakes")
 
@@ -83,7 +77,7 @@ barplot(table(groups),xlab="Cluster",ylab="Number of Lakes")
 dat.plot <- data.frame(lagoslakeid=dat.clust$lagoslakeid,cluster=groups)
 dat.plot <- dat_locus %>% select(lagoslakeid,nhd_long,nhd_lat) %>% right_join(dat.plot)
 dat.plot <- coordinatize(dat.plot)
-options(device="quartz")
+options(device="RStudioGD")
 dev.new()
 
 state_names= c('wisconsin','minnesota','vermont','maine','michigan','missouri','rhode island','new york','iowa','illinois','indiana','ohio','new hampshire','pennsylvania','connecticut','massachusetts','new jersey')
@@ -162,11 +156,11 @@ p20 <- ggplot() +
 
 
 clusterplot <- plot_grid(p1,p2,p3,p4,labels=seq(1,4,1))
-save_plot(filename = "lake_clusters_10.png",
+save_plot(filename = "lake_clusters_4.png",
           plot = clusterplot,
           ncol=2,
           nrow=2,
-          base_aspect_ratio = 1.3)
+          base_aspect_ratio = 1.3,base_width = 5)
 
 clusterplot <- plot_grid(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,labels=seq(1,20,1))
 save_plot("lake_clusters_20.png",clusterplot,ncol=5,nrow=4,base_aspect_ratio = 1.3)
@@ -187,10 +181,32 @@ names(dat.clust) <- c("lagoslakeid",
 dat.s <- apply(as.matrix(dat.clust[,2:9]),2,scale,center=TRUE,scale=TRUE)
 colnames(dat.s) <- colnames(dat.clust[,2:9])
 dat.violin <- cbind(dat.clust[,c(1,10)],as.data.frame(dat.s))
-unq.groups <- unique(groups)
+
 
 myplots <- list()
+eco.vars = names(dat.violin[3:10])
 count <-1
+for(i in 1:length(eco.vars)){
+  dat.temp <- dat.violin %>%
+    gather(key = "key",value = "value",-lagoslakeid,-groups) %>%
+    filter(key==eco.vars[i]) %>%
+    mutate(groups=as.factor(groups))
+  myplots[[count]] <- ggplot(dat.temp, aes(groups, value)) +
+    geom_boxplot() +
+    theme(axis.text.x = element_text(angle = 0, hjust = 1)) +
+    geom_hline(yintercept = 0,color="red",alpha=0.4) +
+    labs(y=eco.vars[i],x="cluster")
+  count <- count+1
+}
+eco_context <- plot_grid(plotlist=myplots,align="hv")
+save_plot("eco_context_byvar.png",eco_context,base_aspect_ratio = 1.3,nrow=2,ncol=4,
+          base_width = 4)
+
+
+####plot by cluster
+myplots <- list()
+count <-1
+unq.groups <- unique(groups)
 for(i in unq.groups){
   dat.temp <- dat.violin %>% filter(groups==i) %>%
     gather(key = "key",value = "value",-lagoslakeid,-groups)
@@ -201,5 +217,11 @@ for(i in unq.groups){
   count <- count+1
 }
 
-eco_context <- plot_grid(plotlist=myplots,labels=seq(1,4,1))
-save_plot("eco_context_4.png",eco_context,ncol=2,nrow=2,base_aspect_ratio = 1)
+eco_context <- plot_grid(plotlist=myplots,align="hv")
+save_plot("eco_context_bycluster.png",
+          eco_context,base_aspect_ratio = 1.3,nrow=2,ncol=2,
+          base_width = 4)
+
+cluster.out = dat.clust %>% select(lagoslakeid,groups)
+write_csv(cluster.out,"data/lake_clusters_4groups.csv")
+table(cluster.out$groups)/nrow(cluster.out)
