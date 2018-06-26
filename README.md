@@ -36,7 +36,7 @@ LATER: [data/wq1_temporal.csv](data/wq1_temporal.csv) - All SUMMER observations 
 
 #### Holdout datasets (listed as 'variables' in the response variable dataset)
 
-|        Metric        |                             Description                             |
+|        Metric        |                             Description (TRUE are holdouts/testing data)      |
 |:--------------------:|:-------------------------------------------------------------------:|
 |   random25_holdout   |           Hold out 25% of the dataset, randomly selected            |
 |   random75_holdout   |           Hold out 75% of the dataset, randomly selected           |
