@@ -124,10 +124,10 @@ ggplot() + geom_sf(data = hu4, aes(color = no_data))
 # ---- map_holdout_datasets ----
 
 cowplot::plot_grid(
-ggplot() + geom_sf(data = wq2, aes(color = random25_holdout), alpha = 0.4) +
+ggplot() + geom_sf(data = wq2, aes(color = random25_holdout), alpha = 0.4, size = 0.2) +
   ggtitle("Random 25 Holdout") +
   theme(legend.position = "none"),
-ggplot() + geom_sf(data = wq2, aes(color = random75_holdout), alpha = 0.4) +
+ggplot() + geom_sf(data = wq2, aes(color = random75_holdout), alpha = 0.4, size = 0.2) +
   ggtitle("Random 75 Holdout") +
   theme(legend.position = "none"))
 
