@@ -21,7 +21,7 @@ Model endpoint: Point estimate of nutrients for every lake in hold-out dataset [
 
 Model endpoint: Mean squared predictive error on natural log scale
 
-Note: Add 0.1 to the zero values
+Note: To account for zeros, add 0.1 to response variables
 
 
 #### Models and numbers of predictor variables
