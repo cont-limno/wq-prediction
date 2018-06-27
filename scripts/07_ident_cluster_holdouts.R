@@ -25,7 +25,7 @@ ggplot(dat.overview, aes(fill=key, y=value, x=cluster)) +
 #of data for all 50,000 lakes based on clusters identified using hclust cut at
 #k=4
 
-num.samples = nrow(cluster_sample)*.25  #how many total samples to get
+num.samples = round(nrow(wq2_single)*.25,digits=0)  #how many total samples to get
 pop.samples = round(as.vector(full)*num.samples,digits=0) #how many to sample from each cluster
 names(pop.samples) = c("1","2","3","4") #name vector
 select.lakes = stratified(indt = cluster_sample, #random stratification
