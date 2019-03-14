@@ -100,3 +100,8 @@ gg_r2 <- ggplot(data = clean, aes(variable, value)) +
 ggsave("graphics/rmse_bar.png", gg_rmse, height = 7)
 ggsave("graphics/mrae_bar.png", gg_mrae, height = 7)
 ggsave("graphics/r2_bar.png", gg_r2)
+
+# https://stackoverflow.com/a/20502085/3362993
+pdf("graphics/bar_plots.pdf")
+invisible(lapply(list(gg_rmse, gg_mrae, gg_r2), print))
+dev.off()
