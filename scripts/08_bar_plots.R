@@ -31,16 +31,17 @@ raw <- tidyr::gather(raw, key = set, value = value, -variable)
 
 clean <- bar_plot_clean(raw)
 
-gg_rmse <- ggplot(data = clean) +
+(gg_rmse <- ggplot(data = clean) +
   geom_segment(aes(xend = set, yend = 0, x = set, y = value, color = polation),
                lineend = "butt", size = 8) +
   geom_hline(aes(yintercept = random25), linetype = "dashed") +
   geom_hline(aes(yintercept = random75)) +
   facet_wrap(~variable) +
+  scale_color_manual(values = c("royalblue", "orange")) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90),
         legend.title=element_blank()) +
-  ylab("RMSE") + xlab("")
+  ylab("RMSE") + xlab(""))
 
 # ---- median_errors ----
 
@@ -65,6 +66,7 @@ gg_mrae <- ggplot(data = clean) +
   geom_hline(aes(yintercept = random25), linetype = "dashed") +
   geom_hline(aes(yintercept = random75)) +
   facet_wrap(~variable, scales = "free") +
+  scale_color_manual(values = c("royalblue", "orange")) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90),
         legend.title=element_blank()) +
@@ -88,14 +90,15 @@ clean      <- bar_plot_clean(raw)
 clean$x    <- rep(seq(0.5, 4), each = 5)
 clean$xend <- rep(seq(1.5, 5), each = 5)
 
-gg_r2 <- ggplot(data = clean, aes(variable, value)) +
+(gg_r2 <- ggplot(data = clean, aes(variable, value)) +
   geom_bar(aes(fill = set), stat = "identity", position = position_dodge2()) +
   geom_segment(aes(x = x, xend = xend, y = random25, yend = random25),
                linetype = "dashed") +
   geom_segment(aes(x = x, xend = xend, y = random75, yend = random75)) +
+  scale_fill_manual(values = c("orange", "#f4b183", "royalblue", "#9dc3e6", "#bdd7ee")) +
   theme_minimal() +
   theme(legend.title=element_blank()) +
-  ylab("R2") + xlab("")
+  ylab(expression(R^{2})) + xlab(""))
 
 ggsave("graphics/rmse_bar.png", gg_rmse, height = 7)
 ggsave("graphics/mrae_bar.png", gg_mrae, height = 7)
@@ -105,3 +108,11 @@ ggsave("graphics/r2_bar.png", gg_r2)
 pdf("graphics/bar_plots.pdf")
 invisible(lapply(list(gg_rmse, gg_mrae, gg_r2), print))
 dev.off()
+
+# Interpolation scenarios:
+#   (1) Local-EC_Lakesmall = Cluster_strat75_holdout and
+# (2) Regional-EC_Regionsmall = Hu4_strat75_holdout
+# Then Extrapolation scenarios:
+#   (1) Local-EC_Lakemoderate = Cluster_random50_holdout
+# (2) Random_Regionmoderate = Hu4_random50_holdout
+# (3) Regional-LU_Regionlarge = Hu4_ag50_holdout
