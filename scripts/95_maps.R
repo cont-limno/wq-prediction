@@ -126,7 +126,7 @@ random25_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
 # random75_holdout
 random75_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
   geom_point(aes(colour=test_train_df$random75_holdout), size=mappoint_size) +
-  ggtitle('d) Random_Lakesmall')+
+  ggtitle('b) Random_Lakesmall')+
   geom_path(data=HU4,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Training','Testing'),
@@ -147,7 +147,7 @@ random75_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
 # cluster_strat75_holdout
 cluster_strat75_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
   geom_point(aes(colour=test_train_df$cluster_strat75_holdout), size=mappoint_size) +
-  ggtitle('b) Local-EC_Lakesmall')+
+  ggtitle('c) Local-EC_Lakesmall')+
   geom_path(data=HU4,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Training','Testing'),
@@ -168,7 +168,7 @@ cluster_strat75_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
 # hu4_strat75_holdout
 hu4_strat75_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
   geom_point(aes(colour=test_train_df$hu4_strat75_holdout), size=mappoint_size) +
-  ggtitle('e) Regional-EC_Regionsmall')+
+  ggtitle('d) Regional-EC_Regionsmall')+
   geom_path(data=HU4,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Training','Testing'),
@@ -189,7 +189,7 @@ hu4_strat75_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
 # cluster_random50_holdout
 cluster_random50_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
   geom_point(aes(colour=test_train_df$cluster_random50_holdout), size=mappoint_size) +
-  ggtitle('c) Local-EC_Lakemoderate')+
+  ggtitle('e) Local-EC_Lakemoderate')+
   geom_path(data=HU4,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Training','Testing'),
