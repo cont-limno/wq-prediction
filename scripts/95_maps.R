@@ -1,6 +1,6 @@
 ################# LPEP2: Map figures ###########################################################
 # Date: 3-14-19
-# updated: 3-15-19
+# updated: 3-26-19
 # Author: Ian McCullough, immccull@gmail.com
 ################################################################################################
 
@@ -79,33 +79,33 @@ test_train_df$yCor <- lakes_4ha_pts_secchi@coords[,2]
 test_train_df <- test_train_df[,c(1,36:42,65,66)] #remove unused columns; make dataframe more workable
 
 # assign "Training" to 1, "Testing" to 0, then reorder factor levels
-test_train_df$random25_holdout <- as.factor(ifelse(test_train_df$random25_holdout==1, 'Training','Testing'))
-test_train_df$random25_holdout <- factor(test_train_df$random25_holdout,levels(test_train_df$random25_holdout)[c(2,1)])
+test_train_df$random25_holdout <- as.factor(ifelse(test_train_df$random25_holdout==0, 'Testing','Training'))
+#test_train_df$random25_holdout <- factor(test_train_df$random25_holdout,levels(test_train_df$random25_holdout)[c(2,1)])
 
-test_train_df$random75_holdout <- as.factor(ifelse(test_train_df$random75_holdout==1, 'Training','Testing'))
-test_train_df$random75_holdout <- factor(test_train_df$random75_holdout,levels(test_train_df$random75_holdout)[c(2,1)])
+test_train_df$random75_holdout <- as.factor(ifelse(test_train_df$random75_holdout==0, 'Testing','Training'))
+#test_train_df$random75_holdout <- factor(test_train_df$random75_holdout,levels(test_train_df$random75_holdout)[c(2,1)])
 
-test_train_df$hu4_ag50_holdout <- as.factor(ifelse(test_train_df$hu4_ag50_holdout==1, 'Training','Testing'))
-test_train_df$hu4_ag50_holdout <- factor(test_train_df$hu4_ag50_holdout,levels(test_train_df$hu4_ag50_holdout)[c(2,1)])
+test_train_df$hu4_ag50_holdout <- as.factor(ifelse(test_train_df$hu4_ag50_holdout==0, 'Testing','Training'))
+#test_train_df$hu4_ag50_holdout <- factor(test_train_df$hu4_ag50_holdout,levels(test_train_df$hu4_ag50_holdout)[c(2,1)])
 
-test_train_df$hu4_strat75_holdout <- as.factor(ifelse(test_train_df$hu4_strat75_holdout==1, 'Training','Testing'))
-test_train_df$hu4_strat75_holdout <- factor(test_train_df$hu4_strat75_holdout,levels(test_train_df$hu4_strat75_holdout)[c(2,1)])
+test_train_df$hu4_strat75_holdout <- as.factor(ifelse(test_train_df$hu4_strat75_holdout==0, 'Testing','Training'))
+#test_train_df$hu4_strat75_holdout <- factor(test_train_df$hu4_strat75_holdout,levels(test_train_df$hu4_strat75_holdout)[c(2,1)])
 
-test_train_df$hu4_random50_holdout <- as.factor(ifelse(test_train_df$hu4_random50_holdout==1,'Training','Testing'))
-test_train_df$hu4_random50_holdout <- factor(test_train_df$hu4_random50_holdout,levels(test_train_df$hu4_random50_holdout)[c(2,1)])
+test_train_df$hu4_random50_holdout <- as.factor(ifelse(test_train_df$hu4_random50_holdout==0,'Testing','Training'))
+#test_train_df$hu4_random50_holdout <- factor(test_train_df$hu4_random50_holdout,levels(test_train_df$hu4_random50_holdout)[c(2,1)])
 
-test_train_df$cluster_strat75_holdout <- as.factor(ifelse(test_train_df$cluster_strat75_holdout==1,'Training','Testing'))
-test_train_df$cluster_strat75_holdout <- factor(test_train_df$cluster_strat75_holdout,levels(test_train_df$cluster_strat75_holdout)[c(2,1)])
+test_train_df$cluster_strat75_holdout <- as.factor(ifelse(test_train_df$cluster_strat75_holdout==0,'Testing','Training'))
+#test_train_df$cluster_strat75_holdout <- factor(test_train_df$cluster_strat75_holdout,levels(test_train_df$cluster_strat75_holdout)[c(2,1)])
 
-test_train_df$cluster_random50_holdout <- as.factor(ifelse(test_train_df$cluster_random50_holdout==1,'Training','Testing'))
-test_train_df$cluster_random50_holdout <- factor(test_train_df$cluster_random50_holdout,levels(test_train_df$cluster_random50_holdout)[c(2,1)])
+test_train_df$cluster_random50_holdout <- as.factor(ifelse(test_train_df$cluster_random50_holdout==0,'Testing','Training'))
+#test_train_df$cluster_random50_holdout <- factor(test_train_df$cluster_random50_holdout,levels(test_train_df$cluster_random50_holdout)[c(2,1)])
 
 # random25_holdout
 mappoint_size <- 0.6
 title_size <- 9
 random25_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
   geom_point(aes(colour=test_train_df$random25_holdout), size=mappoint_size) +
-  ggtitle('Random_Lakelarge')+
+  ggtitle('a) Random_Lakelarge')+
   geom_path(data=HU4,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Training','Testing'),
@@ -126,7 +126,7 @@ random25_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
 # random75_holdout
 random75_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
   geom_point(aes(colour=test_train_df$random75_holdout), size=mappoint_size) +
-  ggtitle('Random_Lakesmall')+
+  ggtitle('d) Random_Lakesmall')+
   geom_path(data=HU4,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Training','Testing'),
@@ -147,7 +147,7 @@ random75_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
 # cluster_strat75_holdout
 cluster_strat75_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
   geom_point(aes(colour=test_train_df$cluster_strat75_holdout), size=mappoint_size) +
-  ggtitle('Local-EC_Lakesmall')+
+  ggtitle('b) Local-EC_Lakesmall')+
   geom_path(data=HU4,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Training','Testing'),
@@ -168,7 +168,7 @@ cluster_strat75_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
 # hu4_strat75_holdout
 hu4_strat75_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
   geom_point(aes(colour=test_train_df$hu4_strat75_holdout), size=mappoint_size) +
-  ggtitle('Regional-EC_Regionsmall')+
+  ggtitle('e) Regional-EC_Regionsmall')+
   geom_path(data=HU4,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Training','Testing'),
@@ -189,7 +189,7 @@ hu4_strat75_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
 # cluster_random50_holdout
 cluster_random50_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
   geom_point(aes(colour=test_train_df$cluster_random50_holdout), size=mappoint_size) +
-  ggtitle('Local-EC_Lakemoderate')+
+  ggtitle('c) Local-EC_Lakemoderate')+
   geom_path(data=HU4,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Training','Testing'),
@@ -210,7 +210,7 @@ cluster_random50_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
 # hu4_random50_holdout
 hu4_random50_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
   geom_point(aes(colour=test_train_df$hu4_random50_holdout), size=mappoint_size) +
-  ggtitle('Random_Regionmoderate')+
+  ggtitle('f) Random_Regionmoderate')+
   geom_path(data=HU4,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Training','Testing'),
@@ -231,7 +231,7 @@ hu4_random50_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
 # hu4_ag50_holdout
 hu4_ag50_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
   geom_point(aes(colour=test_train_df$hu4_ag50_holdout), size=mappoint_size) +
-  ggtitle('Regional-LU_Regionlarge')+
+  ggtitle('g) Regional-LU_Regionlarge')+
   geom_path(data=HU4,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Training','Testing'),
@@ -249,13 +249,31 @@ hu4_ag50_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
   guides(color = guide_legend(override.aes = list(size=2.5)))#increase legend point size
 #hu4_ag50_holdout.point1
 
+blank.plot <- ggplot(test_train_df, aes(x=xCor,y=yCor))+
+  geom_point(aes(colour=test_train_df$random25_holdout), size=mappoint_size) +
+  scale_color_manual(values=c("white", "white"),
+                     labels=c('Training','Testing'),
+                     name='')+
+  ggtitle('')+
+  geom_blank()+
+  theme_bw() + 
+  theme(axis.text = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        panel.border = element_blank(),
+        panel.grid = element_blank(),
+        axis.title = element_blank(),
+        legend.position='none',
+        legend.text=element_text(colour='black', size=11),
+        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+
 # legend plot (created so can extract legend from it; this plot not plotted)
 legend.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
   geom_point(aes(colour=test_train_df$random25_holdout), size=mappoint_size) +
   ggtitle('Random25_holdout')+
   geom_path(data=HU4,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
   scale_color_manual(values=c("orange", "royalblue"),
-                     labels=c('Training','Testing'),
+                     labels=c('Testing','Training'),
                      name='')+
   theme_bw() + 
   theme(axis.text = element_blank(),
@@ -281,7 +299,11 @@ legend <- g_legend(legend.point1)
 
 ## create multi-panel plot (warning, takes a couple mins)
 jpeg('graphics/train_test_map.jpeg',width = 6,height = 5,units = 'in',res=600)
-  grid.arrange(random25_holdout.point1, random75_holdout.point1, cluster_strat75_holdout.point1,
-               hu4_strat75_holdout.point1, cluster_random50_holdout.point1, hu4_random50_holdout.point1,
-               hu4_ag50_holdout.point1, legend, nrow=3)
+  # plotting positions!
+  # (upper left, upper mid, uppper right,
+  # mid left, mid mid, mid right,
+  # bot left, bot mid, bot right)
+  grid.arrange(random25_holdout.point1, cluster_strat75_holdout.point1, cluster_random50_holdout.point1,
+               random75_holdout.point1, hu4_strat75_holdout.point1, hu4_random50_holdout.point1,
+               blank.plot, legend, hu4_ag50_holdout.point1, nrow=3)
 dev.off()
