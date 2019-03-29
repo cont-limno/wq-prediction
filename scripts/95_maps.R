@@ -79,29 +79,29 @@ test_train_df$yCor <- lakes_4ha_pts_secchi@coords[,2]
 test_train_df <- test_train_df[,c(1,36:42,65,66)] #remove unused columns; make dataframe more workable
 
 # assign "Training" to 1, "Testing" to 0, then reorder factor levels
-test_train_df$random25_holdout <- as.factor(ifelse(test_train_df$random25_holdout==0, 'Testing','Training'))
+test_train_df$random25_holdout <- as.factor(ifelse(test_train_df$random25_holdout==0, 'Training','Testing'))
 #test_train_df$random25_holdout <- factor(test_train_df$random25_holdout,levels(test_train_df$random25_holdout)[c(2,1)])
 
-test_train_df$random75_holdout <- as.factor(ifelse(test_train_df$random75_holdout==0, 'Testing','Training'))
+test_train_df$random75_holdout <- as.factor(ifelse(test_train_df$random75_holdout==0, 'Training','Testing'))
 #test_train_df$random75_holdout <- factor(test_train_df$random75_holdout,levels(test_train_df$random75_holdout)[c(2,1)])
 
-test_train_df$hu4_ag50_holdout <- as.factor(ifelse(test_train_df$hu4_ag50_holdout==0, 'Testing','Training'))
+test_train_df$hu4_ag50_holdout <- as.factor(ifelse(test_train_df$hu4_ag50_holdout==0, 'Training','Testing'))
 #test_train_df$hu4_ag50_holdout <- factor(test_train_df$hu4_ag50_holdout,levels(test_train_df$hu4_ag50_holdout)[c(2,1)])
 
-test_train_df$hu4_strat75_holdout <- as.factor(ifelse(test_train_df$hu4_strat75_holdout==0, 'Testing','Training'))
+test_train_df$hu4_strat75_holdout <- as.factor(ifelse(test_train_df$hu4_strat75_holdout==0, 'Training','Testing'))
 #test_train_df$hu4_strat75_holdout <- factor(test_train_df$hu4_strat75_holdout,levels(test_train_df$hu4_strat75_holdout)[c(2,1)])
 
-test_train_df$hu4_random50_holdout <- as.factor(ifelse(test_train_df$hu4_random50_holdout==0,'Testing','Training'))
+test_train_df$hu4_random50_holdout <- as.factor(ifelse(test_train_df$hu4_random50_holdout==0,'Training','Testing'))
 #test_train_df$hu4_random50_holdout <- factor(test_train_df$hu4_random50_holdout,levels(test_train_df$hu4_random50_holdout)[c(2,1)])
 
-test_train_df$cluster_strat75_holdout <- as.factor(ifelse(test_train_df$cluster_strat75_holdout==0,'Testing','Training'))
+test_train_df$cluster_strat75_holdout <- as.factor(ifelse(test_train_df$cluster_strat75_holdout==0,'Training','Testing'))
 #test_train_df$cluster_strat75_holdout <- factor(test_train_df$cluster_strat75_holdout,levels(test_train_df$cluster_strat75_holdout)[c(2,1)])
 
-test_train_df$cluster_random50_holdout <- as.factor(ifelse(test_train_df$cluster_random50_holdout==0,'Testing','Training'))
+test_train_df$cluster_random50_holdout <- as.factor(ifelse(test_train_df$cluster_random50_holdout==0,'Training','Testing'))
 #test_train_df$cluster_random50_holdout <- factor(test_train_df$cluster_random50_holdout,levels(test_train_df$cluster_random50_holdout)[c(2,1)])
 
 # random25_holdout
-mappoint_size <- 0.6
+mappoint_size <- 0.15
 title_size <- 9
 random25_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
   geom_point(aes(colour=test_train_df$random25_holdout), size=mappoint_size) +
