@@ -5,45 +5,53 @@ library(dplyr)
 library(janitor)
 library(cowplot)
 library(latex2exp)
+library(colorblindr)
 
 # Interpolation scenarios:
-# (1) Local-EC_Lakesmall = Cluster_strat75_holdout and
-# (2) Regional-EC_Regionsmall = Hu4_strat75_holdout
+# (2) random25 : Random-Small
+# (1) random75: Random-Large
+# (3) Local-EC_Lakesmall = Cluster_strat75_holdout : Stratified-Type
+# (4) Regional-EC_Regionsmall = Hu4_strat75_holdout : Stratified-Region
 
 # Then Extrapolation scenarios:
-# (1) Local-EC_Lakemoderate = Cluster_random50_holdout
-# (2) Random_Regionmoderate = Hu4_random50_holdout
-# (3) Regional-LU_Regionlarge = Hu4_ag50_holdout
+# (1) Local-EC_Lakemoderate = Cluster_random50_holdout :  Targeted-Type
+# (2) Random_Regionmoderate = Hu4_random50_holdout : Targeted-Region
+# (3) Regional-LU_Regionlarge = Hu4_ag50_holdout : Targeted-AgRegion
 
 label_key <- data.frame(
   set = factor(c(
-    "hu4_ago", "hu4_strat",
-    "hu4_random", "cluster_strat75",
-    "cluster_random50"
+    "random25", "random75", "cluster_strat75", "hu4_strat",
+    "cluster_random50", "hu4_random",
+    "hu4_ago"
   ), levels = c(
-    "cluster_strat75", "hu4_strat",
+    "random25", "random75", "cluster_strat75", "hu4_strat",
     "cluster_random50", "hu4_random",
     "hu4_ago"
   )),
   set_parsed = factor(c(
-    "B-Regional-LU Region_{large}",
-    "SR-Regional-EC Region_{small}", "B-Random Region_{moderate}", "SR-Local-EC Lake_{small}", "B-Local-EC Lake_{moderate}"
-  ), levels = c("SR-Local-EC Lake_{small}", "SR-Regional-EC Region_{small}", "B-Local-EC Lake_{moderate}", "B-Random Region_{moderate}", "B-Regional-LU Region_{large}")),
+    "Random-Small", "Random-Large", "Stratified-Type",
+    "Stratified-Region", "Targeted-Type", "Targeted-Region",
+    "Targeted-AgRegion"
+  ), levels = c(
+    "Random-Small", "Random-Large", "Stratified-Type",
+    "Stratified-Region", "Targeted-Type", "Targeted-Region",
+    "Targeted-AgRegion")),
   stringsAsFactors = FALSE
 )
 
 bar_plot_clean <- function(raw){
   random_lines <- raw %>%
-    filter(set %in% c("random25", "random75")) %>%
     tidyr::spread(set, value)
 
   clean <- raw %>%
-    filter(!(set %in% c("random25", "random75"))) %>%
+    dplyr::filter(!(variable %in% "secchi")) %>%
     left_join(label_key, by = "set") %>%
     left_join(random_lines) %>%
     mutate(variable = factor(variable, levels = c("TP", "TN", "Chla", "secchi"))) %>%
-    mutate(polation = case_when(set %in% c("cluster_strat75", "hu4_strat") ~ "interpolation",
-                                TRUE ~ "extrapolation"))
+    mutate(polation = case_when(
+      set %in% c("random25", "random75",
+                 "cluster_strat75", "hu4_strat") ~ "interpolation",
+      TRUE ~ "extrapolation"))
 
   clean
 }
@@ -61,8 +69,6 @@ clean <- bar_plot_clean(raw)
   geom_segment(aes(xend = set_parsed, yend = 0, x = set_parsed,
                    y = value, color = polation),
                lineend = "butt", size = 8) +
-  geom_hline(aes(yintercept = random25), linetype = "dashed") +
-  geom_hline(aes(yintercept = random75)) +
   facet_wrap(~variable) +
   scale_color_manual(values = c("royalblue", "orange")) +
   scale_x_discrete(labels = parse(text = TeX(levels(clean$set_parsed)))) +
@@ -88,34 +94,17 @@ raw           <- readxl::read_excel(
 
 clean <- bar_plot_clean(raw)
 
-(gg_mrae <- plot_grid(
-    ggplot(data = dplyr::filter(clean, variable %in% c("TP", "TN"))) +
+(gg_mrae <- ggplot(data = clean) +
       geom_segment(aes(xend = set_parsed, yend = 0, x = set_parsed,
                        y = value, color = polation),
                    lineend = "butt", size = 8) +
-      geom_hline(aes(yintercept = random25), linetype = "dashed") +
-      geom_hline(aes(yintercept = random75)) +
-      facet_wrap(~variable, scales = "free", labeller = label_value) +
-      scale_color_manual(values = c("royalblue", "orange")) +
-      theme_minimal() +
-      theme(axis.text.x = element_blank(),
-            legend.title=element_blank()) +
-      ylab("MRAE") + xlab(""),
-    ggplot(data = dplyr::filter(clean, !(variable %in% c("TP", "TN")))) +
-      geom_segment(aes(xend = set_parsed, yend = 0, x = set_parsed,
-                       y = value, color = polation),
-                   lineend = "butt", size = 8) +
-      geom_hline(aes(yintercept = random25), linetype = "dashed") +
-      geom_hline(aes(yintercept = random75)) +
       facet_wrap(~variable, scales = "free", labeller = label_value) +
       scale_color_manual(values = c("royalblue", "orange")) +
       scale_x_discrete(labels = parse(text = TeX(levels(clean$set_parsed)))) +
       theme_minimal() +
       theme(axis.text.x = element_text(angle = 90),
             legend.title=element_blank()) +
-      ylab("MRAE") + xlab(""),
-    ncol = 1, rel_heights = c(0.55, 1)))
-
+      ylab("MRAE") + xlab(""))
 
 # ---- r2 ----
 
@@ -132,16 +121,13 @@ raw           <- readxl::read_excel(
                               TRUE ~ variable))
 
 clean      <- bar_plot_clean(raw)
-clean$x    <- rep(seq(0.5, 4), each = 5)
-clean$xend <- rep(seq(1.5, 5), each = 5)
+
+
+viridis::scale_fill_viridis(discrete = TRUE)
 
 (gg_r2 <- ggplot(data = clean, aes(variable, value)) +
   geom_bar(aes(fill = set_parsed), stat = "identity", position = position_dodge2()) +
-  geom_segment(aes(x = x, xend = xend, y = random25, yend = random25),
-               linetype = "dashed") +
-  geom_segment(aes(x = x, xend = xend, y = random75, yend = random75)) +
-  scale_fill_manual(values = c("orange", "#f4b183", "royalblue", "#9dc3e6", "#bdd7ee"),
-                    labels = parse(text = TeX(levels(clean$set_parsed)))) +
+  scale_fill_viridis_d(labels = parse(text = TeX(levels(clean$set_parsed)))) +
   theme_minimal() +
   theme(legend.title=element_blank()) +
   ylab(expression(R^{2})) + xlab(""))
