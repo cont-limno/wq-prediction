@@ -18,6 +18,19 @@ library(colorblindr)
 # (2) Random_Regionmoderate = Hu4_random50_holdout : Targeted-Region
 # (3) Regional-LU_Regionlarge = Hu4_ag50_holdout : Targeted-AgRegion
 
+theme_opts <- theme(axis.text.x = element_text(angle = 90),
+                    legend.title = element_blank(),
+                    panel.border = element_rect(fill = "transparent", size = 1.2),
+                    legend.position = "none")
+
+bar_size <- 4.8
+
+(color_d <- c(
+  rep("#b2df8a", 4),
+  rep("#1f78b4", 3)
+  ))
+# scales::show_col(color_d)
+
 label_key <- data.frame(
   set = factor(c(
     "random25", "random75", "cluster_strat75", "hu4_strat",
@@ -67,14 +80,13 @@ clean <- bar_plot_clean(raw)
 
 (gg_rmse <- ggplot(data = clean) +
   geom_segment(aes(xend = set_parsed, yend = 0, x = set_parsed,
-                   y = value, color = polation),
-               lineend = "butt", size = 8) +
+                   y = value, color = set_parsed),
+               lineend = "butt", size = bar_size) +
   facet_wrap(~variable) +
-  scale_color_manual(values = c("royalblue", "orange")) +
-  scale_x_discrete(labels = parse(text = TeX(levels(clean$set_parsed)))) +
+  scale_color_manual(values = color_d,
+                     labels = parse(text = TeX(levels(clean$set_parsed)))) +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90),
-        legend.title = element_blank()) +
+    theme_opts +
   ylab("RMSE") + xlab(""))
 
 # ---- median_errors ----
@@ -96,14 +108,13 @@ clean <- bar_plot_clean(raw)
 
 (gg_mrae <- ggplot(data = clean) +
       geom_segment(aes(xend = set_parsed, yend = 0, x = set_parsed,
-                       y = value, color = polation),
-                   lineend = "butt", size = 8) +
+                       y = value, color = set_parsed),
+                   lineend = "butt", size = bar_size) +
       facet_wrap(~variable, scales = "free", labeller = label_value) +
-      scale_color_manual(values = c("royalblue", "orange")) +
-      scale_x_discrete(labels = parse(text = TeX(levels(clean$set_parsed)))) +
+      scale_color_manual(values = color_d,
+                         labels = parse(text = TeX(levels(clean$set_parsed)))) +
       theme_minimal() +
-      theme(axis.text.x = element_text(angle = 90),
-            legend.title=element_blank()) +
+      theme_opts +
       ylab("MRAE") + xlab(""))
 
 # ---- r2 ----
@@ -122,18 +133,19 @@ raw           <- readxl::read_excel(
 
 clean      <- bar_plot_clean(raw)
 
+(gg_r2 <- ggplot(data = clean) +
+    geom_segment(aes(xend = set_parsed, yend = 0, x = set_parsed,
+                     y = value, color = set_parsed),
+                 lineend = "butt", size = bar_size) +
+    facet_wrap(~variable, labeller = label_value) +
+    scale_color_manual(values = color_d,
+                       labels = parse(text = TeX(levels(clean$set_parsed)))) +
+    theme_minimal() +
+    theme_opts +
+    ylab(expression(R^{2})) + xlab(""))
 
-viridis::scale_fill_viridis(discrete = TRUE)
-
-(gg_r2 <- ggplot(data = clean, aes(variable, value)) +
-  geom_bar(aes(fill = set_parsed), stat = "identity", position = position_dodge2()) +
-  scale_fill_viridis_d(labels = parse(text = TeX(levels(clean$set_parsed)))) +
-  theme_minimal() +
-  theme(legend.title=element_blank()) +
-  ylab(expression(R^{2})) + xlab(""))
-
-ggsave("graphics/rmse_bar.png", gg_rmse, height = 7)
-ggsave("graphics/mrae_bar.png", gg_mrae, height = 7)
+ggsave("graphics/rmse_bar.png", gg_rmse, height = 5)
+ggsave("graphics/mrae_bar.png", gg_mrae, height = 5)
 ggsave("graphics/r2_bar.png", gg_r2)
 
 # https://stackoverflow.com/a/20502085/3362993
