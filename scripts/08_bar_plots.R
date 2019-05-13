@@ -8,8 +8,8 @@ library(latex2exp)
 library(colorblindr)
 
 # Interpolation scenarios:
-# (2) random25 : Random-Small
-# (1) random75: Random-Large
+# (2) random25 : Random-Large
+# (1) random75: Random-Small
 # (3) Local-EC_Lakesmall = Cluster_strat75_holdout : Stratified-Type
 # (4) Regional-EC_Regionsmall = Hu4_strat75_holdout : Stratified-Region
 
@@ -82,7 +82,8 @@ clean <- bar_plot_clean(raw)
   geom_segment(aes(xend = set_parsed, yend = 0, x = set_parsed,
                    y = value, color = set_parsed),
                lineend = "butt", size = bar_size) +
-  facet_wrap(~variable) +
+    ylim(0, 1) +
+  facet_wrap(~variable, scales = "free") +
   scale_color_manual(values = color_d,
                      labels = parse(text = TeX(levels(clean$set_parsed)))) +
   theme_minimal() +
@@ -106,16 +107,51 @@ raw           <- readxl::read_excel(
 
 clean <- bar_plot_clean(raw)
 
+zero_pad <- function(x){
+  sapply(x, function(y){
+    if(!is.na(y)){
+      if(nchar(y) < width){
+        stringr::str_pad(paste0(y, "."), width = 4, side = "right",
+                         pad = "0")
+      }else{
+        y
+      }
+    }else{
+      y
+    }
+  })
+}
+
+my_breaks <- function(x) {
+  if(max(x) < 11){
+    seq(0, 5, 1)
+  }else{
+    if(max(x) < 200){
+      seq(0, 12, 3)
+    }else{
+      seq(0, 300, 50)
+    }
+  }
+}
+
 (gg_mrae <- ggplot(data = clean) +
       geom_segment(aes(xend = set_parsed, yend = 0, x = set_parsed,
                        y = value, color = set_parsed),
                    lineend = "butt", size = bar_size) +
+      scale_y_continuous(breaks = my_breaks,
+                         labels = zero_pad) +
       facet_wrap(~variable, scales = "free", labeller = label_value) +
       scale_color_manual(values = color_d,
                          labels = parse(text = TeX(levels(clean$set_parsed)))) +
       theme_minimal() +
+      theme(strip.text = element_blank()) +
       theme_opts +
       ylab("MRAE") + xlab(""))
+
+gg_error <- plot_grid(gg_rmse + theme(axis.text.x = element_blank()),
+          gg_mrae + theme(plot.title = element_blank()),
+          ncol = 1, rel_heights = c(0.8, 1),
+          labels = c("A.", "B."))
 
 # ---- r2 ----
 
@@ -144,8 +180,7 @@ clean      <- bar_plot_clean(raw)
     theme_opts +
     ylab(expression(R^{2})) + xlab(""))
 
-ggsave("graphics/rmse_bar.png", gg_rmse, height = 5)
-ggsave("graphics/mrae_bar.png", gg_mrae, height = 5)
+ggsave("graphics/error_bar.png", gg_error, height = 8)
 ggsave("graphics/r2_bar.png", gg_r2)
 
 # https://stackoverflow.com/a/20502085/3362993
