@@ -33,20 +33,20 @@ bar_size <- 4.8
 
 label_key <- data.frame(
   set = factor(c(
-    "random25", "random75", "cluster_strat75", "hu4_strat",
-    "cluster_random50", "hu4_random",
+    "random25", "random75", "cluster_strat75",
+    "hu4_strat", "cluster_random50", "hu4_random",
     "hu4_ago"
   ), levels = c(
-    "random25", "random75", "cluster_strat75", "hu4_strat",
-    "cluster_random50", "hu4_random",
+    "random25", "random75", "cluster_strat75",
+    "hu4_strat", "cluster_random50", "hu4_random",
     "hu4_ago"
   )),
   set_parsed = factor(c(
-    "Random-Small", "Random-Large", "Stratified-Type",
+    "Random-Large", "Random-Small", "Stratified-Type",
     "Stratified-Region", "Targeted-Type", "Targeted-Region",
     "Targeted-AgRegion"
   ), levels = c(
-    "Random-Small", "Random-Large", "Stratified-Type",
+    "Random-Large", "Random-Small", "Stratified-Type",
     "Stratified-Region", "Targeted-Type", "Targeted-Region",
     "Targeted-AgRegion")),
   stringsAsFactors = FALSE
