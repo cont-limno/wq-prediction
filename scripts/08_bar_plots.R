@@ -24,6 +24,7 @@ theme_opts <- theme(axis.text.x = element_text(angle = 90),
                     legend.position = "none")
 
 bar_size <- 4.8
+facet_spacing <- 1.85
 
 (color_d <- c(
   rep("#fff7bc", 2),
@@ -86,11 +87,12 @@ clean <- bar_plot_clean(raw)
                    y = value, color = set_parsed),
                lineend = "butt", size = bar_size) +
     ylim(0, 1) +
-  facet_wrap(~variable, scales = "free") +
+  facet_wrap(~variable) +
   scale_color_manual(values = color_d,
                      labels = parse(text = TeX(levels(clean$set_parsed)))) +
   theme_minimal() +
     theme_opts +
+    theme(panel.spacing.x = unit(facet_spacing, "lines")) +
   ylab("RMSE") + xlab(""))
 
 # ---- median_errors ----
@@ -111,6 +113,21 @@ raw           <- readxl::read_excel(
 clean <- bar_plot_clean(raw)
 
 zero_pad <- function(x, width = 3){
+  sapply(x, function(y){
+    if(!is.na(y)){
+      if(nchar(y) < width){
+        stringr::str_pad(paste0(y, "."), width = 4, side = "right",
+                         pad = "0")
+      }else{
+        y
+      }
+    }else{
+      y
+    }
+  })
+}
+
+zero_pad2 <- function(x, width = 1){
   sapply(x, function(y){
     if(!is.na(y)){
       if(nchar(y) < width){
@@ -151,13 +168,7 @@ my_breaks <- function(x) {
       theme_opts +
       ylab("MRAE") + xlab(""))
 
-gg_error <- plot_grid(gg_rmse + theme(axis.text.x = element_blank()),
-          gg_mrae + theme(plot.title = element_blank()),
-          ncol = 1, rel_heights = c(0.8, 1),
-          labels = c("A.", "B."))
-
 # ---- r2 ----
-
 raw           <- readxl::read_excel(
   "data/bar_plot_data/R_squared_03072019Qi.xlsx",
   sheet = "conditional")[1:35,1:3] %>%
@@ -176,17 +187,27 @@ clean      <- bar_plot_clean(raw)
     geom_segment(aes(xend = set_parsed, yend = 0, x = set_parsed,
                      y = value, color = set_parsed),
                  lineend = "butt", size = bar_size) +
+    scale_y_continuous(breaks = seq(0.10, 0.60, by = 0.10),
+                       labels = zero_pad2) +
     facet_wrap(~variable, labeller = label_value) +
     scale_color_manual(values = color_d,
                        labels = parse(text = TeX(levels(clean$set_parsed)))) +
     theme_minimal() +
     theme_opts +
+    theme(panel.spacing.x = unit(facet_spacing, "lines")) +
     ylab(expression(R^{2})) + xlab(""))
 
-ggsave("graphics/error_bar.png", gg_error, height = 8)
-ggsave("graphics/r2_bar.png", gg_r2)
+(gg_all <- plot_grid(gg_rmse + theme(axis.text.x = element_blank()),
+                    gg_mrae + theme(plot.title = element_blank(),
+                                    axis.text.x = element_blank()),
+                    gg_r2  + theme(strip.text = element_blank(),
+                                   plot.title = element_blank()),
+                                ncol = 1, rel_heights = c(0.62, 0.57, 0.9),
+                                labels = c("A.", "B.", "C.")))
+
+ggsave("graphics/bar_plots.png", gg_all, height = 8)
 
 # https://stackoverflow.com/a/20502085/3362993
 pdf("graphics/bar_plots.pdf")
-invisible(lapply(list(gg_rmse, gg_mrae, gg_r2), print))
+invisible(lapply(list(gg_all), print))
 dev.off()
