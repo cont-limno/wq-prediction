@@ -5,7 +5,7 @@ library(dplyr)
 library(janitor)
 library(cowplot)
 library(latex2exp)
-library(colorblindr)
+library(colorblindr) # devtools::install_github("clauswilke/colorblindr")
 
 # Interpolation scenarios:
 # (2) random25 : Random-Large
@@ -26,7 +26,8 @@ theme_opts <- theme(axis.text.x = element_text(angle = 90),
 bar_size <- 4.8
 
 (color_d <- c(
-  rep("#b2df8a", 4),
+  rep("#fff7bc", 2),
+  rep("#b2df8a", 2),
   rep("#1f78b4", 3)
   ))
 # scales::show_col(color_d)
