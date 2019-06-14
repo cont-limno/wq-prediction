@@ -107,7 +107,7 @@ raw           <- readxl::read_excel(
 
 clean <- bar_plot_clean(raw)
 
-zero_pad <- function(x){
+zero_pad <- function(x, width = 3){
   sapply(x, function(y){
     if(!is.na(y)){
       if(nchar(y) < width){
