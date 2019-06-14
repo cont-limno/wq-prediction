@@ -60,7 +60,7 @@ bar_plot_clean <- function(raw){
     dplyr::filter(!(variable %in% "secchi")) %>%
     left_join(label_key, by = "set") %>%
     left_join(random_lines) %>%
-    mutate(variable = factor(variable, levels = c("TP", "TN", "Chla", "secchi"))) %>%
+    mutate(variable = factor(variable, levels = c("TP", "TN", "CHL", "secchi"))) %>%
     mutate(polation = case_when(
       set %in% c("random25", "random75",
                  "cluster_strat75", "hu4_strat") ~ "interpolation",
@@ -74,7 +74,9 @@ raw           <- readxl::read_excel(
   "data/bar_plot_data/2019.03.08LPEP2-RMSE-results_dec2018.xlsx",
                           sheet = "conditional-combined plot")
 names(raw)[1] <- "variable"
-raw <- tidyr::gather(raw, key = set, value = value, -variable)
+raw <- tidyr::gather(raw, key = set, value = value, -variable) %>%
+  mutate(variable = case_when(variable %in% c("Chla") ~ "CHL",
+                              TRUE ~ variable))
 
 clean <- bar_plot_clean(raw)
 
@@ -102,7 +104,7 @@ raw           <- readxl::read_excel(
   rename(value = error_nonrelative) %>%
   mutate(set = case_when(set %in% c("cluster_random50_holdout") ~ "cluster_random50",
                               TRUE ~ set)) %>%
-  mutate(variable = case_when(variable %in% c("chla") ~ "Chla",
+  mutate(variable = case_when(variable %in% c("chla") ~ "CHL",
                              TRUE ~ variable))
 
 clean <- bar_plot_clean(raw)
@@ -164,7 +166,7 @@ raw           <- readxl::read_excel(
   tidyr::fill(variable, .direction = "down") %>%
   mutate(set = case_when(set %in% c("cluster_random50_holdout") ~ "cluster_random50",
                          TRUE ~ set)) %>%
-  mutate(variable = case_when(variable %in% c("chla") ~ "Chla",
+  mutate(variable = case_when(variable %in% c("chla") ~ "CHL",
                               TRUE ~ variable))
 
 clean      <- bar_plot_clean(raw)
