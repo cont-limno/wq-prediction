@@ -27,7 +27,7 @@ bar_size <- 4.8
 facet_spacing <- 1.85
 
 (color_d <- c(
-  rep("#fff7bc", 2),
+  rep("#ffef77", 2),
   rep("#b2df8a", 2),
   rep("#1f78b4", 3)
   ))
