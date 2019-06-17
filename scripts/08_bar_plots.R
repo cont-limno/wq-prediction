@@ -6,6 +6,9 @@ library(janitor)
 library(cowplot)
 library(latex2exp)
 library(colorblindr) # devtools::install_github("clauswilke/colorblindr")
+library(extrafont)
+font_import()
+View(fonttable())
 
 # Interpolation scenarios:
 # (2) random25 : Random-Large
@@ -18,7 +21,8 @@ library(colorblindr) # devtools::install_github("clauswilke/colorblindr")
 # (2) Random_Regionmoderate = Hu4_random50_holdout : Targeted-Region
 # (3) Regional-LU_Regionlarge = Hu4_ag50_holdout : Targeted-AgRegion
 
-theme_opts <- theme(axis.text.x = element_text(angle = 90),
+theme_opts <- theme(#axis.text.x = element_text(angle = 45, hjust = 0.98),
+                    axis.text.x = element_text(angle = 90, family = "Liberation Mono"),
                     legend.title = element_blank(),
                     panel.border = element_rect(fill = "transparent", size = 1.2),
                     legend.position = "none")
@@ -33,6 +37,14 @@ facet_spacing <- 1.85
   ))
 # scales::show_col(color_d)
 
+label_names <- c(
+  "(a) Random-Large", "(b) Random-Small", "(c) Stratified-Type",
+  "(d) Stratified-Region", "(e) Targeted-Type", "(f) Targeted-Region",
+  "(g) Targeted-AgRegion"
+)
+label_names <- stringr::str_pad(label_names, max(nchar(label_names)),
+                                side = "right")
+
 label_key <- data.frame(
   set = factor(c(
     "random25", "random75", "cluster_strat75",
@@ -43,14 +55,7 @@ label_key <- data.frame(
     "hu4_strat", "cluster_random50", "hu4_random",
     "hu4_ago"
   )),
-  set_parsed = factor(c(
-    "Random-Large", "Random-Small", "Stratified-Type",
-    "Stratified-Region", "Targeted-Type", "Targeted-Region",
-    "Targeted-AgRegion"
-  ), levels = c(
-    "Random-Large", "Random-Small", "Stratified-Type",
-    "Stratified-Region", "Targeted-Type", "Targeted-Region",
-    "Targeted-AgRegion")),
+  set_parsed = factor(label_names, levels = label_names),
   stringsAsFactors = FALSE
 )
 
@@ -197,13 +202,18 @@ clean      <- bar_plot_clean(raw)
     theme(panel.spacing.x = unit(facet_spacing, "lines")) +
     ylab(expression(R^{2})) + xlab(""))
 
-(gg_all <- plot_grid(gg_rmse + theme(axis.text.x = element_blank()),
-                    gg_mrae + theme(plot.title = element_blank(),
-                                    axis.text.x = element_blank()),
-                    gg_r2  + theme(strip.text = element_blank(),
-                                   plot.title = element_blank()),
-                                ncol = 1, rel_heights = c(0.62, 0.57, 0.9),
+(gg_all <- plot_grid(
+  gg_rmse + theme(axis.text.x = element_blank()),
+  gg_mrae + theme(plot.title = element_blank(),
+                  axis.text.x = element_blank()),
+  gg_r2  + theme(strip.text = element_blank(),
+                 plot.title = element_blank()),
+                                ncol = 1, rel_heights = c(0.59, 0.53, 0.85),
                                 labels = c("A.", "B.", "C.")))
+
+# plot_grid(ggplot() + geom_blank(color = "white"),
+#           gg_all,
+#           ncol = 2, rel_widths = c(0.01, 1))
 
 ggsave("graphics/bar_plots.png", gg_all, height = 8)
 
