@@ -1,6 +1,6 @@
 ################# LPEP2: TP frequency distributions ###########################################################
 # Date: 3-15-19
-# updated: 6-17-19
+# updated: 6-20-19
 # Author: Ian McCullough, immccull@gmail.com
 ################################################################################################
 
@@ -45,7 +45,7 @@ plot_colorz <- c('royalblue','orange')
 title_size = 7
 
 #### TP ####
-TP_xlims <- c(0,1250)
+TP_xlims <- c(0,200)
 TP_ylims <- c(0,0.05)
 variable_label <- grobTree(textGrob("TP", x=0.8,  y=0.9, hjust=0,
                                     gp=gpar(col="black", fontsize=title_size)))
@@ -56,14 +56,14 @@ plotA <- ggplot(datatab, aes(x=tp, fill=factor(random25_holdout))) + geom_densit
   scale_x_continuous(limits=TP_xlims)+
   scale_y_continuous(limits=TP_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('a) Small test dataset')+
+  ggtitle('(a) Random-Large')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # random75_holdout
 plotB <- ggplot(datatab, aes(x=tp, fill=factor(random75_holdout))) + geom_density(alpha=0.75)+
@@ -71,14 +71,14 @@ plotB <- ggplot(datatab, aes(x=tp, fill=factor(random75_holdout))) + geom_densit
   scale_x_continuous(limits=TP_xlims)+
   scale_y_continuous(limits=TP_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('b) Large test dataset')+
+  ggtitle('(b) Random-Small')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # cluster_strat75_holdout
 plotC <- ggplot(datatab, aes(x=tp, fill=factor(cluster_strat75_holdout))) + geom_density(alpha=0.75)+
@@ -86,14 +86,14 @@ plotC <- ggplot(datatab, aes(x=tp, fill=factor(cluster_strat75_holdout))) + geom
   scale_x_continuous(limits=TP_xlims)+
   scale_y_continuous(limits=TP_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('c) Stratified by ecosystem type')+
+  ggtitle('(c) Stratified-Type')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # hu4_strat75_holdout
 plotD <- ggplot(datatab, aes(x=tp, fill=factor(hu4_strat75_holdout))) + geom_density(alpha=0.75)+
@@ -101,14 +101,14 @@ plotD <- ggplot(datatab, aes(x=tp, fill=factor(hu4_strat75_holdout))) + geom_den
   scale_x_continuous(limits=TP_xlims)+
   scale_y_continuous(limits=TP_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('d) Stratified by region')+
+  ggtitle('(d) Stratified-Region')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # cluster_random50_holdout
 plotE <- ggplot(datatab, aes(x=tp, fill=factor(cluster_random50_holdout))) + geom_density(alpha=0.75)+
@@ -116,14 +116,14 @@ plotE <- ggplot(datatab, aes(x=tp, fill=factor(cluster_random50_holdout))) + geo
   scale_x_continuous(limits=TP_xlims)+
   scale_y_continuous(limits=TP_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('e) Targeted by ecosystem type')+
+  ggtitle('(e) Targeted-Type')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # hu4_random50_holdout
 plotF <- ggplot(datatab, aes(x=tp, fill=factor(hu4_random50_holdout))) + geom_density(alpha=0.75)+
@@ -131,14 +131,14 @@ plotF <- ggplot(datatab, aes(x=tp, fill=factor(hu4_random50_holdout))) + geom_de
   scale_x_continuous(limits=TP_xlims)+
   scale_y_continuous(limits=TP_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('f) Targeted by region')+
+  ggtitle('(f) Targeted-Region')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # hu4_ag50_holdout
 plotG <- ggplot(datatab, aes(x=tp, fill=factor(hu4_ag50_holdout))) + geom_density(alpha=0.75)+
@@ -146,14 +146,14 @@ plotG <- ggplot(datatab, aes(x=tp, fill=factor(hu4_ag50_holdout))) + geom_densit
   scale_x_continuous(limits=TP_xlims)+
   scale_y_continuous(limits=TP_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('g) Targeted by land use regions')+
+  ggtitle('(g) Targeted-AgRegion')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # blank plot for spacing in multi-panel plot
 blank.plot <- ggplot(datatab, aes(x=tp,y=chal))+ geom_blank() +
@@ -197,13 +197,13 @@ jpeg('graphics/density_plots/tp.jpeg',width = 6,height = 5,units = 'in',res=600)
 # (upper left, upper mid, uppper right,
 # mid left, mid mid, mid right,
 # bot left, bot mid, bot right)
-grid.arrange(plotA, plotB, plotC,
-             plotD, plotE, plotF,
+grid.arrange(plotA, plotC, plotE,
+             plotB, plotD, plotF,
              legend, blank.plot, plotG, nrow=3)
 dev.off()
 
 #### Chla ####
-chla_xlims <- c(0,400)
+chla_xlims <- c(0,100)
 chla_ylims <- c(0,0.1)
 variable_label <- grobTree(textGrob("CHL", x=0.8,  y=0.9, hjust=0,
                                     gp=gpar(col="black", fontsize=title_size)))
@@ -214,14 +214,14 @@ plotA <- ggplot(datatab, aes(x=chal, fill=factor(random25_holdout))) + geom_dens
   scale_x_continuous(limits=chla_xlims)+
   scale_y_continuous(limits=chla_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('a) Small test dataset')+
+  ggtitle('(a) Random-Large')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # random75_holdout
 plotB <- ggplot(datatab, aes(x=chal, fill=factor(random75_holdout))) + geom_density(alpha=0.75)+
@@ -229,14 +229,14 @@ plotB <- ggplot(datatab, aes(x=chal, fill=factor(random75_holdout))) + geom_dens
   scale_x_continuous(limits=chla_xlims)+
   scale_y_continuous(limits=chla_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('b) Large test dataset')+
+  ggtitle('(b) Random-Small')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # cluster_strat75_holdout
 plotC <- ggplot(datatab, aes(x=chal, fill=factor(cluster_strat75_holdout))) + geom_density(alpha=0.75)+
@@ -244,14 +244,14 @@ plotC <- ggplot(datatab, aes(x=chal, fill=factor(cluster_strat75_holdout))) + ge
   scale_x_continuous(limits=chla_xlims)+
   scale_y_continuous(limits=chla_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('c) Stratified by ecosystem type')+
+  ggtitle('(c) Stratified-Type')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # hu4_strat75_holdout
 plotD <- ggplot(datatab, aes(x=chal, fill=factor(hu4_strat75_holdout))) + geom_density(alpha=0.75)+
@@ -259,14 +259,14 @@ plotD <- ggplot(datatab, aes(x=chal, fill=factor(hu4_strat75_holdout))) + geom_d
   scale_x_continuous(limits=chla_xlims)+
   scale_y_continuous(limits=chla_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('d) Stratified by region')+
+  ggtitle('(d) Stratified-Region')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # cluster_random50_holdout
 plotE <- ggplot(datatab, aes(x=chal, fill=factor(cluster_random50_holdout))) + geom_density(alpha=0.75)+
@@ -274,14 +274,14 @@ plotE <- ggplot(datatab, aes(x=chal, fill=factor(cluster_random50_holdout))) + g
   scale_x_continuous(limits=chla_xlims)+
   scale_y_continuous(limits=chla_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('e) Targeted by ecosystem type')+
+  ggtitle('(e) Targeted-Type')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # hu4_random50_holdout
 plotF <- ggplot(datatab, aes(x=chal, fill=factor(hu4_random50_holdout))) + geom_density(alpha=0.75)+
@@ -289,14 +289,14 @@ plotF <- ggplot(datatab, aes(x=chal, fill=factor(hu4_random50_holdout))) + geom_
   scale_x_continuous(limits=chla_xlims)+
   scale_y_continuous(limits=chla_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('f) Targeted by region')+
+  ggtitle('(f) Targeted-Region')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # hu4_ag50_holdout
 plotG <- ggplot(datatab, aes(x=chal, fill=factor(hu4_ag50_holdout))) + geom_density(alpha=0.75)+
@@ -304,27 +304,27 @@ plotG <- ggplot(datatab, aes(x=chal, fill=factor(hu4_ag50_holdout))) + geom_dens
   scale_x_continuous(limits=chla_xlims)+
   scale_y_continuous(limits=chla_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('g) Targeted by land use regions')+
+  ggtitle('(g) Targeted-AgRegion')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 jpeg('graphics/density_plots/chla.jpeg',width = 6,height = 5,units = 'in',res=600)
 # plotting positions!
 # (upper left, upper mid, uppper right,
 # mid left, mid mid, mid right,
 # bot left, bot mid, bot right)
-grid.arrange(plotA, plotB, plotC,
-             plotD, plotE, plotF,
+grid.arrange(plotA, plotC, plotE,
+             plotB, plotD, plotF,
              legend, blank.plot, plotG, nrow=3)
 dev.off()
 
 #### TN ####
-TN_xlims <- c(0,20000)
+TN_xlims <- c(0,7000)
 TN_ylims <- c(0,0.0015)
 variable_label <- grobTree(textGrob("TN", x=0.8,  y=0.9, hjust=0,
                                     gp=gpar(col="black", fontsize=title_size)))
@@ -335,14 +335,14 @@ plotA <- ggplot(datatab, aes(x=tn, fill=factor(random25_holdout))) + geom_densit
   scale_x_continuous(limits=TN_xlims)+
   scale_y_continuous(limits=TN_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('a) Small test dataset')+
+  ggtitle('(a) Random-Large')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # random75_holdout
 plotB <- ggplot(datatab, aes(x=tn, fill=factor(random75_holdout))) + geom_density(alpha=0.75)+
@@ -350,14 +350,14 @@ plotB <- ggplot(datatab, aes(x=tn, fill=factor(random75_holdout))) + geom_densit
   scale_x_continuous(limits=TN_xlims)+
   scale_y_continuous(limits=TN_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('b) Large test dataset')+
+  ggtitle('(b) Random-Small')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # cluster_strat75_holdout
 plotC <- ggplot(datatab, aes(x=tn, fill=factor(cluster_strat75_holdout))) + geom_density(alpha=0.75)+
@@ -365,14 +365,14 @@ plotC <- ggplot(datatab, aes(x=tn, fill=factor(cluster_strat75_holdout))) + geom
   scale_x_continuous(limits=TN_xlims)+
   scale_y_continuous(limits=TN_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('c) Stratified by ecosystem type')+
+  ggtitle('(c) Stratified-Type')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # hu4_strat75_holdout
 plotD <- ggplot(datatab, aes(x=tn, fill=factor(hu4_strat75_holdout))) + geom_density(alpha=0.75)+
@@ -380,14 +380,14 @@ plotD <- ggplot(datatab, aes(x=tn, fill=factor(hu4_strat75_holdout))) + geom_den
   scale_x_continuous(limits=TN_xlims)+
   scale_y_continuous(limits=TN_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('d) Stratified by region')+
+  ggtitle('(d) Stratified-Region')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # cluster_random50_holdout
 plotE <- ggplot(datatab, aes(x=tn, fill=factor(cluster_random50_holdout))) + geom_density(alpha=0.75)+
@@ -395,14 +395,14 @@ plotE <- ggplot(datatab, aes(x=tn, fill=factor(cluster_random50_holdout))) + geo
   scale_x_continuous(limits=TN_xlims)+
   scale_y_continuous(limits=TN_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('e) Targeted by ecosystem type')+
+  ggtitle('(e) Targeted-Type')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # hu4_random50_holdout
 plotF <- ggplot(datatab, aes(x=tn, fill=factor(hu4_random50_holdout))) + geom_density(alpha=0.75)+
@@ -410,14 +410,14 @@ plotF <- ggplot(datatab, aes(x=tn, fill=factor(hu4_random50_holdout))) + geom_de
   scale_x_continuous(limits=TN_xlims)+
   scale_y_continuous(limits=TN_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('f) Targeted by region')+
+  ggtitle('(f) Targeted-Region')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # hu4_ag50_holdout
 plotG <- ggplot(datatab, aes(x=tn, fill=factor(hu4_ag50_holdout))) + geom_density(alpha=0.75)+
@@ -425,27 +425,27 @@ plotG <- ggplot(datatab, aes(x=tn, fill=factor(hu4_ag50_holdout))) + geom_densit
   scale_x_continuous(limits=TN_xlims)+
   scale_y_continuous(limits=TN_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('g) Targeted by land use regions')+
+  ggtitle('(g) Targeted-AgRegion')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 jpeg('graphics/density_plots/tn.jpeg',width = 6,height = 5,units = 'in',res=600)
 # plotting positions!
 # (upper left, upper mid, uppper right,
 # mid left, mid mid, mid right,
 # bot left, bot mid, bot right)
-grid.arrange(plotA, plotB, plotC,
-             plotD, plotE, plotF,
+grid.arrange(plotA, plotC, plotE,
+             plotB, plotD, plotF,
              legend, blank.plot, plotG, nrow=3)
 dev.off()
 
 #### Secchi ####
-secchi_xlims <- c(0,20)
+secchi_xlims <- c(0,15)
 secchi_ylims <- c(0,0.35)
 variable_label <- grobTree(textGrob("Clarity", x=0.8,  y=0.9, hjust=0,
                                     gp=gpar(col="black", fontsize=title_size)))
@@ -456,14 +456,14 @@ plotA <- ggplot(datatab, aes(x=secchi, fill=factor(random25_holdout))) + geom_de
   scale_x_continuous(limits=secchi_xlims)+
   scale_y_continuous(limits=secchi_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('a) Small test dataset')+
+  ggtitle('(a) Random-Large')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # random75_holdout
 plotB <- ggplot(datatab, aes(x=secchi, fill=factor(random75_holdout))) + geom_density(alpha=0.75)+
@@ -471,14 +471,14 @@ plotB <- ggplot(datatab, aes(x=secchi, fill=factor(random75_holdout))) + geom_de
   scale_x_continuous(limits=secchi_xlims)+
   scale_y_continuous(limits=secchi_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('b) Large test dataset')+
+  ggtitle('(b) Random-Small')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # cluster_strat75_holdout
 plotC <- ggplot(datatab, aes(x=secchi, fill=factor(cluster_strat75_holdout))) + geom_density(alpha=0.75)+
@@ -486,14 +486,14 @@ plotC <- ggplot(datatab, aes(x=secchi, fill=factor(cluster_strat75_holdout))) + 
   scale_x_continuous(limits=secchi_xlims)+
   scale_y_continuous(limits=secchi_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('c) Stratified by ecosystem type')+
+  ggtitle('(c) Stratified-Type')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # hu4_strat75_holdout
 plotD <- ggplot(datatab, aes(x=secchi, fill=factor(hu4_strat75_holdout))) + geom_density(alpha=0.75)+
@@ -501,14 +501,14 @@ plotD <- ggplot(datatab, aes(x=secchi, fill=factor(hu4_strat75_holdout))) + geom
   scale_x_continuous(limits=secchi_xlims)+
   scale_y_continuous(limits=secchi_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('d) Stratified by region')+
+  ggtitle('(d) Stratified-Region')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # cluster_random50_holdout
 plotE <- ggplot(datatab, aes(x=secchi, fill=factor(cluster_random50_holdout))) + geom_density(alpha=0.75)+
@@ -516,14 +516,14 @@ plotE <- ggplot(datatab, aes(x=secchi, fill=factor(cluster_random50_holdout))) +
   scale_x_continuous(limits=secchi_xlims)+
   scale_y_continuous(limits=secchi_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('e) Targeted by ecosystem type')+
+  ggtitle('(e) Targeted-Type')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # hu4_random50_holdout
 plotF <- ggplot(datatab, aes(x=secchi, fill=factor(hu4_random50_holdout))) + geom_density(alpha=0.75)+
@@ -531,14 +531,14 @@ plotF <- ggplot(datatab, aes(x=secchi, fill=factor(hu4_random50_holdout))) + geo
   scale_x_continuous(limits=secchi_xlims)+
   scale_y_continuous(limits=secchi_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('f) Targeted by region')+
+  ggtitle('(f) Targeted-Region')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # hu4_ag50_holdout
 plotG <- ggplot(datatab, aes(x=secchi, fill=factor(hu4_ag50_holdout))) + geom_density(alpha=0.75)+
@@ -546,27 +546,27 @@ plotG <- ggplot(datatab, aes(x=secchi, fill=factor(hu4_ag50_holdout))) + geom_de
   scale_x_continuous(limits=secchi_xlims)+
   scale_y_continuous(limits=secchi_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('g) Targeted by land use regions')+
+  ggtitle('(g) Targeted-AgRegion')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 jpeg('graphics/density_plots/clarity.jpeg',width = 6,height = 5,units = 'in',res=600)
 # plotting positions!
 # (upper left, upper mid, uppper right,
 # mid left, mid mid, mid right,
 # bot left, bot mid, bot right)
-grid.arrange(plotA, plotB, plotC,
-             plotD, plotE, plotF,
+grid.arrange(plotA, plotC, plotE,
+             plotB, plotD, plotF,
              legend, blank.plot, plotG, nrow=3)
 dev.off()
 
 #### Max depth ####
-depth_xlims <- c(0,200)
+depth_xlims <- c(0,60)
 depth_ylims <- c(0,0.08)
 variable_label <- grobTree(textGrob("Max depth", x=0.65,  y=0.9, hjust=0,
                                     gp=gpar(col="black", fontsize=title_size)))
@@ -577,14 +577,14 @@ plotA <- ggplot(datatab, aes(x=maxdepth_m, fill=factor(random25_holdout))) + geo
   scale_x_continuous(limits=depth_xlims)+
   scale_y_continuous(limits=depth_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('a) Small test dataset')+
+  ggtitle('(a) Random-Large')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # random75_holdout
 plotB <- ggplot(datatab, aes(x=maxdepth_m, fill=factor(random75_holdout))) + geom_density(alpha=0.75)+
@@ -592,14 +592,14 @@ plotB <- ggplot(datatab, aes(x=maxdepth_m, fill=factor(random75_holdout))) + geo
   scale_x_continuous(limits=depth_xlims)+
   scale_y_continuous(limits=depth_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('b) Large test dataset')+
+  ggtitle('(b) Random-Small')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # cluster_strat75_holdout
 plotC <- ggplot(datatab, aes(x=maxdepth_m, fill=factor(cluster_strat75_holdout))) + geom_density(alpha=0.75)+
@@ -607,14 +607,14 @@ plotC <- ggplot(datatab, aes(x=maxdepth_m, fill=factor(cluster_strat75_holdout))
   scale_x_continuous(limits=depth_xlims)+
   scale_y_continuous(limits=depth_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('c) Stratified by ecosystem type')+
+  ggtitle('(c) Stratified-Type')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # hu4_strat75_holdout
 plotD <- ggplot(datatab, aes(x=maxdepth_m, fill=factor(hu4_strat75_holdout))) + geom_density(alpha=0.75)+
@@ -622,14 +622,14 @@ plotD <- ggplot(datatab, aes(x=maxdepth_m, fill=factor(hu4_strat75_holdout))) + 
   scale_x_continuous(limits=depth_xlims)+
   scale_y_continuous(limits=depth_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('d) Stratified by region')+
+  ggtitle('(d) Stratified-Region')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # cluster_random50_holdout
 plotE <- ggplot(datatab, aes(x=maxdepth_m, fill=factor(cluster_random50_holdout))) + geom_density(alpha=0.75)+
@@ -637,14 +637,14 @@ plotE <- ggplot(datatab, aes(x=maxdepth_m, fill=factor(cluster_random50_holdout)
   scale_x_continuous(limits=depth_xlims)+
   scale_y_continuous(limits=depth_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('e) Targeted by ecosystem type')+
+  ggtitle('(e) Targeted-Type')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # hu4_random50_holdout
 plotF <- ggplot(datatab, aes(x=maxdepth_m, fill=factor(hu4_random50_holdout))) + geom_density(alpha=0.75)+
@@ -652,14 +652,14 @@ plotF <- ggplot(datatab, aes(x=maxdepth_m, fill=factor(hu4_random50_holdout))) +
   scale_x_continuous(limits=depth_xlims)+
   scale_y_continuous(limits=depth_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('f) Targeted by region')+
+  ggtitle('(f) Targeted-Region')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 # hu4_ag50_holdout
 plotG <- ggplot(datatab, aes(x=maxdepth_m, fill=factor(hu4_ag50_holdout))) + geom_density(alpha=0.75)+
@@ -667,25 +667,145 @@ plotG <- ggplot(datatab, aes(x=maxdepth_m, fill=factor(hu4_ag50_holdout))) + geo
   scale_x_continuous(limits=depth_xlims)+
   scale_y_continuous(limits=depth_ylims)+
   annotation_custom(variable_label)+
-  ggtitle('g) Targeted by land use regions')+
+  ggtitle('(g) Targeted-AgRegion')+
   scale_fill_manual(values=plot_colorz)+
   theme(panel.grid = element_blank(),
         legend.position='none',
         legend.title=element_blank(),
         axis.title=element_blank(),
         axis.text=element_text(size=title_size, color='black'),
-        plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
 
 jpeg('graphics/density_plots/maxdepth.jpeg',width = 6,height = 5,units = 'in',res=600)
 # plotting positions!
 # (upper left, upper mid, uppper right,
 # mid left, mid mid, mid right,
 # bot left, bot mid, bot right)
-grid.arrange(plotA, plotB, plotC,
-             plotD, plotE, plotF,
+grid.arrange(plotA, plotC, plotE,
+             plotB, plotD, plotF,
              legend, blank.plot, plotG, nrow=3)
 dev.off()
 
+#### IWS_forest ####
+forest_xlims <- c(0,100)
+forest_ylims <- c(0,0.025)
+variable_label <- grobTree(textGrob("IWS forest", x=0.65,  y=0.9, hjust=0,
+                                    gp=gpar(col="black", fontsize=title_size)))
+
+# random25_holdout
+plotA <- ggplot(datatab, aes(x=iws_nlcd2006_for, fill=factor(random25_holdout))) + geom_density(alpha=0.75)+
+  theme_bw()+
+  scale_x_continuous(limits=forest_xlims)+
+  scale_y_continuous(limits=forest_ylims)+
+  annotation_custom(variable_label)+
+  ggtitle('(a) Random-Large')+
+  scale_fill_manual(values=plot_colorz)+
+  theme(panel.grid = element_blank(),
+        legend.position='none',
+        legend.title=element_blank(),
+        axis.title=element_blank(),
+        axis.text=element_text(size=title_size, color='black'),
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
+
+# random75_holdout
+plotB <- ggplot(datatab, aes(x=iws_nlcd2006_for, fill=factor(random75_holdout))) + geom_density(alpha=0.75)+
+  theme_bw()+
+  scale_x_continuous(limits=forest_xlims)+
+  scale_y_continuous(limits=forest_ylims)+
+  annotation_custom(variable_label)+
+  ggtitle('(b) Random-Small')+
+  scale_fill_manual(values=plot_colorz)+
+  theme(panel.grid = element_blank(),
+        legend.position='none',
+        legend.title=element_blank(),
+        axis.title=element_blank(),
+        axis.text=element_text(size=title_size, color='black'),
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
+
+# cluster_strat75_holdout
+plotC <- ggplot(datatab, aes(x=iws_nlcd2006_for, fill=factor(cluster_strat75_holdout))) + geom_density(alpha=0.75)+
+  theme_bw()+
+  scale_x_continuous(limits=forest_xlims)+
+  scale_y_continuous(limits=forest_ylims)+
+  annotation_custom(variable_label)+
+  ggtitle('(c) Stratified-Type')+
+  scale_fill_manual(values=plot_colorz)+
+  theme(panel.grid = element_blank(),
+        legend.position='none',
+        legend.title=element_blank(),
+        axis.title=element_blank(),
+        axis.text=element_text(size=title_size, color='black'),
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
+
+# hu4_strat75_holdout
+plotD <- ggplot(datatab, aes(x=iws_nlcd2006_for, fill=factor(hu4_strat75_holdout))) + geom_density(alpha=0.75)+
+  theme_bw()+
+  scale_x_continuous(limits=forest_xlims)+
+  scale_y_continuous(limits=forest_ylims)+
+  annotation_custom(variable_label)+
+  ggtitle('(d) Stratified-Region')+
+  scale_fill_manual(values=plot_colorz)+
+  theme(panel.grid = element_blank(),
+        legend.position='none',
+        legend.title=element_blank(),
+        axis.title=element_blank(),
+        axis.text=element_text(size=title_size, color='black'),
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
+
+# cluster_random50_holdout
+plotE <- ggplot(datatab, aes(x=iws_nlcd2006_for, fill=factor(cluster_random50_holdout))) + geom_density(alpha=0.75)+
+  theme_bw()+
+  scale_x_continuous(limits=forest_xlims)+
+  scale_y_continuous(limits=forest_ylims)+
+  annotation_custom(variable_label)+
+  ggtitle('(e) Targeted-Type')+
+  scale_fill_manual(values=plot_colorz)+
+  theme(panel.grid = element_blank(),
+        legend.position='none',
+        legend.title=element_blank(),
+        axis.title=element_blank(),
+        axis.text=element_text(size=title_size, color='black'),
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
+
+# hu4_random50_holdout
+plotF <- ggplot(datatab, aes(x=iws_nlcd2006_for, fill=factor(hu4_random50_holdout))) + geom_density(alpha=0.75)+
+  theme_bw()+
+  scale_x_continuous(limits=forest_xlims)+
+  scale_y_continuous(limits=forest_ylims)+
+  annotation_custom(variable_label)+
+  ggtitle('(f) Targeted-Region')+
+  scale_fill_manual(values=plot_colorz)+
+  theme(panel.grid = element_blank(),
+        legend.position='none',
+        legend.title=element_blank(),
+        axis.title=element_blank(),
+        axis.text=element_text(size=title_size, color='black'),
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
+
+# hu4_ag50_holdout
+plotG <- ggplot(datatab, aes(x=iws_nlcd2006_for, fill=factor(hu4_ag50_holdout))) + geom_density(alpha=0.75)+
+  theme_bw()+
+  scale_x_continuous(limits=forest_xlims)+
+  scale_y_continuous(limits=forest_ylims)+
+  annotation_custom(variable_label)+
+  ggtitle('(g) Targeted-AgRegion')+
+  scale_fill_manual(values=plot_colorz)+
+  theme(panel.grid = element_blank(),
+        legend.position='none',
+        legend.title=element_blank(),
+        axis.title=element_blank(),
+        axis.text=element_text(size=title_size, color='black'),
+        plot.title=element_text(hjust=0.5, vjust=0, face='bold', size=title_size))
+
+jpeg('graphics/density_plots/IWS_forest.jpeg',width = 6,height = 5,units = 'in',res=600)
+# plotting positions!
+# (upper left, upper mid, uppper right,
+# mid left, mid mid, mid right,
+# bot left, bot mid, bot right)
+grid.arrange(plotA, plotC, plotE,
+             plotB, plotD, plotF,
+             legend, blank.plot, plotG, nrow=3)
+dev.off()
 
 
 #### histograms: old  and unmaintained ####
