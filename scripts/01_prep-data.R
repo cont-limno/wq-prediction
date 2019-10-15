@@ -125,6 +125,11 @@ limno_vars_WQ2       <- limno_vars_WQ1 %>%
 limno_data_WQ2_final <- left_join (limno_vars_WQ2, hu4_lagoslakeid_table,
                                    by = "lagoslakeid")
 
+# read in csv of lake clusters
+clusters <- read.csv("data/lake_clusters_4groups.csv")
+
+limno_data_WQ2_final <- left_join(limno_data_WQ2_final, clusters, by='lagoslakeid')
+
 # ----pull_local_predictors (for all lakes)----
 
 # lulc (2001 NLCD) #updated all to 2006
@@ -422,9 +427,9 @@ write.csv(HU4_predictors, "data/regional_predictors.csv", row.names = FALSE)
 # ---- add_holdout_ids ----
 ## FOR REVISION (by Ian McC)
 # converted single dataset generation into loop
-# loop generates 10 tables with columns for 5 data scenarios
-# the hu4_ag50_holdout scenario is not random, so it is the same in every output table
-# the other 4 scenarios are random and differ in each output table
+# loop generates 10 tables with columns for 7 data scenarios
+# the hu4_ag50_holdout scenario is not random, so it cannot be made into 7 different scenarios
+# remaining 6 scenarios are random or stratified random (by region, lake cluster)
 
 seed_seq <- c(364,365,366,367,368,369,370,371,372,373) #364 used in original submission
 
@@ -438,7 +443,6 @@ for (i in 1:length(seed_seq)){
   
   limno_data_WQ2_final <- mutate(limno_data_WQ2_final,
                                  random25_holdout = lagoslakeid %in% lagoslakeid_keep)
-  
   # sum(limno_data_WQ2_final$random25_holdout) / nrow(limno_data_WQ2_final)
   
   # randomly holdout 75% of the data
@@ -481,6 +485,16 @@ for (i in 1:length(seed_seq)){
   
   limno_data_WQ2_final <- mutate(limno_data_WQ2_final,
                                  hu4_strat75_holdout = lagoslakeid %in% lagoslakeid_strat_keep)
+  
+  # holdout 75% of lakes in each lake type cluster
+  cluster_strat_keep <- limno_data_WQ2_final %>%
+    group_by(groups) %>%
+    sample_frac(0.75) %>%
+    .$lagoslakeid
+  
+  limno_data_WQ2_final <- mutate(limno_data_WQ2_final,
+                                 cluster_strat75_holdout = lagoslakeid %in% cluster_strat_keep)
+  
   limno_data_WQ2_final <- dplyr::filter(limno_data_WQ2_final,
                                         hu4_zoneid != "OUT_OF_HU4")
   
@@ -488,5 +502,58 @@ for (i in 1:length(seed_seq)){
   write.csv(limno_data_WQ2_final, outname, row.names = FALSE)
   outname <- NULL
 }
+
+## manual adjust columns in each table for scenarios without 10 random iterations
+# for run 1, cluster_random50_holdout done manually and hu4_ag50_holdout is kept from previous for loop
+run1 <- read.csv("data/revision_datasets/wq2_single_run1.csv")
+run1$cluster_random50_holdout <- ifelse(test$groups==1 | test$groups==2, 'TRUE', 'FALSE')
+write.csv(run1, "data/revision_datasets/wq2_single_run1.csv")
+
+# for runs 2-6, cluster_random50_holdout done manually and hu4_ag50_holdout is made NA
+run2 <- read.csv("data/revision_datasets/wq2_single_run2.csv")
+run2$cluster_random50_holdout <- ifelse(test$groups==1 | test$groups==3, 'TRUE', 'FALSE')
+run2$hu4_ag50_holdout <- NA
+write.csv(run2, "data/revision_datasets/wq2_single_run2.csv")
+
+run3 <- read.csv("data/revision_datasets/wq2_single_run3.csv")
+run3$cluster_random50_holdout <- ifelse(test$groups==1 | test$groups==4, 'TRUE', 'FALSE')
+run3$hu4_ag50_holdout <- NA
+write.csv(run3, "data/revision_datasets/wq2_single_run3.csv")
+
+run4 <- read.csv("data/revision_datasets/wq2_single_run4.csv")
+run4$cluster_random50_holdout <- ifelse(test$groups==2 | test$groups==3, 'TRUE', 'FALSE')
+run4$hu4_ag50_holdout <- NA
+write.csv(run4, "data/revision_datasets/wq2_single_run4.csv")
+
+run5 <- read.csv("data/revision_datasets/wq2_single_run5.csv")
+run5$cluster_random50_holdout <- ifelse(test$groups==2 | test$groups==4, 'TRUE', 'FALSE')
+run5$hu4_ag50_holdout <- NA
+write.csv(run5, "data/revision_datasets/wq2_single_run5.csv")
+
+run6 <- read.csv("data/revision_datasets/wq2_single_run6.csv")
+run6$cluster_random50_holdout <- ifelse(test$groups==3 | test$groups==4, 'TRUE', 'FALSE')
+run6$hu4_ag50_holdout <- NA
+write.csv(run6, "data/revision_datasets/wq2_single_run6.csv")
+
+# for runs 7-10, cluster_random50_holdout and hu4_ag50_holdout are both NA
+run7 <- read.csv("data/revision_datasets/wq2_single_run7.csv")
+run7$cluster_random50_holdout <- NA
+run7$hu4_ag50_holdout <- NA
+write.csv(run7, "data/revision_datasets/wq2_single_run7.csv")
+
+run8 <- read.csv("data/revision_datasets/wq2_single_run8.csv")
+run8$cluster_random50_holdout <- NA
+run8$hu4_ag50_holdout <- NA
+write.csv(run8, "data/revision_datasets/wq2_single_run8.csv")
+
+run9 <- read.csv("data/revision_datasets/wq2_single_run9.csv")
+run9$cluster_random50_holdout <- NA
+run9$hu4_ag50_holdout <- NA
+write.csv(run9, "data/revision_datasets/wq2_single_run9.csv")
+
+run10 <- read.csv("data/revision_datasets/wq2_single_run10.csv")
+run10$cluster_random50_holdout <- NA
+run10$hu4_ag50_holdout <- NA
+write.csv(run10, "data/revision_datasets/wq2_single_run10.csv")
 
 #write.csv(limno_data_WQ2_final, "data/wq2_single.csv", row.names = FALSE) #used in original submission
