@@ -504,34 +504,36 @@ for (i in 1:length(seed_seq)){
 }
 
 ## manual adjust columns in each table for scenarios without 10 random iterations
+# test = FALSE
+# train = TRUE
 # for run 1, cluster_random50_holdout done manually and hu4_ag50_holdout is kept from previous for loop
 run1 <- read.csv("data/revision_datasets/wq2_single_run1.csv")
-run1$cluster_random50_holdout <- ifelse(test$groups==1 | test$groups==2, 'TRUE', 'FALSE')
+run1$cluster_random50_holdout <- ifelse(run1$groups==1 | run1$groups==2, 'TRUE', 'FALSE')
 write.csv(run1, "data/revision_datasets/wq2_single_run1.csv")
 
 # for runs 2-6, cluster_random50_holdout done manually and hu4_ag50_holdout is made NA
 run2 <- read.csv("data/revision_datasets/wq2_single_run2.csv")
-run2$cluster_random50_holdout <- ifelse(test$groups==1 | test$groups==3, 'TRUE', 'FALSE')
+run2$cluster_random50_holdout <- ifelse(run2$groups==1 | run2$groups==3, 'TRUE', 'FALSE')
 run2$hu4_ag50_holdout <- NA
 write.csv(run2, "data/revision_datasets/wq2_single_run2.csv")
 
 run3 <- read.csv("data/revision_datasets/wq2_single_run3.csv")
-run3$cluster_random50_holdout <- ifelse(test$groups==1 | test$groups==4, 'TRUE', 'FALSE')
+run3$cluster_random50_holdout <- ifelse(run3$groups==1 | run3$groups==4, 'TRUE', 'FALSE')
 run3$hu4_ag50_holdout <- NA
 write.csv(run3, "data/revision_datasets/wq2_single_run3.csv")
 
 run4 <- read.csv("data/revision_datasets/wq2_single_run4.csv")
-run4$cluster_random50_holdout <- ifelse(test$groups==2 | test$groups==3, 'TRUE', 'FALSE')
+run4$cluster_random50_holdout <- ifelse(run4$groups==2 | run4$groups==3, 'TRUE', 'FALSE')
 run4$hu4_ag50_holdout <- NA
 write.csv(run4, "data/revision_datasets/wq2_single_run4.csv")
 
 run5 <- read.csv("data/revision_datasets/wq2_single_run5.csv")
-run5$cluster_random50_holdout <- ifelse(test$groups==2 | test$groups==4, 'TRUE', 'FALSE')
+run5$cluster_random50_holdout <- ifelse(run5$groups==2 | run5$groups==4, 'TRUE', 'FALSE')
 run5$hu4_ag50_holdout <- NA
 write.csv(run5, "data/revision_datasets/wq2_single_run5.csv")
 
 run6 <- read.csv("data/revision_datasets/wq2_single_run6.csv")
-run6$cluster_random50_holdout <- ifelse(test$groups==3 | test$groups==4, 'TRUE', 'FALSE')
+run6$cluster_random50_holdout <- ifelse(run6$groups==3 | run6$groups==4, 'TRUE', 'FALSE')
 run6$hu4_ag50_holdout <- NA
 write.csv(run6, "data/revision_datasets/wq2_single_run6.csv")
 
