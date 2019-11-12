@@ -161,8 +161,13 @@ clean <- bar_plot_clean(raw) %>%
   mutate(ymin = value - (stdev / sqrt(10)), # we ran 10 replicate models
          ymax = value + (stdev / sqrt(10)))
 
+# compute y end values separately for each variable
+clean <- mutate(clean, yend = case_when(variable == "TP" ~ 4,
+                                 variable == "TN" ~ 120,
+                                 variable == "CHL" ~ 2))
+
 (gg_mrae <- ggplot(data = clean) +
-      geom_segment(aes(xend = set_parsed, yend = 0, x = set_parsed,
+      geom_segment(aes(xend = set_parsed, yend = yend, x = set_parsed,
                        y = value, color = set_parsed),
                    lineend = "butt", size = bar_size) +
     geom_errorbar(aes(ymin = ymin, ymax = ymax, x = set_parsed)) +
@@ -209,7 +214,8 @@ clean <- bar_plot_clean(raw) %>%
   gg_mrae + theme(plot.title = element_blank(),
                   strip.text = element_blank()),
                                 ncol = 1, rel_heights = c(0.59, 0.53, 0.85),
-                                labels = c("A.", "B.", "C.")))
+                                labels = c("A.", "B.", "C."),
+  hjust = -0.3))
 
 # plot_grid(ggplot() + geom_blank(color = "white"),
 #           gg_all,
