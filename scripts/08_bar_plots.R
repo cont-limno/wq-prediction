@@ -137,11 +137,11 @@ clean <- bar_plot_clean(raw) %>%
          ymax = value + (stdev / sqrt(10)))
 
 (gg_rmse <-  ggplot(data = clean) +
-  geom_segment(aes(xend = set_parsed, yend = 0, x = set_parsed,
+  geom_segment(aes(xend = set_parsed, yend = 0.45, x = set_parsed,
                    y = value, color = set_parsed),
                lineend = "butt", size = bar_size) +
   geom_errorbar(aes(ymin = ymin, ymax = ymax, x = set_parsed)) +
-  ylim(0, 1) +
+  ylim(0.45, 1) +
   facet_wrap(~variable) +
   scale_color_manual(values = color_d,
                      labels = parse(text = TeX(levels(clean$set_parsed)))) +
@@ -187,12 +187,13 @@ clean <- bar_plot_clean(raw) %>%
          ymax = value + (stdev / sqrt(10)))
 
 (gg_r2 <- ggplot(data = clean) +
-    geom_segment(aes(xend = set_parsed, yend = 0, x = set_parsed,
+    geom_segment(aes(xend = set_parsed, yend = 0.3, x = set_parsed,
                      y = value, color = set_parsed),
                  lineend = "butt", size = bar_size) +
     geom_errorbar(aes(ymin = ymin, ymax = ymax, x = set_parsed)) +
-    scale_y_continuous(breaks = seq(0.10, 0.60, by = 0.10),
+    scale_y_continuous(breaks = seq(0.30, 0.60, by = 0.10),
                        labels = zero_pad2) +
+    ylim(0.3, 0.65) +
     facet_wrap(~variable, labeller = label_value) +
     scale_color_manual(values = color_d,
                        labels = parse(text = TeX(levels(clean$set_parsed)))) +
