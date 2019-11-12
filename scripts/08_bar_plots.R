@@ -172,7 +172,6 @@ clean <- bar_plot_clean(raw) %>%
       scale_color_manual(values = color_d,
                          labels = parse(text = TeX(levels(clean$set_parsed)))) +
       theme_minimal() +
-      theme(strip.text = element_blank()) +
       theme_opts +
       ylab("MRAE") + xlab(""))
 
@@ -203,11 +202,11 @@ clean <- bar_plot_clean(raw) %>%
     ylab(expression(R^{2})) + xlab(""))
 
 (gg_all <- plot_grid(
-  gg_rmse + theme(axis.text.x = element_blank()),
+  gg_r2  + theme(axis.text.x = element_blank()),
+  gg_rmse + theme(axis.text.x = element_blank(),
+                  strip.text = element_blank()),
   gg_mrae + theme(plot.title = element_blank(),
-                  axis.text.x = element_blank()),
-  gg_r2  + theme(strip.text = element_blank(),
-                 plot.title = element_blank()),
+                  strip.text = element_blank()),
                                 ncol = 1, rel_heights = c(0.59, 0.53, 0.85),
                                 labels = c("A.", "B.", "C.")))
 
