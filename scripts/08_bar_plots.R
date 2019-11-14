@@ -132,9 +132,19 @@ raw <- read.csv("data/revision_datasets/mean_variance_statistics/MeanPerformance
   rename(variable = target, set = splitting, value = avg_rmse) %>%
   mutate(stdev = replace_na(sqrt(variance_rmse), 0))
 
-clean <- bar_plot_clean(raw) %>%
-  mutate(ymin = value - (stdev / sqrt(10)), # we ran 10 replicate models
-         ymax = value + (stdev / sqrt(10)))
+clean <- bar_plot_clean(raw)
+
+clean <- clean %>%
+  mutate(nreps = case_when(set == "cluster_strat75" ~ 6,
+                           set == "cluster_random50" ~ 6,
+                           TRUE ~ 10)) %>%
+  mutate(ymin = value - (stdev / sqrt(nreps)), # we ran 6 or 10 replicate models
+         ymax = value + (stdev / sqrt(nreps)))
+
+clean <- mutate(clean, yend = case_when(variable == "TP" ~ 4,
+                                        variable == "TN" ~ 120,
+                                        variable == "CHL" ~ 2))
+
 
 (gg_rmse <-  ggplot(data = clean) +
   geom_segment(aes(xend = set_parsed, yend = 0.45, x = set_parsed,
@@ -157,9 +167,14 @@ raw <- read.csv("data/revision_datasets/mean_variance_statistics/MeanPerformance
   rename(variable = target, set = splitting, value = avg_median_error_abs) %>%
   mutate(stdev = replace_na(sqrt(variance_median_error_abs), 0))
 
-clean <- bar_plot_clean(raw) %>%
-  mutate(ymin = value - (stdev / sqrt(10)), # we ran 10 replicate models
-         ymax = value + (stdev / sqrt(10)))
+clean <- bar_plot_clean(raw)
+
+clean <- clean %>%
+  mutate(nreps = case_when(set == "cluster_strat75" ~ 6,
+                           set == "cluster_random50" ~ 6,
+                           TRUE ~ 10)) %>%
+  mutate(ymin = value - (stdev / sqrt(nreps)), # we ran 6 or 10 replicate models
+         ymax = value + (stdev / sqrt(nreps)))
 
 # compute y end values separately for each variable
 clean <- mutate(clean, yend = case_when(variable == "TP" ~ 4,
@@ -187,9 +202,14 @@ raw <- read.csv("data/revision_datasets/mean_variance_statistics/MeanPerformance
   rename(variable = target, set = splitting, value = avg_r2) %>%
   mutate(stdev = replace_na(sqrt(variance_r2), 0))
 
-clean <- bar_plot_clean(raw) %>%
-  mutate(ymin = value - (stdev / sqrt(10)), # we ran 10 replicate models
-         ymax = value + (stdev / sqrt(10)))
+clean <- bar_plot_clean(raw)
+
+clean <- clean %>%
+  mutate(nreps = case_when(set == "cluster_strat75" ~ 6,
+                           set == "cluster_random50" ~ 6,
+                           TRUE ~ 10)) %>%
+  mutate(ymin = value - (stdev / sqrt(nreps)), # we ran 6 or 10 replicate models
+         ymax = value + (stdev / sqrt(nreps)))
 
 (gg_r2 <- ggplot(data = clean) +
     geom_segment(aes(xend = set_parsed, yend = 0.3, x = set_parsed,
