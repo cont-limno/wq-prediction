@@ -28,7 +28,6 @@ theme_opts <- theme(#axis.text.x = element_text(angle = 45, hjust = 0.98),
                     panel.border = element_rect(fill = "transparent", size = 1.2),
                     legend.position = "none")
 
-bar_size      <- 4.8
 facet_spacing <- 1.85
 
 (color_d <- c(
@@ -110,7 +109,7 @@ bar_plot_clean <- function(x){
                            TRUE ~ set)) %>%
 
     arrange(set) %>%
-    dplyr::select(variable, set, value, stdev)
+    dplyr::select(variable, set, value)
 
   clean <- x %>%
     dplyr::filter(!(variable %in% "secchi")) %>%
@@ -125,35 +124,23 @@ bar_plot_clean <- function(x){
   clean
 }
 
+flist <- paste0("data/revision_datasets/results_scaled/TrainedModels_conditionalsecchi/shortdata_",
+                1:10, "/results_shortdata.csv")
+raw <- lapply(flist, function(x) read.csv(x, stringsAsFactors = FALSE))
+raw <- dplyr::bind_rows(raw) %>%
+  janitor::clean_names()
+names(raw)[1:3] <- c("method", "variable", "set")
+# as.data.frame(table(paste(raw$variable, raw$set)))
+
 # ---- rmse ----
-raw <- read.csv("data/revision_datasets/mean_variance_statistics/MeanPerformanceAcross10.csv",
-                 stringsAsFactors = FALSE) %>%
-  janitor::clean_names() %>%
-  rename(variable = target, set = splitting, value = avg_rmse) %>%
-  mutate(stdev = replace_na(sqrt(variance_rmse), 0))
-
-clean <- bar_plot_clean(raw)
-
-clean <- clean %>%
-  mutate(nreps = case_when(set == "cluster_strat75" ~ 6,
-                           set == "cluster_random50" ~ 6,
-                           TRUE ~ 10)) %>%
-  mutate(ymin = value - (stdev / sqrt(nreps)), # we ran 6 or 10 replicate models
-         ymax = value + (stdev / sqrt(nreps)))
-
-clean <- mutate(clean, yend = case_when(variable == "TP" ~ 4,
-                                        variable == "TN" ~ 120,
-                                        variable == "CHL" ~ 2))
-
+clean <- bar_plot_clean(dplyr::select(raw,
+                                      variable, set, value = rmse_test))
 
 (gg_rmse <-  ggplot(data = clean) +
-  geom_segment(aes(xend = set_parsed, yend = 0.45, x = set_parsed,
-                   y = value, color = set_parsed),
-               lineend = "butt", size = bar_size) +
-  geom_errorbar(aes(ymin = ymin, ymax = ymax, x = set_parsed)) +
+    geom_boxplot(aes(x = set_parsed, y = value, fill = set_parsed), outlier.shape = NA) +
   ylim(0.45, 1) +
   facet_wrap(~variable) +
-  scale_color_manual(values = color_d,
+  scale_fill_manual(values = color_d,
                      labels = parse(text = TeX(levels(clean$set_parsed)))) +
   theme_minimal() +
     theme_opts +
@@ -161,66 +148,32 @@ clean <- mutate(clean, yend = case_when(variable == "TP" ~ 4,
   ylab("RMSE") + xlab(""))
 
 # ---- median_errors ----
-raw <- read.csv("data/revision_datasets/mean_variance_statistics/MeanPerformanceAcross10.csv",
-                stringsAsFactors = FALSE) %>%
-  janitor::clean_names() %>%
-  rename(variable = target, set = splitting, value = avg_median_error_abs) %>%
-  mutate(stdev = replace_na(sqrt(variance_median_error_abs), 0))
-
-clean <- bar_plot_clean(raw)
-
-clean <- clean %>%
-  mutate(nreps = case_when(set == "cluster_strat75" ~ 6,
-                           set == "cluster_random50" ~ 6,
-                           TRUE ~ 10)) %>%
-  mutate(ymin = value - (stdev / sqrt(nreps)), # we ran 6 or 10 replicate models
-         ymax = value + (stdev / sqrt(nreps)))
+clean <- bar_plot_clean(dplyr::select(raw,
+                                      variable, set, value = median_error_abs))
 
 # compute y end values separately for each variable
-clean <- mutate(clean, yend = case_when(variable == "TP" ~ 4,
-                                 variable == "TN" ~ 120,
-                                 variable == "CHL" ~ 2))
+# clean <- mutate(clean, yend = case_when(variable == "TP" ~ 4,
+#                                  variable == "TN" ~ 120,
+#                                  variable == "CHL" ~ 2))
 
 (gg_mrae <- ggplot(data = clean) +
-      geom_segment(aes(xend = set_parsed, yend = yend, x = set_parsed,
-                       y = value, color = set_parsed),
-                   lineend = "butt", size = bar_size) +
-    geom_errorbar(aes(ymin = ymin, ymax = ymax, x = set_parsed)) +
-      scale_y_continuous(breaks = my_breaks,
-                         labels = zero_pad) +
+    geom_boxplot(aes(x = set_parsed, y = value, fill = set_parsed), outlier.shape = NA) +
       facet_wrap(~variable, scales = "free", labeller = label_value) +
-      scale_color_manual(values = color_d,
+      scale_fill_manual(values = color_d,
                          labels = parse(text = TeX(levels(clean$set_parsed)))) +
       theme_minimal() +
       theme_opts +
       ylab("MRAE") + xlab(""))
 
 # ---- r2 ----
-raw <- read.csv("data/revision_datasets/mean_variance_statistics/MeanPerformanceAcross10.csv",
-                stringsAsFactors = FALSE) %>%
-  janitor::clean_names() %>%
-  rename(variable = target, set = splitting, value = avg_r2) %>%
-  mutate(stdev = replace_na(sqrt(variance_r2), 0))
-
-clean <- bar_plot_clean(raw)
-
-clean <- clean %>%
-  mutate(nreps = case_when(set == "cluster_strat75" ~ 6,
-                           set == "cluster_random50" ~ 6,
-                           TRUE ~ 10)) %>%
-  mutate(ymin = value - (stdev / sqrt(nreps)), # we ran 6 or 10 replicate models
-         ymax = value + (stdev / sqrt(nreps)))
+clean <- bar_plot_clean(dplyr::select(raw,
+                                      variable, set, value = r_squared))
 
 (gg_r2 <- ggplot(data = clean) +
-    geom_segment(aes(xend = set_parsed, yend = 0.3, x = set_parsed,
-                     y = value, color = set_parsed),
-                 lineend = "butt", size = bar_size) +
-    geom_errorbar(aes(ymin = ymin, ymax = ymax, x = set_parsed)) +
-    scale_y_continuous(breaks = seq(0.30, 0.60, by = 0.10),
-                       labels = zero_pad2) +
+    geom_boxplot(aes(x = set_parsed, y = value, fill = set_parsed), outlier.shape = NA) +
     ylim(0.3, 0.65) +
     facet_wrap(~variable, labeller = label_value) +
-    scale_color_manual(values = color_d,
+    scale_fill_manual(values = color_d,
                        labels = parse(text = TeX(levels(clean$set_parsed)))) +
     theme_minimal() +
     theme_opts +
