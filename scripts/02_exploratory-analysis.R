@@ -114,6 +114,7 @@ ggplot() + geom_sf(data = wq2)
 
 lg$hu4$hu4_zoneid[which(!(lg$hu4$hu4_zoneid %in% wq2$hu4_zoneid))]
 
+# see LAGOSNEgis package https://github.com/jsta/LAGOSNEgis for gpkg file
 gdb_path <- path.expand("~/.local/share/LAGOS-GIS/lagos-ne_gis.gpkg")
 hu4         <- st_read(gdb_path, "HU4")
 hu4         <- st_cast(hu4, "MULTIPOLYGON")
