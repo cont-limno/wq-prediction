@@ -12,7 +12,6 @@ Soranno, P.A., Cheruvelil, K.S., Liu, B., Wang, Q., Tan, P.N., Zhou, J., King, K
 ├── graphics
 │   ├── density_plots
 │   └── lake_clusters
-├── Makefile
 ├── README.md
 ├── scripts
 │   ├── 01_prep-data.R
