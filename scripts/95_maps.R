@@ -11,7 +11,7 @@ library(gridExtra)
 library(grid)
 
 library(LAGOSNEgis) # install_github("cont-limno/LAGOSNEgis")
-library(dplyr)
+suppressMessages(library(dplyr))
 library(tmap)
 
 #### input data ####
@@ -26,11 +26,12 @@ datatab <- read.csv("data/revision_datasets/wq2_single_run1.csv")[,c(2:22)] #rev
 # quality for thousands of U.S. Lakes: 2013-1925. Environmental Data Initiative.
 # Package ID: edi.98.1
 # http://dx.doi.org/10.6073/pasta/fb4f5687339bec467ce0ed1ea0b5f0ca. Dataset accessed 9/26/2017.
-sf::st_layers(LAGOSNEgis::lagosnegis_path())
+# sf::st_layers(LAGOSNEgis::lagosnegis_path())
 lakes_4ha_pts <- query_gis("LAGOS_NE_All_Lakes_4ha_POINTS", "lagoslakeid",
                            unique(datatab$lagoslakeid))
 HU4           <- query_gis("HU4", "ZoneID",
                            unique(lakes_4ha_pts$HU4_ZoneID))
+HU4_sp <- shapefile("data/gis/HU4.shp")
 states <- query_gis("STATE", "ZoneID",
                            unique(lakes_4ha_pts$STATE_ZoneID))
 
@@ -50,8 +51,8 @@ lakes_4ha_pts_secchi <- merge(lakes_4ha_pts, datatab, by.x='lagoslakeid', by.y='
 
 # get xy coordinates for mapping
 lakes_4ha_pts_secchi_df <- as.data.frame(lakes_4ha_pts_secchi)
-lakes_4ha_pts_secchi_df <- st_drop_geometry(lakes_4ha_pts_secchi) %>%
-  cbind(st_coordinates(lakes_4ha_pts_secchi))
+lakes_4ha_pts_secchi_df <- sf::st_drop_geometry(lakes_4ha_pts_secchi) %>%
+  cbind(sf::st_coordinates(lakes_4ha_pts_secchi))
 lakes_4ha_pts_secchi_df <- lakes_4ha_pts_secchi_df[!is.na(lakes_4ha_pts_secchi_df$Secchi_group),] #remove rows with NA
 
 # map
@@ -83,7 +84,7 @@ lakes_4ha_pts_secchi_df <- lakes_4ha_pts_secchi_df[!is.na(lakes_4ha_pts_secchi_d
 # secchi.point1
 # dev.off()
 
-# ----
+# ---- tmap_experiment ----
 col_pal  <- c("olivedrab1", "dodgerblue", "navy")
 lab_text <- sf::st_drop_geometry(lakes_4ha_pts_secchi) %>%
   dplyr::filter(!is.na(Secchi_group) & secchi > 0) %>%
@@ -93,7 +94,7 @@ lab_text <- sf::st_drop_geometry(lakes_4ha_pts_secchi) %>%
   pull(range_string) %>%
   paste0( c(' (Low: < 25%)', ' (Med: 25-75%)', ' (High: > 75%)'))
 
-  tm_graticules() +
+secchi.point1 <- tm_graticules() +
   tm_shape(HU4) +
   tm_polygons() +
     tm_shape(states) +
@@ -110,15 +111,16 @@ lab_text <- sf::st_drop_geometry(lakes_4ha_pts_secchi) %>%
                position = c(0.35, 0)) +
     tm_layout(legend.title.size = 1, legend.title.fontface = "bold",
               legend.position = c("RIGHT", "BOTTOM"))
+  tmap_save(secchi.point1, "graphics/LPEP2_secchi_map.png")
 
 # ---- train_test_map_revised.jpeg ----
 
 ## Maps of training/test datasets
 # get xy coordinates for mapping
-test_train_df <- as.data.frame(lakes_4ha_pts@data)
-test_train_df$xCor <- lakes_4ha_pts@coords[,1]
-test_train_df$yCor <- lakes_4ha_pts@coords[,2]
-test_train_df <- merge(test_train_df, datatab, by.x='lagoslakei', by.y='lagoslakeid', all.x=F)
+test_train_df <- lakes_4ha_pts %>%
+    sf::st_drop_geometry() %>%
+    cbind(sf::st_coordinates(lakes_4ha_pts))
+test_train_df <- merge(test_train_df, datatab, by.x='lagoslakeid', by.y='lagoslakeid', all.x=F)
 
 test_train_df <- test_train_df[,c(1,33,34,48:54)] #remove unused columns; make dataframe more workable
 
@@ -148,10 +150,12 @@ test_train_df$cluster_random50_holdout <- as.factor(ifelse(test_train_df$cluster
 # random25_holdout
 mappoint_size <- 0.15
 title_size <- 9
-random25_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
-  geom_point(aes(colour=test_train_df$random25_holdout), size=mappoint_size) +
+random25_holdout.point1 <-
+  ggplot(test_train_df, aes(x=X,y=Y))+
+  geom_point(aes(colour = random25_holdout), size=mappoint_size) +
   #ggtitle('a) Random_Lakelarge')+
-  geom_path(data=HU4,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
+  geom_path(data = HU4_sp, aes(long, lat, group = group),
+            colour='black', size=0.2) + coord_equal() +
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Training','Testing'),
                      name='')+
@@ -169,10 +173,10 @@ random25_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
 #random25_holdout.point1
 
 # random75_holdout
-random75_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
-  geom_point(aes(colour=test_train_df$random75_holdout), size=mappoint_size) +
+random75_holdout.point1<-ggplot(test_train_df, aes(x=X,y=Y))+
+  geom_point(aes(colour=random75_holdout), size=mappoint_size) +
   #ggtitle('b) Random_Lakesmall')+
-  geom_path(data=HU4,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
+  geom_path(data=HU4_sp,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Training','Testing'),
                      name='')+
@@ -190,10 +194,10 @@ random75_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
 #random75_holdout.point1
 
 # cluster_strat75_holdout
-cluster_strat75_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
-  geom_point(aes(colour=test_train_df$cluster_strat75_holdout), size=mappoint_size) +
+cluster_strat75_holdout.point1<-ggplot(test_train_df, aes(x=X,y=Y))+
+  geom_point(aes(colour=cluster_strat75_holdout), size=mappoint_size) +
   #ggtitle('c) Local-EC_Lakesmall')+
-  geom_path(data=HU4,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
+  geom_path(data=HU4_sp,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Training','Testing'),
                      name='')+
@@ -211,10 +215,10 @@ cluster_strat75_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
 #cluster_strat75_holdout.point1
 
 # hu4_strat75_holdout
-hu4_strat75_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
-  geom_point(aes(colour=test_train_df$hu4_strat75_holdout), size=mappoint_size) +
+hu4_strat75_holdout.point1<-ggplot(test_train_df, aes(x=X,y=Y))+
+  geom_point(aes(colour=hu4_strat75_holdout), size=mappoint_size) +
   #ggtitle('d) Regional-EC_Regionsmall')+
-  geom_path(data=HU4,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
+  geom_path(data=HU4_sp,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Training','Testing'),
                      name='')+
@@ -232,10 +236,10 @@ hu4_strat75_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
 #hu4_strat75_holdout.point1
 
 # cluster_random50_holdout
-cluster_random50_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
-  geom_point(aes(colour=test_train_df$cluster_random50_holdout), size=mappoint_size) +
+cluster_random50_holdout.point1<-ggplot(test_train_df, aes(x=X,y=Y))+
+  geom_point(aes(colour=cluster_random50_holdout), size=mappoint_size) +
   #ggtitle('e) Local-EC_Lakemoderate')+
-  geom_path(data=HU4,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
+  geom_path(data=HU4_sp,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Training','Testing'),
                      name='')+
@@ -253,10 +257,10 @@ cluster_random50_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
 #cluster_random50_holdout.point1
 
 # hu4_random50_holdout
-hu4_random50_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
-  geom_point(aes(colour=test_train_df$hu4_random50_holdout), size=mappoint_size) +
+hu4_random50_holdout.point1<-ggplot(test_train_df, aes(x=X,y=Y))+
+  geom_point(aes(colour=hu4_random50_holdout), size=mappoint_size) +
   #ggtitle('f) Random_Regionmoderate')+
-  geom_path(data=HU4,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
+  geom_path(data=HU4_sp,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Training','Testing'),
                      name='')+
@@ -274,10 +278,10 @@ hu4_random50_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
 #hu4_random50_holdout.point1
 
 # hu4_ag50_holdout
-hu4_ag50_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
-  geom_point(aes(colour=test_train_df$hu4_ag50_holdout), size=mappoint_size) +
+hu4_ag50_holdout.point1<-ggplot(test_train_df, aes(x=X,y=Y))+
+  geom_point(aes(colour=hu4_ag50_holdout), size=mappoint_size) +
   #ggtitle('g) Regional-LU_Regionlarge')+
-  geom_path(data=HU4,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
+  geom_path(data=HU4_sp,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Training','Testing'),
                      name='')+
@@ -294,8 +298,8 @@ hu4_ag50_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
   guides(color = guide_legend(override.aes = list(size=2.5)))#increase legend point size
 #hu4_ag50_holdout.point1
 
-blank.plot <- ggplot(test_train_df, aes(x=xCor,y=yCor))+
-  geom_point(aes(colour=test_train_df$random25_holdout), size=mappoint_size) +
+blank.plot <- ggplot(test_train_df, aes(x=X,y=Y))+
+  geom_point(aes(colour=random25_holdout), size=mappoint_size) +
   scale_color_manual(values=c("white", "white"),
                      labels=c('Training','Testing'),
                      name='')+
@@ -313,10 +317,10 @@ blank.plot <- ggplot(test_train_df, aes(x=xCor,y=yCor))+
         plot.title=element_text(hjust=0, vjust=0, face='bold', size=title_size))
 
 # legend plot (created so can extract legend from it; this plot not plotted)
-legend.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
-  geom_point(aes(colour=test_train_df$random25_holdout), size=mappoint_size) +
+legend.point1<-ggplot(test_train_df, aes(x=X,y=Y))+
+  geom_point(aes(colour=random25_holdout), size=mappoint_size) +
   #ggtitle('Random25_holdout')+
-  geom_path(data=HU4,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
+  geom_path(data=HU4_sp,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Testing','Training'),
                      name='')+
