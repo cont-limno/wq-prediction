@@ -111,7 +111,10 @@ secchi.point1 <- tm_graticules() +
                position = c(0.35, 0)) +
     tm_layout(legend.title.size = 1, legend.title.fontface = "bold",
               legend.position = c("RIGHT", "BOTTOM"))
-  tmap_save(secchi.point1, "graphics/LPEP2_secchi_map.png")
+
+tiff(filename="graphics/LPEP2_secchi_map.tif",height=5600,width=5200,units="px",res=800,compression="lzw")
+secchi.point1
+dev.off()
 
 # ---- train_test_map_revised.jpeg ----
 
@@ -346,13 +349,21 @@ g_legend <- function(legend.point1){
 legend <- g_legend(legend.point1)
 #grid.draw(legend)
 
+# plotting positions!
+# (upper left, upper mid, uppper right,
+# mid left, mid mid, mid right,
+# bot left, bot mid, bot right)
+train_test_map <- grid.arrange(random25_holdout.point1, cluster_strat75_holdout.point1, cluster_random50_holdout.point1,
+                               random75_holdout.point1, hu4_strat75_holdout.point1, hu4_random50_holdout.point1,
+                               blank.plot, legend, hu4_ag50_holdout.point1, nrow=3)
+
 ## create multi-panel plot (warning, takes a couple mins)
-jpeg('graphics/train_test_map_revised.jpeg',width = 6,height = 5,units = 'in',res=600)
-  # plotting positions!
-  # (upper left, upper mid, uppper right,
-  # mid left, mid mid, mid right,
-  # bot left, bot mid, bot right)
-  grid.arrange(random25_holdout.point1, cluster_strat75_holdout.point1, cluster_random50_holdout.point1,
-               random75_holdout.point1, hu4_strat75_holdout.point1, hu4_random50_holdout.point1,
-               blank.plot, legend, hu4_ag50_holdout.point1, nrow=3)
+tiff(filename="graphics/train_test_map_revised.tif",height=5600,width=5200,units="px",res=800,compression="lzw")
+train_test_map
 dev.off()
+
+# cowplot::plot_grid(plotlist = list(random25_holdout.point1, cluster_strat75_holdout.point1,
+#                                    cluster_random50_holdout.point1, random75_holdout.point1,
+#                                    hu4_strat75_holdout.point1, hu4_random50_holdout.point1,
+#                                    blank.plot, legend, hu4_ag50_holdout.point1))
+

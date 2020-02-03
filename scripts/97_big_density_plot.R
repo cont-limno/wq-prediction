@@ -10,7 +10,7 @@ library(ggplot2)
 library(grid)
 
 #### input data ####
-setwd('C:/Users/FWL/Documents/wq-prediction')
+# setwd('C:/Users/FWL/Documents/wq-prediction')
 
 # water quality/ecological context for different model scenarios
 #datatab <- read.csv("data/raw_data_LPEP2_03082019.csv") #original submission
@@ -191,7 +191,7 @@ plotG_TP <- ggplot(datatab, aes(x=tp, fill=factor(hu4_ag50_holdout))) + geom_den
 # legend plot (created so can extract legend from it; this plot not plotted)
 # legend.point1<-ggplot(datatab, aes(x=tp, fill=factor(hu4_ag50_holdout))) + geom_density(alpha=0.75)+
 #   scale_fill_manual(values=plot_colorz, name='')+
-#   theme_bw() + 
+#   theme_bw() +
 #   theme(axis.text = element_blank(),
 #         axis.line = element_blank(),
 #         axis.ticks = element_blank(),
@@ -202,15 +202,15 @@ plotG_TP <- ggplot(datatab, aes(x=tp, fill=factor(hu4_ag50_holdout))) + geom_den
 #         legend.text=element_text(colour='black', size=11),
 #         plot.title=element_text(hjust=0, vjust=0, face='bold', size=9))+
 #   guides(color = guide_legend(override.aes = list(size=3.5)))#increase legend point size
-# 
+#
 # # with help from: https://stackoverflow.com/questions/12041042/how-to-plot-just-the-legends-in-ggplot2
-# g_legend <- function(legend.point1){ 
-#   tmp <- ggplot_gtable(ggplot_build(legend.point1)) 
-#   leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box") 
-#   legend <- tmp$grobs[[leg]] 
-#   return(legend)} 
-# 
-# legend <- g_legend(legend.point1) 
+# g_legend <- function(legend.point1){
+#   tmp <- ggplot_gtable(ggplot_build(legend.point1))
+#   leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+#   legend <- tmp$grobs[[leg]]
+#   return(legend)}
+#
+# legend <- g_legend(legend.point1)
 # #grid.draw(legend)
 
 #### Chla ####
@@ -839,7 +839,7 @@ plotG_forest <- ggplot(datatab, aes(x=iws_nlcd2006_for, fill=factor(hu4_ag50_hol
         plot.margin=unit(c(0.05,0.05,0.05,0.05), "cm"),
         plot.title=element_blank())
 
-jpeg('graphics/density_plots/all_vars_scenarios_revised.jpeg',width = 6.5,height = 6.5,units = 'in',res=600)
+tiff(filename="graphics/density_plots/all_vars_scenarios_revised.tif",height=5600,width=5200,units="px",res=800,compression="lzw")
 grid.arrange(plotA_TP, plotA_TN, plotA_chla, plotA_Secchi, plotA_depth, plotA_forest,
              plotB_TP, plotB_TN, plotB_chla, plotB_Secchi, plotB_depth, plotB_forest,
              plotC_TP, plotC_TN, plotC_chla, plotC_Secchi, plotC_depth, plotC_forest,
@@ -848,4 +848,3 @@ grid.arrange(plotA_TP, plotA_TN, plotA_chla, plotA_Secchi, plotA_depth, plotA_fo
              plotF_TP, plotF_TN, plotF_chla, plotF_Secchi, plotF_depth, plotF_forest,
              plotG_TP, plotG_TN, plotG_chla, plotG_Secchi, plotG_depth, plotG_forest, nrow=7)
 dev.off()
-
