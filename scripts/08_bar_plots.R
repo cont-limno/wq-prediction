@@ -7,7 +7,7 @@ library(cowplot)
 library(latex2exp)
 library(colorblindr) # devtools::install_github("clauswilke/colorblindr")
 library(extrafont)
-font_import()
+font_import(prompt = FALSE)
 View(fonttable())
 
 # Interpolation scenarios:
@@ -194,7 +194,10 @@ clean <- bar_plot_clean(dplyr::select(raw,
 #           gg_all,
 #           ncol = 2, rel_widths = c(0.01, 1))
 
-ggsave("graphics/bar_plots.png", gg_all, height = 8)
+# ggsave("graphics/bar_plots.png", gg_all, height = 8)
+tiff(filename="graphics/box-plots.tif",height=5600,width=5200,units="px",res=800,compression="lzw")
+gg_all
+dev.off()
 
 # https://stackoverflow.com/a/20502085/3362993
 # pdf("graphics/bar_plots.pdf")
