@@ -11,11 +11,11 @@ library(gridExtra)
 library(grid)
 
 #### input data ####
-setwd('C:/Users/FWL/Documents/wq-prediction')
-# GIS data downloaded and stored locally from: 
-# Soranno P., K. Cheruvelil. (2017c). LAGOS-NE-GIS v1.0: A module for LAGOS-NE, 
-# a multi-scaled geospatial and temporal database of lake ecological context and water 
-# quality for thousands of U.S. Lakes: 2013-1925. Environmental Data Initiative. 
+# setwd('C:/Users/FWL/Documents/wq-prediction')
+# GIS data downloaded and stored locally from:
+# Soranno P., K. Cheruvelil. (2017c). LAGOS-NE-GIS v1.0: A module for LAGOS-NE,
+# a multi-scaled geospatial and temporal database of lake ecological context and water
+# quality for thousands of U.S. Lakes: 2013-1925. Environmental Data Initiative.
 # Package ID: edi.98.1
 # http://dx.doi.org/10.6073/pasta/fb4f5687339bec467ce0ed1ea0b5f0ca. Dataset accessed 9/26/2017.
 lakes_4ha_pts <- shapefile("C:/Ian_GIS/LAGOS-NE-GISv1.0/LAGOS_NE_All_Lakes_4ha_POINTS/LAGOS_NE_All_Lakes_4ha_POINTS.shp")
@@ -55,7 +55,7 @@ secchi.point1<-ggplot(lakes_4ha_pts_secchi_df, aes(x=xCor,y=yCor))+
   scale_color_manual(values=c("olivedrab1", "dodgerblue", "navy"),
                      labels=c('Low (< 25%)','Medium (25-75%)','High (> 75%)'),
                      name='Percentile group')+
-  theme_bw() + 
+  theme_bw() +
   theme(axis.text = element_blank(),
         axis.line = element_blank(),
         axis.ticks = element_blank(),
@@ -65,7 +65,7 @@ secchi.point1<-ggplot(lakes_4ha_pts_secchi_df, aes(x=xCor,y=yCor))+
         legend.position=c(0.82,0.2),
         legend.text=element_text(colour='black', size=9),
         plot.title=element_text(hjust=0, vjust=0, face='bold'))+
-  geom_segment(arrow=arrow(length=unit(4,"mm")), aes(x=1012336,xend=1012336,y=1608736,yend=1608739), 
+  geom_segment(arrow=arrow(length=unit(4,"mm")), aes(x=1012336,xend=1012336,y=1608736,yend=1608739),
                colour="black") +
   annotate(x=1012393, y=1481399, label="N", colour="black", geom="text", size=6) +
   guides(color = guide_legend(override.aes = list(size=1.5)))#increase legend point size
@@ -114,7 +114,7 @@ random25_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Training','Testing'),
                      name='')+
-  theme_bw() + 
+  theme_bw() +
   theme(axis.text = element_blank(),
         axis.line = element_blank(),
         axis.ticks = element_blank(),
@@ -135,7 +135,7 @@ random75_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Training','Testing'),
                      name='')+
-  theme_bw() + 
+  theme_bw() +
   theme(axis.text = element_blank(),
         axis.line = element_blank(),
         axis.ticks = element_blank(),
@@ -156,7 +156,7 @@ cluster_strat75_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Training','Testing'),
                      name='')+
-  theme_bw() + 
+  theme_bw() +
   theme(axis.text = element_blank(),
         axis.line = element_blank(),
         axis.ticks = element_blank(),
@@ -177,7 +177,7 @@ hu4_strat75_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Training','Testing'),
                      name='')+
-  theme_bw() + 
+  theme_bw() +
   theme(axis.text = element_blank(),
         axis.line = element_blank(),
         axis.ticks = element_blank(),
@@ -198,7 +198,7 @@ cluster_random50_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Training','Testing'),
                      name='')+
-  theme_bw() + 
+  theme_bw() +
   theme(axis.text = element_blank(),
         axis.line = element_blank(),
         axis.ticks = element_blank(),
@@ -219,7 +219,7 @@ hu4_random50_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Training','Testing'),
                      name='')+
-  theme_bw() + 
+  theme_bw() +
   theme(axis.text = element_blank(),
         axis.line = element_blank(),
         axis.ticks = element_blank(),
@@ -240,7 +240,7 @@ hu4_ag50_holdout.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Training','Testing'),
                      name='')+
-  theme_bw() + 
+  theme_bw() +
   theme(axis.text = element_blank(),
         axis.line = element_blank(),
         axis.ticks = element_blank(),
@@ -260,7 +260,7 @@ blank.plot <- ggplot(test_train_df, aes(x=xCor,y=yCor))+
                      name='')+
   ggtitle('')+
   geom_blank()+
-  theme_bw() + 
+  theme_bw() +
   theme(axis.text = element_blank(),
         axis.line = element_blank(),
         axis.ticks = element_blank(),
@@ -279,7 +279,7 @@ legend.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
   scale_color_manual(values=c("orange", "royalblue"),
                      labels=c('Testing','Training'),
                      name='')+
-  theme_bw() + 
+  theme_bw() +
   theme(axis.text = element_blank(),
         axis.line = element_blank(),
         axis.ticks = element_blank(),
@@ -292,14 +292,14 @@ legend.point1<-ggplot(test_train_df, aes(x=xCor,y=yCor))+
   guides(color = guide_legend(override.aes = list(size=3.5)))#increase legend point size
 
 # with help from: https://stackoverflow.com/questions/12041042/how-to-plot-just-the-legends-in-ggplot2
-g_legend <- function(legend.point1){ 
-  tmp <- ggplot_gtable(ggplot_build(legend.point1)) 
-  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box") 
-  legend <- tmp$grobs[[leg]] 
-  return(legend)} 
+g_legend <- function(legend.point1){
+  tmp <- ggplot_gtable(ggplot_build(legend.point1))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)}
 
-legend <- g_legend(legend.point1) 
-#grid.draw(legend) 
+legend <- g_legend(legend.point1)
+#grid.draw(legend)
 
 ## create multi-panel plot (warning, takes a couple mins)
 jpeg('graphics/train_test_map_revised.jpeg',width = 6,height = 5,units = 'in',res=600)
