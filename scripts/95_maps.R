@@ -1,8 +1,8 @@
-################# LPEP2: Map figures ###########################################################
+################# LPEP2: Map figures ##########################################
 # Date: 3-14-19
 # updated: 11-1-19
 # Author: Ian McCullough, immccull@gmail.com
-################################################################################################
+###############################################################################
 
 #### R libraries ####
 library(raster)
@@ -10,26 +10,34 @@ library(ggplot2)
 library(gridExtra)
 library(grid)
 
+library(LAGOSNEgis) # install_github("cont-limno/LAGOSNEgis")
+library(dplyr)
+library(tmap)
+
 #### input data ####
 # setwd('C:/Users/FWL/Documents/wq-prediction')
+# water quality/ecological context for different model scenarios
+#datatab <- read.csv("data/raw_data_LPEP2_03082019.csv") #original submission
+datatab <- read.csv("data/revision_datasets/wq2_single_run1.csv")[,c(2:22)] #revision
+
 # GIS data downloaded and stored locally from:
 # Soranno P., K. Cheruvelil. (2017c). LAGOS-NE-GIS v1.0: A module for LAGOS-NE,
 # a multi-scaled geospatial and temporal database of lake ecological context and water
 # quality for thousands of U.S. Lakes: 2013-1925. Environmental Data Initiative.
 # Package ID: edi.98.1
 # http://dx.doi.org/10.6073/pasta/fb4f5687339bec467ce0ed1ea0b5f0ca. Dataset accessed 9/26/2017.
-lakes_4ha_pts <- shapefile("C:/Ian_GIS/LAGOS-NE-GISv1.0/LAGOS_NE_All_Lakes_4ha_POINTS/LAGOS_NE_All_Lakes_4ha_POINTS.shp")
-HU4 <- shapefile("C:/Ian_GIS/LAGOS-NE-GISv1.0/HU4/HU4.shp")
+sf::st_layers(LAGOSNEgis::lagosnegis_path())
+lakes_4ha_pts <- query_gis("LAGOS_NE_All_Lakes_4ha_POINTS", "lagoslakeid",
+                           unique(datatab$lagoslakeid))
+HU4           <- query_gis("HU4", "ZoneID",
+                           unique(lakes_4ha_pts$HU4_ZoneID))
+states <- query_gis("STATE", "ZoneID",
+                           unique(lakes_4ha_pts$STATE_ZoneID))
 
-# water quality/ecological context for different model scenarios
-#datatab <- read.csv("data/raw_data_LPEP2_03082019.csv") #original submission
-datatab <- read.csv("data/revision_datasets/wq2_single_run1.csv")[,c(2:22)] #revision
-
-########### Main program ##################
-## Map of Secchi
+# ---- secchi_map.jpeg ----
 
 # partition secchi data into groups based on percentile
-secchi_cutoffs <- quantile(datatab$secchi, na.rm=T, c(0.25,0.50,0.75))
+secchi_cutoffs       <- quantile(datatab$secchi, na.rm=T, c(0.25,0.50,0.75))
 datatab$Secchi_group <- NA
 datatab$Secchi_group <- ifelse(datatab$secchi <= secchi_cutoffs[1], 'Low', NA)
 datatab$Secchi_group <- ifelse(datatab$secchi <= secchi_cutoffs[3] & datatab$secchi >= secchi_cutoffs[1], 'Medium', datatab$Secchi_group)
@@ -38,39 +46,72 @@ datatab$Secchi_group <- as.factor(datatab$Secchi_group)
 datatab$Secchi_group <- factor(datatab$Secchi_group,levels(datatab$Secchi_group)[c(2,3,1)]) #reorder factor levels: low, med, high
 
 # join secchi data to points for mapping
-lakes_4ha_pts_secchi <- merge(lakes_4ha_pts, datatab, by.x='lagoslakei', by.y='lagoslakeid', all.x=F)
+lakes_4ha_pts_secchi <- merge(lakes_4ha_pts, datatab, by.x='lagoslakeid', by.y='lagoslakeid', all.x=F)
 
 # get xy coordinates for mapping
-lakes_4ha_pts_secchi_df <- as.data.frame(lakes_4ha_pts_secchi@data)
-lakes_4ha_pts_secchi_df$xCor <- lakes_4ha_pts_secchi@coords[,1]
-lakes_4ha_pts_secchi_df$yCor <- lakes_4ha_pts_secchi@coords[,2]
+lakes_4ha_pts_secchi_df <- as.data.frame(lakes_4ha_pts_secchi)
+lakes_4ha_pts_secchi_df <- st_drop_geometry(lakes_4ha_pts_secchi) %>%
+  cbind(st_coordinates(lakes_4ha_pts_secchi))
 lakes_4ha_pts_secchi_df <- lakes_4ha_pts_secchi_df[!is.na(lakes_4ha_pts_secchi_df$Secchi_group),] #remove rows with NA
 
 # map
-jpeg('graphics/secchi_map.jpeg',width = 6,height = 4,units = 'in',res=600)
-secchi.point1<-ggplot(lakes_4ha_pts_secchi_df, aes(x=xCor,y=yCor))+
-  geom_point(aes(colour=lakes_4ha_pts_secchi_df$Secchi_group), size=0.9) +
-  ggtitle('Secchi (m)')+
-  geom_path(data=HU4,aes(long,lat,group=group),colour='black', size=0.2) + coord_equal()+
-  scale_color_manual(values=c("olivedrab1", "dodgerblue", "navy"),
-                     labels=c('Low (< 25%)','Medium (25-75%)','High (> 75%)'),
-                     name='Percentile group')+
-  theme_bw() +
-  theme(axis.text = element_blank(),
-        axis.line = element_blank(),
-        axis.ticks = element_blank(),
-        #panel.border = element_blank(),
-        panel.grid = element_blank(),
-        axis.title = element_blank(),
-        legend.position=c(0.82,0.2),
-        legend.text=element_text(colour='black', size=9),
-        plot.title=element_text(hjust=0, vjust=0, face='bold'))+
-  geom_segment(arrow=arrow(length=unit(4,"mm")), aes(x=1012336,xend=1012336,y=1608736,yend=1608739),
-               colour="black") +
-  annotate(x=1012393, y=1481399, label="N", colour="black", geom="text", size=6) +
-  guides(color = guide_legend(override.aes = list(size=1.5)))#increase legend point size
-secchi.point1
-dev.off()
+# jpeg('graphics/secchi_map.jpeg',width = 6,height = 4,units = 'in',res=600)
+# secchi.point1 <-
+#   ggplot() +
+#   geom_point(data = lakes_4ha_pts_secchi_df,
+#              aes(x = X, y = Y, colour = Secchi_group), size = 0.9) +
+#   ggtitle('Secchi (m)') +
+#   # geom_path(data = HU4, aes(long, lat, group = group),
+#   #           colour = 'black', size = 0.2) + coord_equal() +
+#   scale_color_manual(values=c("olivedrab1", "dodgerblue", "navy"),
+#                      labels=c('Low (< 25%)','Medium (25-75%)','High (> 75%)'),
+#                      name='Percentile group')+
+#   theme_bw() +
+#   theme(axis.text = element_blank(),
+#         axis.line = element_blank(),
+#         axis.ticks = element_blank(),
+#         #panel.border = element_blank(),
+#         panel.grid = element_blank(),
+#         axis.title = element_blank(),
+#         legend.position=c(0.82,0.2),
+#         legend.text=element_text(colour='black', size=9),
+#         plot.title=element_text(hjust=0, vjust=0, face='bold'))+
+#   geom_segment(arrow=arrow(length=unit(4,"mm")), aes(x=1012336,xend=1012336,y=1608736,yend=1608739),
+#                colour="black") +
+#   annotate(x=1012393, y=1481399, label="N", colour="black", geom="text", size=6) +
+#   guides(color = guide_legend(override.aes = list(size=1.5)))#increase legend point size
+# secchi.point1
+# dev.off()
+
+# ----
+col_pal  <- c("olivedrab1", "dodgerblue", "navy")
+lab_text <- sf::st_drop_geometry(lakes_4ha_pts_secchi) %>%
+  dplyr::filter(!is.na(Secchi_group) & secchi > 0) %>%
+  group_by(Secchi_group) %>%
+  summarize(range_string = paste0(format(round(min(secchi), 2), nsmall = 2), " - ",
+                                  format(round(max(secchi), 2), nsmall = 2))) %>%
+  pull(range_string) %>%
+  paste0( c(' (Low: < 25%)', ' (Med: 25-75%)', ' (High: > 75%)'))
+
+  tm_graticules() +
+  tm_shape(HU4) +
+  tm_polygons() +
+    tm_shape(states) +
+    tm_polygons(alpha = 0, lwd = 2, border.col = "black") +
+  tm_shape(dplyr::filter(lakes_4ha_pts_secchi, !is.na(Secchi_group))) +
+  tm_bubbles(col = "Secchi_group", size = 0.05, palette = col_pal,
+             legend.shape.show = FALSE, legend.col.show = FALSE,
+             border.col = "black") +
+  tm_compass(size = 1.5,
+             position = c(0.41, 0.09)) +
+  tm_add_legend("symbol", col = col_pal, title = "Secchi (m)",
+                labels = lab_text, size = 0.3) +
+  tm_scale_bar(breaks = c(0, 250, 500),
+               position = c(0.35, 0)) +
+    tm_layout(legend.title.size = 1, legend.title.fontface = "bold",
+              legend.position = c("RIGHT", "BOTTOM"))
+
+# ---- train_test_map_revised.jpeg ----
 
 ## Maps of training/test datasets
 # get xy coordinates for mapping
