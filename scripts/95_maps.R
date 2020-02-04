@@ -353,13 +353,12 @@ legend <- g_legend(legend.point1)
 # (upper left, upper mid, uppper right,
 # mid left, mid mid, mid right,
 # bot left, bot mid, bot right)
-train_test_map <- grid.arrange(random25_holdout.point1, cluster_strat75_holdout.point1, cluster_random50_holdout.point1,
-                               random75_holdout.point1, hu4_strat75_holdout.point1, hu4_random50_holdout.point1,
-                               blank.plot, legend, hu4_ag50_holdout.point1, nrow=3)
 
 ## create multi-panel plot (warning, takes a couple mins)
 tiff(filename="graphics/train_test_map_revised.tif",height=5600,width=5200,units="px",res=800,compression="lzw")
-train_test_map
+grid.arrange(random25_holdout.point1, cluster_strat75_holdout.point1, cluster_random50_holdout.point1,
+             random75_holdout.point1, hu4_strat75_holdout.point1, hu4_random50_holdout.point1,
+             blank.plot, legend, hu4_ag50_holdout.point1, nrow=3)
 dev.off()
 
 # cowplot::plot_grid(plotlist = list(random25_holdout.point1, cluster_strat75_holdout.point1,
