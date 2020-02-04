@@ -839,7 +839,7 @@ plotG_forest <- ggplot(datatab, aes(x=iws_nlcd2006_for, fill=factor(hu4_ag50_hol
         plot.margin=unit(c(0.05,0.05,0.05,0.05), "cm"),
         plot.title=element_blank())
 
-tiff(filename="graphics/density_plots/all_vars_scenarios_revised.tif",height=5600,width=5200,units="px",res=800,compression="lzw")
+tiff(filename="graphics/all_vars_scenarios_revised.tif",height=5600,width=5200,units="px",res=800,compression="lzw")
 grid.arrange(plotA_TP, plotA_TN, plotA_chla, plotA_Secchi, plotA_depth, plotA_forest,
              plotB_TP, plotB_TN, plotB_chla, plotB_Secchi, plotB_depth, plotB_forest,
              plotC_TP, plotC_TN, plotC_chla, plotC_Secchi, plotC_depth, plotC_forest,
