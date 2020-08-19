@@ -1,8 +1,8 @@
-[![Paper DOI](https://img.shields.io/badge/Paper-DOI-blue.svg)](https://doi.org/) [![Code DOI](https://img.shields.io/badge/DOI-10.5281/zenodo.3606832-blue.svg)](https://doi.org/10.5281/zenodo.3606832)
+[![Paper DOI](https://img.shields.io/badge/Paper-10.1002/eap.2123-blue.svg)](https://doi.org/10.1002/eap.2123) [![Code DOI](https://img.shields.io/badge/DOI-10.5281/zenodo.3606832-blue.svg)](https://doi.org/10.5281/zenodo.3606832)
 
 Code and data for:
 
-Soranno, P.A., Cheruvelil, K.S., Liu, B., Wang, Q., Tan, P.N., Zhou, J., King, K.B.S., McCullough, I.M., Stachelek, J., Bartley, M., Filstrup, C.T., Hanks, E.M., Lapierre, J.F., Lottig, N.R., Schliep, E.M., Wagner, T., Webster, K.E. _In Press_. Ecological prediction at macroscales using big data: Does sampling design matter? _Ecological Applications_
+Soranno, P.A., Cheruvelil, K.S., Liu, B., Wang, Q., Tan, P.N., Zhou, J., King, K.B.S., McCullough, I.M., Stachelek, J., Bartley, M., Filstrup, C.T., Hanks, E.M., Lapierre, J.F., Lottig, N.R., Schliep, E.M., Wagner, T., Webster, K.E. 2020. Ecological prediction at macroscales using big data: Does sampling design matter? _Ecological Applications_. doi:10.1002/eap.2123
 
 ## Contents
 
